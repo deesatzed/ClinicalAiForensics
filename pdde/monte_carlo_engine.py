@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .models import (
+from .component_models import (
     MonteCarloPriorSimulation,
     MonteCarloSimulationResult,
     PriorResolution,

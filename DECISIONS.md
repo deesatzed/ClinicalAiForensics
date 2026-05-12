@@ -281,3 +281,11 @@ Decision: `P1-004` adds `StatusLedgerRow`, `StatusLedger`, and `pdde/status_ledg
 Reason: Phase 1 needs one auditable status contract for missing, unsupported, blocked, active, deferred, present, resolved, sampled, and eligible states before report/log semantics expand further. Keeping the ledger as a projection avoids turning it into a hidden reasoning layer.
 
 Impact: The ledger preserves component identifiers, statuses, reasons for report display, source references, provenance references, and related entity IDs. JSONL logs intentionally use aggregate ledger status counts rather than ledger reasons so raw clinical evidence strings and patient-state values are not added to logs. No clinical thresholds, utilities, formulas, final recommendations, AI/LLM judgment, CLI behavior, or PHI handling were added.
+
+## D-036: Focused Model Modules With Compatibility Facade
+
+Decision: `P1-005` splits model definitions out of the centralized `pdde/models.py` file into focused modules: `model_base.py`, `input_models.py`, `component_models.py`, `pipeline_models.py`, and `legacy_models.py`. `pdde/models.py` remains as a backwards-compatible re-export facade.
+
+Reason: The P1-002 explicit mapping contracts, P1-003 fixtures, and P1-004 status-ledger contract are now stable enough to reduce model-file gravity without changing runtime behavior. Focused modules make future schema work easier to review before AI mapping or local overlay work expands the model surface.
+
+Impact: Existing imports from `pdde.models` continue to work, while internal runtime modules now import from the focused modules. No CLI behavior, clinical logic, final recommendations, AI/LLM judgment, thresholds, utilities, hidden scoring, provenance semantics, or PHI handling were changed.

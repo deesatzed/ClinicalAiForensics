@@ -12,8 +12,9 @@ from typing import Any
 
 from pydantic import ValidationError
 
+from .component_models import PriorResolution, PriorResolutionSet
+from .input_models import ClinicalDecisionEpisode, DomainPack, Prior
 from .loader_errors import validation_summary
-from .models import ClinicalDecisionEpisode, DomainPack, Prior, PriorResolution, PriorResolutionSet
 
 
 _NORMALIZED_PROVENANCE_CLASSES = {

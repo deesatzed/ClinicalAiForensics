@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Any
 
-from .models import EvaluationPipelineResult
+from .pipeline_models import EvaluationPipelineResult
 from .status_ledger import build_status_ledger
 
 

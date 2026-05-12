@@ -8,8 +8,8 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
+from .input_models import ClinicalDecisionEpisode
 from .loader_errors import LoaderError, validation_summary
-from .models import ClinicalDecisionEpisode
 
 
 def load_cde(path: str | Path) -> ClinicalDecisionEpisode:

@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
-from .models import (
+from .component_models import (
     DecisionProfileInputSummary,
-    EvaluationPipelineResult,
     StatusLedger,
     StatusLedgerComponent,
     StatusLedgerRow,
 )
+from .pipeline_models import EvaluationPipelineResult
 
 
 _INPUT_COMPONENTS: dict[str, StatusLedgerComponent] = {

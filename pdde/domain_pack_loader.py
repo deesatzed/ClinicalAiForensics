@@ -8,8 +8,8 @@ import yaml
 from pydantic import ValidationError
 from yaml import YAMLError
 
+from .input_models import DomainPack
 from .loader_errors import LoaderError, validation_summary
-from .models import DomainPack
 
 
 def load_domain_pack(path: str | Path) -> DomainPack:

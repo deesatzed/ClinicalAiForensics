@@ -10,13 +10,11 @@ from __future__ import annotations
 import re
 from typing import Any, Literal
 
-from .models import (
-    ClinicalDecisionEpisode,
-    DomainPack,
-    SafetyGate,
+from .component_models import (
     SafetyGateEvaluation,
     SafetyGateEvaluationSet,
 )
+from .input_models import ClinicalDecisionEpisode, DomainPack, SafetyGate
 
 
 _MISSING = object()

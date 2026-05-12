@@ -9,13 +9,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from .models import (
-    ClinicalDecisionEpisode,
-    DomainPack,
+from .component_models import (
     SafetyGateEvaluationSet,
     ValueOfInformationEvaluation,
     ValueOfInformationEvaluationSet,
 )
+from .input_models import ClinicalDecisionEpisode, DomainPack
 
 
 _CDE_FIELD_ALIASES = {

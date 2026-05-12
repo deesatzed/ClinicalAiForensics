@@ -652,7 +652,7 @@ Verification:
 
 ### P1-005: Model Module Split
 
-Status: pending
+Status: done
 
 Scope:
 
@@ -664,6 +664,27 @@ Acceptance:
 - New modules have clear responsibility.
 - Existing behavior and serialization surfaces remain covered.
 - `pdde/models.py` remains a compatibility re-export module or has an explicit migration note.
+
+Verification:
+
+- `pdde/model_base.py` contains shared base types.
+- `pdde/input_models.py` contains CDE, domain-pack, explicit mapping, safety-gate input, and prior input contracts.
+- `pdde/component_models.py` contains deterministic component-result and status-ledger contracts.
+- `pdde/pipeline_models.py` contains the top-level evaluation result contract.
+- `pdde/legacy_models.py` contains legacy/planned report and log models kept for compatibility.
+- `pdde/models.py` remains a compatibility re-export facade with an explicit migration note.
+- Runtime modules import focused model modules directly while existing public `pdde.models` imports remain supported.
+- `tests/test_model_modules.py` covers focused imports, facade identity, and pipeline result serialization after the split.
+- No runtime clinical logic, CLI behavior, final recommendations, AI/LLM judgment, hidden scoring, thresholds, utilities, formulas, PHI handling, or provenance semantics were changed.
+- `python -m pytest` passed, 110 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL.
 
 ### P1-006: Report Section Registry Or Schema Contract
 
@@ -742,7 +763,7 @@ Acceptance:
 
 ## Queue State
 
-Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, and `P1-004` are complete. The next unblocked task is `P1-005: Model Module Split`.
+Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, and `P1-005` are complete. The next unblocked task is `P1-006: Report Section Registry Or Schema Contract`.
 
 ## Deferred
 

@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from . import __version__
-from .models import EvaluationPipelineResult
+from .pipeline_models import EvaluationPipelineResult
 from .status_ledger import build_status_ledger
 
 

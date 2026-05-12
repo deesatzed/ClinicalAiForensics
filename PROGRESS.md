@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, and `P1-004: Normalized Status Ledger` are complete. The next unblocked task is `P1-005: Model Module Split`.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, and `P1-005: Model Module Split` are complete. The next unblocked task is `P1-006: Report Section Registry Or Schema Contract`.
 
 Created the root project-control files:
 
@@ -178,6 +178,40 @@ Guardrails preserved:
 Verification:
 
 - `python -m pytest` passed, 107 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
+- all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/...`.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL.
+
+## P1-005 Completed
+
+Completed `P1-005: Model Module Split`.
+
+Implemented:
+
+- `pdde/model_base.py` for shared Pydantic base types.
+- `pdde/input_models.py` for CDE, domain-pack, explicit mapping, safety-gate input, and prior input contracts.
+- `pdde/component_models.py` for deterministic component-result models and status-ledger models.
+- `pdde/pipeline_models.py` for `EvaluationPipelineResult`.
+- `pdde/legacy_models.py` for legacy/planned profile and log contracts kept for compatibility.
+- `pdde/models.py` as a compatibility re-export facade with an explicit migration note.
+- internal runtime imports now use focused model modules instead of the compatibility facade.
+
+Test updates:
+
+- added `tests/test_model_modules.py` to cover focused module imports, `pdde.models` re-export compatibility, and pipeline serialization after the split.
+
+Guardrails preserved:
+
+- no runtime clinical logic, CLI behavior, final recommendations, AI/LLM judgment, hidden scoring, thresholds, utilities, formulas, PHI handling, provenance semantics, fixtures, or generated-artifact policy were changed.
+
+Verification:
+
+- `python -m pytest` passed, 110 tests.
 - `python -m py_compile pdde/*.py` passed.
 - `python -m pdde --help` passed.
 - `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.

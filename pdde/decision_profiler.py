@@ -12,15 +12,11 @@ from dataclasses import dataclass
 
 from pydantic import ValidationError
 
-from .loader_errors import validation_summary
-from .models import (
-    ClinicalDecisionEpisode,
-    DecisionOption,
+from .component_models import (
     DecisionProfileEvaluation,
     DecisionProfileEvaluationSet,
     DecisionProfileEvaluationStatus,
     DecisionProfileInputSummary,
-    DomainPack,
     MonteCarloPriorSimulation,
     MonteCarloSimulationResult,
     PriorResolution,
@@ -30,6 +26,8 @@ from .models import (
     UncertaintyBudgetEvaluationSet,
     ValueOfInformationEvaluationSet,
 )
+from .input_models import ClinicalDecisionEpisode, DecisionOption, DomainPack
+from .loader_errors import validation_summary
 
 
 _PROFILE_SCHEMA_SOURCE = "pdde_v0_3_first_principles_final/schemas/decision_profile.schema.json"

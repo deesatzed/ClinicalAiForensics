@@ -8,9 +8,7 @@ weights or clinical thresholds.
 
 from __future__ import annotations
 
-from .models import (
-    ClinicalDecisionEpisode,
-    DomainPack,
+from .component_models import (
     MonteCarloSimulationResult,
     PriorResolutionSet,
     SafetyGateEvaluationSet,
@@ -18,6 +16,7 @@ from .models import (
     UncertaintyBudgetEvaluationSet,
     ValueOfInformationEvaluationSet,
 )
+from .input_models import ClinicalDecisionEpisode, DomainPack
 from .value_of_information import evaluate_value_of_information
 
 
