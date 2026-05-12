@@ -14,6 +14,9 @@ Importing from ``pdde.models`` remains supported for backwards compatibility.
 from __future__ import annotations
 
 from .component_models import (
+    AIAnswerClaimStatus,
+    AIAnswerMappedClaim,
+    AIAnswerMappingResult,
     DecisionProfileEvaluation,
     DecisionProfileEvaluationSet,
     DecisionProfileEvaluationStatus,
@@ -71,6 +74,9 @@ from .pipeline_models import EvaluationPipelineResult
 
 
 __all__ = [
+    "AIAnswerClaimStatus",
+    "AIAnswerMappedClaim",
+    "AIAnswerMappingResult",
     "ClinicalDecisionEpisode",
     "DecisionCategory",
     "DecisionOption",

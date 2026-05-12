@@ -52,6 +52,47 @@ class SafetyGateEvaluationSet(StrictModel):
         return hard_stops
 
 
+AIAnswerClaimStatus = Literal["mapped", "unmapped", "unsupported"]
+
+
+class AIAnswerMappedClaim(StrictModel):
+    claim_id: NonEmptyString
+    status: AIAnswerClaimStatus
+    reason: NonEmptyString
+    source: NonEmptyString
+    claim_type: NonEmptyString | None = None
+    matched_terms: list[NonEmptyString] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def require_claim_type_for_mapped_claims(self) -> Self:
+        if self.status == "mapped" and self.claim_type is None:
+            raise ValueError("mapped AI-answer claims require claim_type")
+        if self.status != "mapped" and self.claim_type is not None:
+            raise ValueError("unmapped or unsupported AI-answer claims cannot contain claim_type")
+        return self
+
+
+class AIAnswerMappingResult(StrictModel):
+    cde_id: NonEmptyString
+    domain_pack_id: NonEmptyString
+    source: NonEmptyString
+    claims: list[AIAnswerMappedClaim] = Field(default_factory=list)
+
+    def mapped_claim_types(self) -> list[str]:
+        return [
+            claim.claim_type
+            for claim in self.claims
+            if claim.status == "mapped" and claim.claim_type is not None
+        ]
+
+    def source_by_claim_type(self) -> dict[str, str]:
+        return {
+            claim.claim_type: claim.source
+            for claim in self.claims
+            if claim.status == "mapped" and claim.claim_type is not None
+        }
+
+
 PriorResolutionStatus = Literal["resolved", "missing", "unsupported", "blocked"]
 
 
@@ -401,6 +442,7 @@ class DecisionProfileEvaluationSet(StrictModel):
 
 
 StatusLedgerComponent = Literal[
+    "ai_answer_mapping",
     "decision_option",
     "domain_mapping",
     "safety_gate",
@@ -431,6 +473,7 @@ class StatusLedgerRow(StrictModel):
             "draft",
             "missing",
             "triggered",
+            "unmapped",
             "unsupported",
         }
 

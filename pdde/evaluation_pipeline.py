@@ -9,7 +9,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from .ai_answer_mapping import empty_ai_answer_mapping
 from .cde_loader import load_cde
+from .component_models import AIAnswerMappingResult
 from .decision_profiler import assemble_decision_profiles
 from .domain_pack_loader import load_domain_pack
 from .input_models import ClinicalDecisionEpisode, DomainPack
@@ -51,10 +53,12 @@ def evaluate_cde(
     random_seed: int | None = None,
     cde_source: str | None = None,
     domain_pack_source: str | None = None,
+    ai_answer_mapping: AIAnswerMappingResult | None = None,
 ) -> EvaluationPipelineResult:
     """Run already-built deterministic components over typed inputs."""
 
-    safety_gates = evaluate_safety_gates(cde, domain_pack)
+    mapped_answer = ai_answer_mapping or empty_ai_answer_mapping(cde, domain_pack)
+    safety_gates = evaluate_safety_gates(cde, domain_pack, ai_answer_mapping=mapped_answer)
     prior_resolutions = resolve_priors(domain_pack, cde=cde)
     simulation = simulate_resolved_priors(
         prior_resolutions,
@@ -92,6 +96,7 @@ def evaluate_cde(
         random_seed=random_seed,
         cde=cde,
         domain_pack=domain_pack,
+        ai_answer_mapping=mapped_answer,
         safety_gates=safety_gates,
         prior_resolutions=prior_resolutions,
         simulation=simulation,

@@ -7,6 +7,7 @@ from typing import Literal, Self
 from pydantic import Field, model_validator
 
 from .component_models import (
+    AIAnswerMappingResult,
     DecisionProfileEvaluationSet,
     LocalOverlayVerificationSet,
     MonteCarloSimulationResult,
@@ -27,6 +28,7 @@ class EvaluationPipelineResult(StrictModel):
     random_seed: int | None = None
     cde: ClinicalDecisionEpisode
     domain_pack: DomainPack
+    ai_answer_mapping: AIAnswerMappingResult
     safety_gates: SafetyGateEvaluationSet
     prior_resolutions: PriorResolutionSet
     simulation: MonteCarloSimulationResult
@@ -40,6 +42,11 @@ class EvaluationPipelineResult(StrictModel):
         cde_id = self.cde.cde_id
         domain_pack_id = self.domain_pack.domain_pack_id
         component_pairs = [
+            (
+                self.ai_answer_mapping.cde_id,
+                self.ai_answer_mapping.domain_pack_id,
+                "ai_answer_mapping",
+            ),
             (self.safety_gates.cde_id, self.safety_gates.domain_pack_id, "safety_gates"),
             (self.prior_resolutions.cde_id, self.prior_resolutions.domain_pack_id, "prior_resolutions"),
             (self.simulation.cde_id, self.simulation.domain_pack_id, "simulation"),

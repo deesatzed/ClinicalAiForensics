@@ -102,7 +102,7 @@ What to look for:
 Reviewer checks:
 
 - `oxygen_requirement` remains visible as missing.
-- wrong-indication claim gates remain visible as unsupported because AI answer mapping is deferred.
+- wrong-indication claim gates remain visible as unsupported in the direct CLI path because no explicit mapped AI-answer claim input is supplied.
 - local overlay verification remains visible as draft/deferred unless owner/source/review metadata is explicit.
 - Monte Carlo summaries are prior-level only.
 - the report says it is not clinically validated and not a final clinical recommendation.
@@ -110,7 +110,7 @@ Reviewer checks:
 
 Safe explanation:
 
-> The report preserves explicit evidence, missing data, unsupported gates, deferred items, draft priors, and calibration status. It does not make a clinical recommendation.
+> The report preserves explicit evidence, missing data, unsupported gates, deferred items, draft priors, and calibration status. It does not make a clinical recommendation. AI-answer claim mapping is available only as a typed API boundary, not as CLI free-text judgment.
 
 ### 4. Generate The Report File
 
@@ -186,11 +186,11 @@ python -m pytest
 
 What to look for:
 
-- `124 passed`
+- `131 passed`
 
 Safe explanation:
 
-> The test suite checks deterministic behavior, validation failures, missingness, hard gates, local overlay verification, provenance, CLI behavior, and report guardrails. Passing tests do not imply clinical validity.
+> The test suite checks deterministic behavior, validation failures, missingness, hard gates, API-only AI-answer claim mapping, local overlay verification, provenance, CLI behavior, and report guardrails. Passing tests do not imply clinical validity.
 
 ## Optional Scenario Fixture Check
 
@@ -241,6 +241,7 @@ Avoid these claims:
 - "This is validated risk."
 - "This is an AI clinical judgment."
 - "This ranks the options."
+- "The CLI grades free-text AI answers."
 - "Draft local workflow rules are active."
 - "This can run on PHI or production data."
 

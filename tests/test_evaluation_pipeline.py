@@ -46,6 +46,8 @@ def test_successful_end_to_end_pipeline_run_uses_canonical_fixtures() -> None:
     assert result.random_seed == 23
     assert result.cde_source == str(V03_CDE)
     assert result.domain_pack_source == str(V03_DOMAIN)
+    assert result.ai_answer_mapping.source == "ai_answer_mapping:not_provided"
+    assert result.ai_answer_mapping.claims == []
 
 
 def test_pipeline_preserves_component_outputs_visibly() -> None:
@@ -128,6 +130,7 @@ def test_pipeline_result_serializes_with_all_major_components() -> None:
     serialized = json.loads(result.model_dump_json())
 
     assert serialized["safety_gates"]["evaluations"]
+    assert serialized["ai_answer_mapping"]["claims"] == []
     assert serialized["prior_resolutions"]["resolutions"]
     assert serialized["simulation"]["prior_simulations"][0]["sample_count"] == 5
     assert serialized["value_of_information"]["items"]

@@ -11,6 +11,7 @@ def test_models_facade_reexports_focused_model_classes() -> None:
     assert models.ClinicalDecisionEpisode is input_models.ClinicalDecisionEpisode
     assert models.DomainPack is input_models.DomainPack
     assert models.Prior is input_models.Prior
+    assert models.AIAnswerMappingResult is component_models.AIAnswerMappingResult
     assert models.SafetyGateEvaluation is component_models.SafetyGateEvaluation
     assert models.LocalOverlayVerificationSet is component_models.LocalOverlayVerificationSet
     assert models.StatusLedger is component_models.StatusLedger
@@ -34,6 +35,7 @@ def test_pipeline_result_serialization_surface_survives_module_split() -> None:
 
     assert isinstance(result, pipeline_models.EvaluationPipelineResult)
     assert isinstance(result.cde, input_models.ClinicalDecisionEpisode)
+    assert isinstance(result.ai_answer_mapping, component_models.AIAnswerMappingResult)
     assert isinstance(result.safety_gates, component_models.SafetyGateEvaluationSet)
     assert isinstance(result.local_overlay, component_models.LocalOverlayVerificationSet)
 
@@ -41,3 +43,4 @@ def test_pipeline_result_serialization_surface_survives_module_split() -> None:
     assert serialized["workflow_mode"] == "direct_cde_simulation"
     assert serialized["cde"]["cde_id"] == "hf_cde_stable"
     assert serialized["domain_pack"]["domain_pack_id"] == "hf_ed_discharge_v0_3"
+    assert serialized["ai_answer_mapping"]["claims"] == []

@@ -11,6 +11,7 @@ import re
 from typing import Any, Literal
 
 from .component_models import (
+    AIAnswerMappingResult,
     SafetyGateEvaluation,
     SafetyGateEvaluationSet,
 )
@@ -47,16 +48,32 @@ class UnsupportedSafetyGate(ValueError):
 def evaluate_safety_gates(
     cde: ClinicalDecisionEpisode,
     domain_pack: DomainPack,
+    *,
+    ai_answer_mapping: AIAnswerMappingResult | None = None,
 ) -> SafetyGateEvaluationSet:
     """Evaluate deterministic hard gates and return typed result records."""
 
+    _validate_ai_answer_mapping_ids(cde, domain_pack, ai_answer_mapping)
     option_ids = {option.id for option in domain_pack.decision_options}
     gate_targets = domain_pack.mappings.safety_gate_target_by_group()
+    mapped_claim_types = (
+        set(ai_answer_mapping.mapped_claim_types()) if ai_answer_mapping is not None else set()
+    )
+    claim_sources = ai_answer_mapping.source_by_claim_type() if ai_answer_mapping is not None else {}
     evaluations: list[SafetyGateEvaluation] = []
 
     for gate_group, gates in domain_pack.hard_gates.items():
         if gate_group == "wrong_indication_blocks":
-            evaluations.extend(_unsupported_claim_gate(domain_pack, gate_group, gate) for gate in gates)
+            evaluations.extend(
+                _evaluate_claim_gate(
+                    domain_pack,
+                    gate_group,
+                    gate,
+                    mapped_claim_types=mapped_claim_types,
+                    claim_sources=claim_sources,
+                )
+                for gate in gates
+            )
             continue
 
         target = gate_targets.get(gate_group)
@@ -109,6 +126,19 @@ def evaluate_safety_gates(
         domain_pack_id=domain_pack.domain_pack_id,
         evaluations=evaluations,
     )
+
+
+def _validate_ai_answer_mapping_ids(
+    cde: ClinicalDecisionEpisode,
+    domain_pack: DomainPack,
+    ai_answer_mapping: AIAnswerMappingResult | None,
+) -> None:
+    if ai_answer_mapping is None:
+        return
+    if ai_answer_mapping.cde_id != cde.cde_id:
+        raise ValueError("AI-answer mapping cde_id does not match cde.cde_id")
+    if ai_answer_mapping.domain_pack_id != domain_pack.domain_pack_id:
+        raise ValueError("AI-answer mapping domain_pack_id does not match domain_pack.domain_pack_id")
 
 
 def _evaluate_variable_gate(
@@ -263,6 +293,32 @@ def _unsupported_claim_gate(
         reason=gate.reason,
         evidence=f"claim_type gate {claim_type!r} requires mapped claim types; AI answer mapping is deferred",
         source=_gate_source(domain_pack, gate_group),
+        claim_type=gate.claim_type,
+    )
+
+
+def _evaluate_claim_gate(
+    domain_pack: DomainPack,
+    gate_group: str,
+    gate: SafetyGate,
+    *,
+    mapped_claim_types: set[str],
+    claim_sources: dict[str, str],
+) -> SafetyGateEvaluation:
+    if gate.claim_type is None:
+        return _unsupported_claim_gate(domain_pack, gate_group, gate)
+    if gate.claim_type not in mapped_claim_types:
+        return _unsupported_claim_gate(domain_pack, gate_group, gate)
+    return SafetyGateEvaluation(
+        gate_group=gate_group,
+        status="blocked",
+        reason=gate.reason,
+        evidence=(
+            f"mapped AI-answer claim_type {gate.claim_type!r} was present; "
+            "safety gate consumed structured claim metadata only"
+        ),
+        source=_gate_source(domain_pack, gate_group),
+        mapping_source=claim_sources.get(gate.claim_type),
         claim_type=gate.claim_type,
     )
 

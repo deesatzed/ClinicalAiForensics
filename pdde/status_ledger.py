@@ -29,6 +29,7 @@ def build_status_ledger(result: EvaluationPipelineResult) -> StatusLedger:
 
     rows: list[StatusLedgerRow] = []
     rows.extend(_input_summary_rows(result))
+    rows.extend(_ai_answer_mapping_rows(result))
     rows.extend(_safety_gate_rows(result))
     rows.extend(_prior_resolution_rows(result))
     rows.extend(_monte_carlo_rows(result))
@@ -57,6 +58,21 @@ def _input_summary_rows(result: EvaluationPipelineResult) -> list[StatusLedgerRo
         )
         for summary in result.decision_profiles.input_summaries
         if summary.input_type in _INPUT_COMPONENTS
+    ]
+
+
+def _ai_answer_mapping_rows(result: EvaluationPipelineResult) -> list[StatusLedgerRow]:
+    return [
+        StatusLedgerRow(
+            component="ai_answer_mapping",
+            identifier=claim.claim_id,
+            status=claim.status,
+            reason=claim.reason,
+            source=claim.source,
+            provenance_references=_unique([claim.source]),
+            related_entity_ids=_related_entities(claim_types=[claim.claim_type]),
+        )
+        for claim in result.ai_answer_mapping.claims
     ]
 
 

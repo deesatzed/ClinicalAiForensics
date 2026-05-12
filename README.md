@@ -14,6 +14,7 @@ Phase 0 is local, CLI-only, synthetic, advisory-only, uncalibrated, and not clin
 - Provides inspectable synthetic CDE scenario fixtures under `examples/`.
 - Validates explicit domain-pack mappings for safety-gate targets and prior-to-option links.
 - Evaluates deterministic safety gates before probabilistic sampling.
+- Provides an API-only deterministic AI-answer claim mapping boundary for explicit source-backed prohibited-claim patterns.
 - Resolves explicit priors from the domain pack while preserving provenance.
 - Samples explicit beta priors with deterministic seeding.
 - Evaluates explicit uncertainty-budget and value-of-information definitions.
@@ -32,7 +33,8 @@ Phase 0 is local, CLI-only, synthetic, advisory-only, uncalibrated, and not clin
 - No PHI storage.
 - No production deployment.
 - No EHR integration, auth, UI, API service, PDF export, or production database.
-- No AI answer extraction or claim mapping in the Phase 0 runtime path.
+- No LLM answer extraction, free-text clinical judgment, answer grading, or CLI AI-answer mapping.
+- No free-text answer content directly modifying priors, thresholds, gates, or recommendations.
 - No active local operational overlay rules without explicit owner/source/review metadata.
 - No validated risk, outcome claim, or calibration claim.
 
@@ -169,6 +171,7 @@ CLI
   -> strict CDE loader
   -> strict domain-pack loader
   -> explicit domain-pack mappings
+  -> optional typed AI-answer claim mapping boundary
   -> safety gate engine
   -> prior resolver
   -> Monte Carlo prior sampler
@@ -189,6 +192,7 @@ CLI
 | `pdde/domain_pack_loader.py` | Reads and validates domain-pack YAML. |
 | `pdde/model_base.py`, `pdde/input_models.py`, `pdde/component_models.py`, `pdde/pipeline_models.py`, `pdde/legacy_models.py` | Focused Pydantic data contracts for inputs, explicit domain-pack mappings, component results, pipeline results, and legacy report/log models. |
 | `pdde/models.py` | Backwards-compatible re-export facade for model imports. |
+| `pdde/ai_answer_mapping.py` | API-only deterministic mapper for explicit source-backed AI-answer prohibited-claim patterns; stores structured claim metadata, not raw answers. |
 | `pdde/safety_gate_engine.py` | Evaluates explicit deterministic safety gates using domain-pack gate-target mappings. |
 | `pdde/prior_resolver.py` | Resolves explicit allowed priors and blocks unsupported prior classes. |
 | `pdde/monte_carlo_engine.py` | Samples explicit resolved beta priors with deterministic seeds. |
@@ -211,6 +215,7 @@ CLI
 - Favorable prior samples cannot override a hard safety gate.
 - Missing inputs remain visible as missing, actionable, or deferred; they do not increase certainty.
 - Unsupported gates and deferred claim-type gates remain visible rather than silently passing.
+- AI-answer mapping is API-only, deterministic, source-backed, and separate from direct CDE simulation; raw answer text is not stored in pipeline results, reports, or logs.
 - LLM-unverified priors are blocked from active direct simulation.
 - Monte Carlo is prior-level only and does not produce option rankings.
 - Local overlay rules remain draft, deferred, missing, or unsupported unless explicit verification metadata is complete; even verified metadata does not create local clinical logic.
@@ -220,7 +225,7 @@ CLI
 
 ## Test Status
 
-Current test status: 124 passing tests across 17 test files.
+Current test status: 131 passing tests across 18 test files.
 
 Run:
 
@@ -228,7 +233,7 @@ Run:
 python -m pytest
 ```
 
-The suite covers model validation, loaders, deterministic safety gates, prior resolution, Monte Carlo reproducibility, uncertainty/VOI evaluation, local overlay verification, Decision Profiler assembly, evaluation pipeline, status-ledger projection, report-contract guardrails, report rendering, CLI behavior, provenance logging, and Phase 0 acceptance workflows.
+The suite covers model validation, loaders, deterministic safety gates, explicit AI-answer claim mapping, prior resolution, Monte Carlo reproducibility, uncertainty/VOI evaluation, local overlay verification, Decision Profiler assembly, evaluation pipeline, status-ledger projection, report-contract guardrails, report rendering, CLI behavior, provenance logging, and Phase 0 acceptance workflows.
 
 ## Phase 1
 

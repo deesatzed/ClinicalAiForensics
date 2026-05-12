@@ -756,7 +756,7 @@ Verification:
 
 ### P1-008: AI Answer Mapping Interface
 
-Status: deferred
+Status: complete
 
 Scope:
 
@@ -769,6 +769,24 @@ Acceptance:
 - Mapped claims feed structured deterministic inputs.
 - Unsupported/unmapped claims remain visible.
 - No final clinical recommendation or answer grade is produced as the primary artifact.
+
+Verification:
+
+- `pdde/ai_answer_mapping.py` maps only explicit source-backed patterns into typed `AIAnswerMappedClaim` records.
+- the source-material sotalol-as-HF-beta-blocker and GLP-1-for-HF-admission-prevention examples are covered by tests.
+- `wrong_indication_blocks` safety gates evaluate mapped structured claim types only when an `AIAnswerMappingResult` is explicitly supplied.
+- unmapped and unsupported claim records remain visible in pipeline results, the status ledger, reports, and provenance records.
+- raw AI answer text is not stored in pipeline results, reports, or provenance JSONL records.
+- no CLI AI-answer mapping, LLM extraction, answer grading, final recommendation, hidden scoring, threshold, utility, prior, simulation, or clinical formula was added.
+- `python -m pytest` passed, 131 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL.
 
 ### P1-009: Citation/Evidence Audit Handoff
 
@@ -801,7 +819,7 @@ Acceptance:
 
 ## Queue State
 
-Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, and `P1-007` are complete. `P1-008: AI Answer Mapping Interface` remains deferred until explicit authorization exists for AI answer mapping.
+Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, and `P1-008` are complete. `P1-009: Citation/Evidence Audit Handoff` remains deferred.
 
 ## Deferred
 
@@ -818,7 +836,7 @@ Scope:
 
 Reason Deferred:
 
-- v0.3 requires direct CDE simulation to work first.
+- direct CDE simulation now works and `P1-008` implements the typed deterministic mapping boundary. Broader claim extraction, omission/overstatement analysis, and answer grading remain deferred until explicitly scoped.
 
 ### TQ-D002: Local Overlay Verification
 

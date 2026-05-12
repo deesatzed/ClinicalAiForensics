@@ -80,6 +80,29 @@ def _decision_episode_summary(result: EvaluationPipelineResult) -> str:
 
 
 def _safety_gate_results(result: EvaluationPipelineResult) -> str:
+    mapping_context = ""
+    if result.ai_answer_mapping.claims:
+        mapping_rows = [
+            (
+                claim.claim_id,
+                claim.status,
+                claim.claim_type or "n/a",
+                claim.matched_terms or "none",
+                claim.source,
+                claim.reason,
+            )
+            for claim in result.ai_answer_mapping.claims
+        ]
+        mapping_context = (
+            "AI-answer mapping inputs are structured deterministic claim metadata only. "
+            "Raw answer text is not printed and no answer grade is computed.\n\n"
+            + _table(
+                ["Claim ID", "Status", "Claim type", "Matched terms", "Source", "Reason"],
+                mapping_rows,
+            )
+            + "\n\n"
+        )
+
     rows = [
         (
             evaluation.gate_group,
@@ -91,7 +114,7 @@ def _safety_gate_results(result: EvaluationPipelineResult) -> str:
         )
         for evaluation in result.safety_gates.evaluations
     ]
-    return "## Safety Gate Results\n\n" + _table(
+    return "## Safety Gate Results\n\n" + mapping_context + _table(
         ["Gate group", "Target", "Variable", "Condition", "Status", "Evidence"],
         rows,
     )
@@ -395,6 +418,7 @@ def _provenance_references(result: EvaluationPipelineResult) -> str:
         [
             result.cde_source,
             result.domain_pack_source,
+            *[claim.source for claim in result.ai_answer_mapping.claims],
             *[item.source for item in result.prior_resolutions.resolutions],
             *[item.source for item in result.simulation.prior_simulations],
             *[item.source for item in result.value_of_information.items],

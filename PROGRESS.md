@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, and `P1-007: Local Overlay Verification Contract` are complete. `P1-008: AI Answer Mapping Interface` remains deferred until explicitly authorized.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, and `P1-008: AI Answer Mapping Interface` are complete. `P1-009: Citation/Evidence Audit Handoff` remains deferred.
 
 Created the root project-control files:
 
@@ -282,6 +282,40 @@ Verification:
 - all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
 - all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/...`.
 - `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the final verification append it contained 821 JSONL records.
+
+## P1-008 Completed
+
+Completed `P1-008: AI Answer Mapping Interface`.
+
+Implemented:
+
+- `pdde/ai_answer_mapping.py` as an API-only deterministic mapper for explicit source-backed AI-answer prohibited-claim patterns.
+- typed `AIAnswerMappedClaim` and `AIAnswerMappingResult` models in `pdde/component_models.py`.
+- `pdde/evaluation_pipeline.py` optional `ai_answer_mapping` input that remains separate from direct CDE simulation.
+- `pdde/safety_gate_engine.py` support for evaluating `wrong_indication_blocks` only when a structured mapped claim type is explicitly supplied.
+- `pdde/status_ledger.py`, `pdde/report_renderer.py`, and `pdde/provenance_logger.py` integration so mapped, unmapped, and unsupported claim statuses remain visible.
+- `tests/test_ai_answer_mapping.py` covering the source-material sotalol and GLP-1 adversarial examples, unmapped text, unsupported claim types, report visibility, provenance visibility, and raw-answer redaction.
+- `README.md`, `DEMO.md`, `DECISIONS.md`, `TASK_QUEUE.md`, and `REPO_MAP.md` updates for reviewer-facing and project-control visibility.
+
+Guardrails preserved:
+
+- no CLI AI-answer mapping, LLM extraction, AI/LLM clinical judgment, answer grading, final recommendations, hidden scoring, thresholds, utilities, priors, simulations, or clinical formulas were added.
+- free-text answer content does not directly modify safety gates, priors, thresholds, recommendations, or direct CDE simulations.
+- pipeline results, reports, and provenance logs store structured claim metadata only and do not store raw AI answer text.
+- unmapped or unsupported AI-answer claims remain visible rather than silently passing.
+
+Verification:
+
+- focused P1-008 tests passed: `python -m pytest tests/test_ai_answer_mapping.py tests/test_safety_gate_engine.py tests/test_evaluation_pipeline.py tests/test_report_renderer.py tests/test_provenance_logger.py tests/test_status_ledger.py tests/test_model_modules.py`, 44 tests.
+- `python -m pytest` passed, 131 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
+- all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/pdde_p1_008_reports/...`.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the final verification append it contained 901 JSONL records.
 
 Created the initial implementation scaffold:
 

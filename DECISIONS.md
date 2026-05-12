@@ -305,3 +305,11 @@ Decision: `P1-007` adds a typed local overlay verification contract and evaluato
 Reason: Local operational workflow assumptions are governance data, not clinical reasoning rules. The canonical fixtures only provide `overlay_status: draft`, and the older local-overlay source material is explicitly unverified. A metadata-only contract prevents draft local pathways from becoming hidden clinical logic while still making the verification gap visible to reviewers.
 
 Impact: Pipeline results, reports, status-ledger rows, and provenance summaries now include local overlay verification state. Reports and logs avoid printing raw local overlay owner/source/review values; logs record presence booleans, statuses, missing fields, and safe source paths. No CLI behavior, final recommendation logic, AI/LLM mapping, hidden scoring, thresholds, utilities, clinical formulas, or active local workflow rules were added.
+
+## D-039: AI Answer Mapping Is A Typed Non-Reasoning Boundary
+
+Decision: `P1-008` adds `pdde/ai_answer_mapping.py` and typed `AIAnswerMappingResult`/`AIAnswerMappedClaim` models as an API-only deterministic boundary for explicit source-backed AI-answer claim patterns. The mapper currently recognizes the source-material sotalol-as-HF-beta-blocker and GLP-1-for-HF-admission-prevention examples, stores structured claim metadata without raw answer text, and lets the existing `wrong_indication_blocks` safety gates consume mapped claim types.
+
+Reason: Phase 1 needed a narrow bridge from answer-derived claims to deterministic gates without reopening hidden clinical inference. The v0.3 and v0.1 source materials explicitly identify these wrong-indication claim types and detection patterns, while also requiring direct CDE simulation to remain separate from AI answer mapping.
+
+Impact: Free-text answers do not directly modify priors, thresholds, safety gates, recommendations, simulations, or reports. Only explicit mapped claim records can activate claim-type gates, and unmapped or unsupported claims remain visible through pipeline results, the status ledger, reports, and provenance records. No CLI AI-answer mapping, LLM extraction, answer grading, final recommendation, hidden scoring, thresholds, utilities, or new clinical formulas were added.
