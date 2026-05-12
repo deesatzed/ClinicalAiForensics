@@ -1,0 +1,60 @@
+{
+  "case_id": "HF-001-stable-postdiuresis",
+  "schema_version": "pdde-case-0.1",
+  "created": "2026-05-11",
+  "domain": "emergency_medicine_heart_failure",
+  "network_id": "hf_ed_discharge_v0",
+
+  "case_description": "62-year-old with known HFrEF (LVEF 32%) presented with progressive dyspnea over 5 days, mild lower extremity edema, weight gain 6 lbs. Received IV furosemide 80mg in ED. Now improved subjectively, ambulating without distress, satting 96% on RA. Has access to outpatient pharmacy and reliable transportation. Established HF clinic at Temple, can be seen within 5 days.",
+
+  "patient_context": {
+    "age": 62,
+    "ef_category": "HFrEF",
+    "lvef_percent": 32,
+    "current_medications": {
+      "loop_diuretic": {
+        "drug": "furosemide",
+        "dose_mg_per_day": 40,
+        "route": "oral"
+      },
+      "ace_arb_arni": {
+        "drug": "sacubitril_valsartan",
+        "dose_mg_bid": 49
+      },
+      "beta_blocker": {
+        "drug": "metoprolol_succinate",
+        "dose_mg_per_day": 100
+      },
+      "mra": null,
+      "sglt2i": null
+    },
+    "post_diuresis_vitals": {
+      "sbp": 118,
+      "dbp": 72,
+      "hr": 78,
+      "spo2": 96
+    },
+    "labs": {
+      "egfr": 45,
+      "creatinine": 1.5,
+      "potassium": 4.2,
+      "sodium": 138,
+      "bun": 24,
+      "glucose": 105
+    },
+    "volume_status": "improved",
+    "dka_risk": "low",
+    "oral_intake": "adequate",
+    "follow_up_available": true,
+    "medication_access": "verified",
+    "patient_reliability": "high"
+  },
+
+  "clinical_question": "For this patient with known HFrEF who improved after ED diuresis and is being considered for discharge, what medication ensemble is most defensible to prevent near-term worsening or readmission?",
+
+  "ai_answer_to_evaluate": null,
+
+  "workflow_mode": "B_decision_simulation",
+
+  "notes": "This is a synthetic case for v0 testing. No PHI. Generated 2026-05-11 for Phase 0 acceptance test."
+}

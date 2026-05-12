@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Clinical Decision Episode",
+  "type": "object",
+  "required": [
+    "cde_id",
+    "domain",
+    "decision_moment",
+    "patient_state",
+    "candidate_options"
+  ],
+  "properties": {
+    "cde_id": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "decision_moment": {
+      "type": "string"
+    },
+    "case_text": {
+      "type": "string"
+    },
+    "patient_state": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "candidate_options": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source_recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "local_context": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "outcome_tracking": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

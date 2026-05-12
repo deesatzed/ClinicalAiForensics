@@ -1,0 +1,39 @@
+{
+  "case_id": "ADV-UNCERTAIN-001",
+  "schema_version": "pdde-case-0.1",
+  "created": "2026-05-11",
+  "domain": "emergency_medicine_heart_failure",
+  "network_id": "hf_ed_discharge_v0",
+  "case_description": "Adversarial test case: minimal data available. Patient with new HF symptoms, no labs, no echo, no medication history, no follow-up availability confirmed. Tests whether system widens intervals appropriately and avoids confident recommendation.",
+  "patient_context": {
+    "age": 58,
+    "ef_category": null,
+    "lvef_percent": null,
+    "current_medications": {
+      "loop_diuretic": null,
+      "ace_arb_arni": null,
+      "beta_blocker": null,
+      "mra": null,
+      "sglt2i": null
+    },
+    "post_diuresis_vitals": {"sbp": null, "dbp": null, "hr": null, "spo2": null},
+    "labs": {
+      "egfr": null,
+      "creatinine": null,
+      "potassium": null,
+      "sodium": null,
+      "bun": null,
+      "glucose": null
+    },
+    "volume_status": null,
+    "dka_risk": null,
+    "oral_intake": null,
+    "follow_up_available": null,
+    "medication_access": null,
+    "patient_reliability": null
+  },
+  "clinical_question": "Patient with shortness of breath, suspected HF. What is the optimal discharge plan?",
+  "ai_answer_to_evaluate": null,
+  "workflow_mode": "B_decision_simulation",
+  "notes": "Adversarial test category 3: appropriate uncertainty. Expected behavior: all options show wide credible intervals, needs_more_data category probability >40% for top option, missing-variables list is extensive."
+}

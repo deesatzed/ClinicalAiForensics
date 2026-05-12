@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Generated Phase 0 outputs
+logs/*.jsonl
+reports/*.md
+
+# Local machine files
+.DS_Store
+

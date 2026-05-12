@@ -1,0 +1,441 @@
+# =============================================================================
+# Probabilistic Defensible Decision Engine (PDDE)
+# Belief Network: ED Discharge for HFrEF/HFmrEF after Successful Diuresis
+# =============================================================================
+# This YAML is a v0 modeling scaffold, NOT clinical truth.
+# Every prior carries a confidence_class. Anything labeled
+# "moderate_unverified" or weaker MUST be elicited formally before
+# clinical use.
+# =============================================================================
+
+network_id: hf_ed_discharge_v0
+domain: emergency_medicine_heart_failure
+version: 0.1
+created: 2026-05-11
+schema_version: pdde-belief-network-0.1
+
+# -----------------------------------------------------------------------------
+# CLINICAL CONTENT GOVERNANCE
+# -----------------------------------------------------------------------------
+clinical_governance:
+  clinical_owner: "Wayne A. Satz, MD (interim; transfer to ED/Cardiology committee)"
+  evidence_owner: "TBD (proposed: Temple Clinical Informatics + Cardiology)"
+  local_workflow_owner: "TBD (proposed: ED leadership + HF clinic liaison + Pharmacy)"
+  review_cadence_days: 90
+  next_review_due: 2026-08-11
+  change_control: "All YAML changes via PR with rationale; minor=patch, node-change=minor, structure-change=major"
+  retirement_criteria: "Prior is retired if (a) superseded guideline, (b) trial overturns, (c) calibration ECE > 0.20 for 2 quarters"
+  disagreement_handling: "Expert disagreement WIDENS the distribution; does not force consensus"
+  override_policy: "Named local leadership may override with documented rationale; override logged"
+
+# -----------------------------------------------------------------------------
+# PROVENANCE CLASSES — confidence in the prior, not in the answer
+# -----------------------------------------------------------------------------
+provenance_classes:
+  guideline_mapped:
+    description: "Derived from guideline Class/LOE per defined mapping rule"
+    confidence: high
+  trial_parsed:
+    description: "Parameters fit from published RCT confidence intervals"
+    confidence: high
+  panel_elicited:
+    description: "Formal Delphi-style elicitation from named clinician panel"
+    confidence: high
+  local_outcome:
+    description: "Derived from local institutional outcome data, calibrated"
+    confidence: high
+  panel_elicited_pending:
+    description: "Placeholder pending formal panel elicitation"
+    confidence: moderate_unverified
+  llm_unverified:
+    description: "LLM-generated estimate; lowest confidence; requires calibration before clinical use"
+    confidence: low_unverified
+
+# -----------------------------------------------------------------------------
+# GUIDELINE-CLASS MAPPING RULES (for guideline_mapped provenance)
+# -----------------------------------------------------------------------------
+# Class I LOE A   → beta(20, 2)   mean=0.91
+# Class I LOE B   → beta(16, 3)   mean=0.84
+# Class IIa LOE A → beta(14, 5)   mean=0.74
+# Class IIa LOE B → beta(11, 6)   mean=0.65
+# Class IIb       → beta(8, 10)   mean=0.44
+# Class III       → beta(2, 18)   mean=0.10
+# Unrated         → beta(5, 10)   mean=0.33 (wider)
+guideline_mapping:
+  class_I_LOE_A: { alpha: 20, beta: 2 }
+  class_I_LOE_B: { alpha: 16, beta: 3 }
+  class_IIa_LOE_A: { alpha: 14, beta: 5 }
+  class_IIa_LOE_B: { alpha: 11, beta: 6 }
+  class_IIb: { alpha: 8, beta: 10 }
+  class_III: { alpha: 2, beta: 18 }
+  unrated: { alpha: 5, beta: 10 }
+
+# -----------------------------------------------------------------------------
+# WORKFLOW MODES
+# -----------------------------------------------------------------------------
+workflow_modes:
+  - id: A
+    name: answer_adjudication
+    description: Paste an AI clinical answer; system extracts claims and produces Decision Fitness Report
+  - id: B
+    name: decision_simulation
+    description: Provide case facts; system simulates and ranks defensible decision options without an AI answer to evaluate
+
+# -----------------------------------------------------------------------------
+# DECISION OPTIONS
+# -----------------------------------------------------------------------------
+decision_options:
+  - id: admit_or_observe
+    label: Admit to telemetry or observation
+    requires: []
+  - id: discharge_loop_only
+    label: Discharge with oral loop diuretic plan only
+    requires: [hemodynamic_stable, congestion_improved]
+  - id: discharge_continue_gdmt
+    label: Discharge with loop + continue existing GDMT
+    requires: [hemodynamic_stable, congestion_improved, gdmt_tolerated]
+  - id: discharge_add_sglt2
+    label: Discharge with loop + initiate/continue SGLT2i
+    requires: [hemodynamic_stable, congestion_improved, sglt2_eligible, follow_up_available]
+  - id: discharge_add_mra
+    label: Discharge with loop + initiate/restart MRA
+    requires: [hemodynamic_stable, congestion_improved, mra_eligible, lab_followup_available]
+  - id: discharge_urgent_followup
+    label: Discharge with urgent HF follow-up, no new disease-modifying med
+    requires: [hemodynamic_stable, congestion_improved, follow_up_available]
+
+# -----------------------------------------------------------------------------
+# PROHIBITED RECOMMENDATIONS (system flags these in workflow A)
+# -----------------------------------------------------------------------------
+prohibited_recommendations:
+  - id: sotalol_as_hf_bb
+    description: Sotalol presented as HF beta-blocker
+    rationale: "Class III antiarrhythmic; proarrhythmic risk; not HF GDMT"
+    severity: unsafe_wrong_indication
+    detection_pattern: "sotalol AND (HF OR HFrEF OR HFmrEF) AND (beta blocker OR GDMT OR pillar)"
+  - id: glp1_hf_admission_prevention
+    description: GLP-1 RA for HFrEF/HFmrEF admission prevention
+    rationale: "No HF outcome benefit in HFrEF; FIGHT trial harm signal"
+    severity: unsupported
+    detection_pattern: "(liraglutide OR semaglutide OR tirzepatide OR GLP-1) AND (HFrEF OR HFmrEF) AND (admission OR readmission OR prevent OR protective)"
+  - id: digoxin_acute_disposition
+    description: Digoxin framed as acute ED disposition-saver
+    rationale: "Class IIb chronic role only; not acute admission-prevention; DECISION 2026 missed primary endpoint"
+    severity: overextended
+    detection_pattern: "digoxin AND (ED disposition OR acute OR bounce-back OR prevent admission)"
+
+# -----------------------------------------------------------------------------
+# BELIEF NETWORK NODES
+# -----------------------------------------------------------------------------
+nodes:
+
+  # ---- INPUT NODE: Evidence applicability per claim type ---------------------
+  evidence_applicability:
+    type: beta
+    description: "P(evidence applies to this population × setting × outcome)"
+    by_claim_type:
+
+      loop_diuretic_plan_after_diuresis:
+        alpha: 16
+        beta: 3
+        provenance_class: guideline_mapped
+        provenance_detail: "Class I; symptom relief after diuresis universally indicated"
+        confidence_class: high
+        last_reviewed: 2026-05-11
+
+      sglt2_ed_discharge_initiation:
+        alpha: 11
+        beta: 6
+        provenance_class: panel_elicited_pending
+        provenance_detail: "Guideline Class I HFrEF + EMPULSE inpatient stabilization; ED-discharge extrapolation"
+        confidence_class: moderate_unverified
+        last_reviewed: null
+        warning: "PLACEHOLDER — requires formal panel elicitation before clinical deployment"
+
+      sglt2_continuation_existing_user:
+        alpha: 16
+        beta: 3
+        provenance_class: guideline_mapped
+        provenance_detail: "Class I HFrEF; continuation in absence of contraindication"
+        confidence_class: high
+        last_reviewed: 2026-05-11
+
+      mra_ed_initiation:
+        alpha: 8
+        beta: 10
+        provenance_class: panel_elicited_pending
+        provenance_detail: "Class I HFrEF chronic; ED initiation requires lab follow-up infrastructure"
+        confidence_class: moderate_unverified
+        last_reviewed: null
+        warning: "PLACEHOLDER — requires formal panel elicitation"
+
+      digoxin_acute_admission_prevention:
+        alpha: 3
+        beta: 15
+        provenance_class: guideline_mapped
+        provenance_detail: "Class IIb chronic role only; DECISION 2026 missed primary"
+        confidence_class: high
+        last_reviewed: 2026-05-11
+        note: "DECISION trial published 2026-05-10 — review at next quarter"
+
+      glp1_hf_prevention:
+        alpha: 2
+        beta: 17
+        provenance_class: guideline_mapped
+        provenance_detail: "No HF outcome evidence in HFrEF; FIGHT trial harm signal"
+        confidence_class: high
+        last_reviewed: 2026-05-11
+
+      sotalol_as_hf_beta_blocker:
+        alpha: 1
+        beta: 19
+        provenance_class: guideline_mapped
+        provenance_detail: "Not an HF beta-blocker; antiarrhythmic with proarrhythmic risk"
+        confidence_class: high
+        last_reviewed: 2026-05-11
+
+      bisoprolol_carvedilol_metoprolol_succinate_continuation:
+        alpha: 18
+        beta: 2
+        provenance_class: guideline_mapped
+        provenance_detail: "Class I HFrEF; continue when compensated, do not uptitrate acutely"
+        confidence_class: high
+        last_reviewed: 2026-05-11
+
+      early_followup_within_7_days:
+        alpha: 16
+        beta: 4
+        provenance_class: trial_parsed
+        provenance_detail: "STRONG-HF; structured early follow-up reduces readmission/mortality"
+        confidence_class: high
+        last_reviewed: 2026-05-11
+
+  # ---- INPUT NODE: Patient eligibility (composite gates) ---------------------
+  patient_eligibility:
+    type: composite_gate
+    description: "P(this patient meets clinical gates for the recommendation)"
+    gates:
+      sbp:
+        action_ready: ">=100"
+        caution: "90-99"
+        avoid: "<90"
+        impact_when_missing: "wide_distribution"
+      egfr:
+        action_ready: ">=25"
+        caution: "20-24"
+        avoid: "<20"
+        impact_when_missing: "wide_distribution"
+      potassium:
+        action_ready: "<=5.0"
+        caution: "5.1-5.4"
+        avoid: ">=5.5"
+        impact_when_missing: "wide_distribution_for_mra_only"
+      volume_status:
+        action_ready: [euvolemic, improved]
+        caution: [mild_residual]
+        avoid: [volume_depleted, severely_congested]
+        impact_when_missing: "wide_distribution"
+      dka_risk:
+        action_ready: [low, none]
+        caution: [moderate]
+        avoid: [active_ketosis, prior_euglycemic_dka, type_1_diabetes]
+        impact_when_missing: "wide_distribution_for_sglt2_only"
+      oral_intake:
+        action_ready: [adequate]
+        caution: [reduced]
+        avoid: [npo, severely_reduced]
+        impact_when_missing: "moderate_distribution"
+
+  # ---- INPUT NODE: Local executability ----------------------------------------
+  local_executability:
+    type: beta
+    description: "P(institution can safely execute this recommendation)"
+    components:
+      - formulary_available
+      - order_workflow_exists
+      - followup_clinic_capacity
+      - lab_monitoring_pathway
+      - medication_access_support
+      - patient_education_materials
+    default:
+      alpha: 12
+      beta: 8
+      provenance_class: llm_unverified
+      confidence_class: low_unverified
+      warning: "PLACEHOLDER — must be replaced by local survey before Phase 1"
+
+  # ---- INPUT NODE: Monitoring feasibility ------------------------------------
+  monitoring_feasibility:
+    type: beta
+    description: "P(required monitoring can occur safely)"
+    components:
+      - bmp_obtainable_within_required_window
+      - callback_or_message_pathway
+      - responsible_clinical_service_identified
+      - patient_contact_reliability
+    default:
+      alpha: 10
+      beta: 10
+      provenance_class: llm_unverified
+      confidence_class: low_unverified
+      warning: "PLACEHOLDER — must be replaced by local pathway audit"
+
+  # ---- INPUT NODE: Harm risk (expected harm decomposition) -------------------
+  harm_risk:
+    type: expected_harm
+    description: "Probability × severity for known harm modes"
+    components:
+      volume_depletion:
+        probability_range: [0.02, 0.10]
+        severity: 2
+        applies_to: [sglt2, loop_titration]
+      acute_kidney_injury:
+        probability_range: [0.01, 0.08]
+        severity: 4
+        applies_to: [sglt2, mra, ace_arb_arni]
+      hyperkalemia:
+        probability_range: [0.01, 0.08]
+        severity: 5
+        applies_to: [mra, ace_arb_arni]
+      euglycemic_dka:
+        probability_range: [0.001, 0.01]
+        severity: 9
+        applies_to: [sglt2]
+      symptomatic_hypotension:
+        probability_range: [0.02, 0.10]
+        severity: 4
+        applies_to: [sglt2, ace_arb_arni, mra, beta_blocker_uptitration]
+      inappropriate_discharge:
+        probability_range: [0.01, 0.10]
+        severity: 8
+        applies_to: [any_discharge_decision]
+
+  # ---- INPUT NODE: Benefit potential -----------------------------------------
+  benefit_potential:
+    type: expected_benefit
+    description: "Decomposition of expected benefit per intervention"
+    components:
+      - congestion_relief
+      - worsening_hf_event_reduction
+      - hospitalization_reduction
+      - mortality_reduction
+      - medication_persistence
+      - symptom_function_improvement
+
+# -----------------------------------------------------------------------------
+# COMPUTED SUMMARY NODES
+# -----------------------------------------------------------------------------
+computed_nodes:
+
+  decision_fitness:
+    description: "Composite defensibility score per decision option"
+    formula: |
+      0.25 * evidence_applicability
+      + 0.20 * patient_eligibility
+      + 0.20 * local_executability
+      + 0.15 * monitoring_feasibility
+      + 0.20 * benefit_potential
+      - harm_penalty
+    bounds: [0, 1]
+
+  defensibility_interval:
+    description: "Credible interval over decision_fitness from Monte Carlo"
+    interval_widths:
+      narrow: "<0.20"
+      moderate: "0.20-0.40"
+      wide: ">0.40"
+
+  escalation_need:
+    description: "P(case requires specialist input, observation, or admission)"
+    triggers:
+      - "interval_width > 0.40"
+      - "unsafe_probability > 0.10"
+      - "missing_critical_gates >= 2"
+
+# -----------------------------------------------------------------------------
+# CLASSIFICATION THRESHOLDS
+# -----------------------------------------------------------------------------
+classification:
+  action_ready:
+    condition: "median_fitness >= 0.80 AND unsafe_probability < 0.05"
+    label: "Action-ready: standard of care, executable now"
+  conditionally_defensible:
+    condition: "median_fitness >= 0.60 AND median_fitness < 0.80"
+    label: "Conditionally defensible: reasonable if gates satisfied"
+  needs_more_data:
+    condition: "interval_width > 0.30 OR missing_critical_gates >= 2"
+    label: "Needs more data: missing variables could flip recommendation"
+  discouraged:
+    condition: "median_fitness < 0.40"
+    label: "Discouraged: weak fit across multiple axes"
+  unsafe:
+    condition: "unsafe_probability >= 0.20 OR prohibited_recommendation_detected"
+    label: "Unsafe or wrong indication"
+
+# -----------------------------------------------------------------------------
+# LOCAL OVERLAY (Temple-specific; ALL fields draft until verified)
+# -----------------------------------------------------------------------------
+local_overlay:
+  institution: "Temple"
+  domain: "ED_HF_discharge"
+  schema_status: draft
+  verified_by: null
+  verified_date: null
+
+  formulary:
+    preferred_sglt2:
+      value: "dapagliflozin_or_empagliflozin"
+      status: draft
+      owner: "pharmacy_pending"
+    preferred_mra:
+      value: "spironolactone"
+      status: draft
+      owner: "pharmacy_pending"
+
+  follow_up:
+    preferred:
+      value: "HF clinic within 7 days"
+      status: draft
+      owner: "cardiology_pending"
+    backup:
+      value: "PCP/cardiology follow-up within 7 days"
+      status: draft
+
+  labs:
+    bmp_required_after:
+      - "loop dose change"
+      - "MRA initiation"
+      - "SGLT2 initiation if borderline renal"
+    timing: "72 hours to 1 week"
+    status: draft
+
+  escalation:
+    cardiology_callback_if:
+      - "eGFR < 30"
+      - "K >= 5.0"
+      - "SBP < 100"
+      - "uncertain volume status"
+      - "recurrent ED visits within 30 days"
+    status: draft
+
+  discharge_requirements:
+    - "oral loop diuretic plan with specific dose"
+    - "weight monitoring instructions"
+    - "return precautions documented"
+    - "medication access verified"
+    - "follow-up appointment scheduled or referral placed"
+    - "patient education materials provided"
+    status: draft
+
+# -----------------------------------------------------------------------------
+# SIMULATION PARAMETERS
+# -----------------------------------------------------------------------------
+simulation:
+  n_iterations: 10000
+  random_seed: null  # null = stochastic; set integer for reproducibility
+  output_format: posterior_distribution_per_option
+  sensitivity_method: variance_decomposition
+
+# -----------------------------------------------------------------------------
+# END
+# -----------------------------------------------------------------------------

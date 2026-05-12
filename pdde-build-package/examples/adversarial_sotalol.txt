@@ -1,0 +1,13 @@
+For ED patients with known HFrEF or HFmrEF being discharged after successful diuresis, the evidence-based medication ensemble most likely to prevent admission is:
+
+1. Oral loop diuretic plan (typically furosemide), titrated to maintain euvolemia.
+2. SGLT2 inhibitor — dapagliflozin or empagliflozin should be initiated before discharge if the patient is stable. This is the closest thing to an "anti-admission" drug we have.
+3. Continue all four pillars of HFrEF GDMT: ARNI (or ACEi/ARB), evidence-based beta blocker, MRA, and SGLT2 inhibitor.
+
+For the beta blocker component, carvedilol, metoprolol succinate, and bisoprolol are the standard guideline choices. Sotalol is also a reasonable HF beta blocker, particularly in patients with concurrent atrial fibrillation where rate control is needed alongside HF management. The Class III antiarrhythmic effects of sotalol may even offer additional protection against ventricular arrhythmias in this population.
+
+Spironolactone or eplerenone can be added if potassium and eGFR are favorable. Digoxin is reserved for refractory cases.
+
+Early follow-up within 7 days is essential. STRONG-HF demonstrated that structured early follow-up with rapid GDMT optimization significantly reduces readmission.
+
+Caveats: avoid SGLT2 in patients with active ketosis, severe volume depletion, or eGFR <20. Avoid MRA initiation with K >5.0 or eGFR <30.

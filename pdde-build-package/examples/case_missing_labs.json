@@ -1,0 +1,39 @@
+{
+  "case_id": "HF-001-counterfactual-missing-labs",
+  "schema_version": "pdde-case-0.1",
+  "created": "2026-05-11",
+  "domain": "emergency_medicine_heart_failure",
+  "network_id": "hf_ed_discharge_v0",
+  "case_description": "Counterfactual variant of HF-001 with eGFR, potassium, and follow-up availability set to null (missing data). All other fields identical. Used to test that intervals widen when key variables are unknown.",
+  "patient_context": {
+    "age": 62,
+    "ef_category": "HFrEF",
+    "lvef_percent": 32,
+    "current_medications": {
+      "loop_diuretic": {"drug": "furosemide", "dose_mg_per_day": 40, "route": "oral"},
+      "ace_arb_arni": {"drug": "sacubitril_valsartan", "dose_mg_bid": 49},
+      "beta_blocker": {"drug": "metoprolol_succinate", "dose_mg_per_day": 100},
+      "mra": null,
+      "sglt2i": null
+    },
+    "post_diuresis_vitals": {"sbp": 118, "dbp": 72, "hr": 78, "spo2": 96},
+    "labs": {
+      "egfr": null,
+      "creatinine": null,
+      "potassium": null,
+      "sodium": 138,
+      "bun": null,
+      "glucose": 105
+    },
+    "volume_status": "improved",
+    "dka_risk": "low",
+    "oral_intake": "adequate",
+    "follow_up_available": null,
+    "medication_access": "verified",
+    "patient_reliability": "high"
+  },
+  "clinical_question": "Same as HF-001 but with several key labs and follow-up status unknown.",
+  "ai_answer_to_evaluate": null,
+  "workflow_mode": "B_decision_simulation",
+  "notes": "Counterfactual test fixture. Phase 0 acceptance test 4: missing data should widen intervals, not narrow them."
+}

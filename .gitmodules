@@ -1,0 +1,6 @@
+[submodule "Agent_Pidgeon"]
+	path = Agent_Pidgeon
+	url = https://github.com/deesatzed/Agent_Pidgeon.git
+[submodule "ClinSafer"]
+	path = ClinSafer
+	url = https://github.com/deesatzed/ClinSafer.git

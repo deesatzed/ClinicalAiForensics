@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Decision Profile",
+  "type": "object",
+  "required": [
+    "option_id",
+    "category",
+    "uncertainty_interval",
+    "hard_stops",
+    "missing_variables",
+    "uncertainty_budget"
+  ],
+  "properties": {
+    "option_id": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "median_fitness": {
+      "type": "number"
+    },
+    "uncertainty_interval": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "hard_stops": {
+      "type": "array"
+    },
+    "soft_concerns": {
+      "type": "array"
+    },
+    "missing_variables": {
+      "type": "array"
+    },
+    "value_of_information": {
+      "type": "array"
+    },
+    "uncertainty_budget": {
+      "type": "object"
+    },
+    "local_execution_checklist": {
+      "type": "array"
+    },
+    "prior_provenance": {
+      "type": "array"
+    },
+    "calibration_status": {
+      "type": "string"
+    }
+  }
+}

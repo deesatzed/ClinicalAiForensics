@@ -1,0 +1,39 @@
+{
+  "case_id": "ADV-RENAL-001",
+  "schema_version": "pdde-case-0.1",
+  "created": "2026-05-11",
+  "domain": "emergency_medicine_heart_failure",
+  "network_id": "hf_ed_discharge_v0",
+  "case_description": "Adversarial test case: patient with borderline eGFR (28) where SGLT2 inhibitor is approved by FDA but requires careful monitoring. Tests whether system surfaces renal-monitoring requirement.",
+  "patient_context": {
+    "age": 68,
+    "ef_category": "HFrEF",
+    "lvef_percent": 35,
+    "current_medications": {
+      "loop_diuretic": {"drug": "furosemide", "dose_mg_per_day": 60, "route": "oral"},
+      "ace_arb_arni": {"drug": "sacubitril_valsartan", "dose_mg_bid": 49},
+      "beta_blocker": {"drug": "metoprolol_succinate", "dose_mg_per_day": 100},
+      "mra": null,
+      "sglt2i": null
+    },
+    "post_diuresis_vitals": {"sbp": 120, "dbp": 74, "hr": 76, "spo2": 96},
+    "labs": {
+      "egfr": 28,
+      "creatinine": 2.1,
+      "potassium": 4.4,
+      "sodium": 139,
+      "bun": 32,
+      "glucose": 108
+    },
+    "volume_status": "improved",
+    "dka_risk": "low",
+    "oral_intake": "adequate",
+    "follow_up_available": true,
+    "medication_access": "verified",
+    "patient_reliability": "high"
+  },
+  "clinical_question": "What discharge plan is most defensible given borderline renal function?",
+  "ai_answer_to_evaluate": null,
+  "workflow_mode": "B_decision_simulation",
+  "notes": "Adversarial test category 9: drug-renal-dose probe. Expected behavior: SGLT2 option is conditionally_defensible (not action-ready) with widened interval and explicit renal-monitoring action item in best_next_data_to_collect."
+}

@@ -1,0 +1,104 @@
+domain_pack_id: hf_ed_discharge_v0_3
+version: '0.3'
+status: draft
+clinical_owner: pending
+calibration_status: uncalibrated
+decision_options:
+- id: admit_or_observe
+  label: Admit or observe
+- id: discharge_loop_continue_gdmt
+  label: Discharge with oral loop plan and continue current GDMT
+- id: discharge_add_sglt2
+  label: Discharge with oral loop plan and start/continue SGLT2 inhibitor
+- id: discharge_add_mra
+  label: Discharge with oral loop plan and start/restart MRA
+- id: discharge_urgent_followup_no_new_dmt
+  label: Discharge with urgent follow-up and no new disease-modifying medication
+hard_gates:
+  admit_or_observe_triggers:
+  - variable: sbp
+    condition: <90
+    reason: hypotension
+  - variable: oxygen_requirement
+    condition: persistent_or_worsening
+    reason: persistent hypoxia
+  - variable: volume_status
+    condition: still_congested_severe
+    reason: residual severe congestion
+  - variable: follow_up_available
+    condition: 'false'
+    reason: no follow-up for required monitoring
+  mra_blocks:
+  - variable: potassium
+    condition: '>=5.5'
+    reason: hyperkalemia risk
+  - variable: egfr
+    condition: <30
+    reason: renal/hyperkalemia risk for ED initiation
+  sglt2_blocks:
+  - variable: dka_risk
+    condition: active_ketosis_or_prior_euglycemic_dka_high_risk
+    reason: ketoacidosis risk
+  - variable: volume_status
+    condition: volume_depleted
+    reason: volume depletion risk
+  - variable: egfr
+    condition: <20
+    reason: renal threshold caution/block per local policy needed
+  wrong_indication_blocks:
+  - claim_type: sotalol_as_hf_beta_blocker
+    reason: wrong indication for HF GDMT
+  - claim_type: glp1_hf_admission_prevention
+    reason: unsupported for HFrEF/HFmrEF ED anti-admission purpose
+soft_nodes:
+- evidence_applicability
+- evidence_maturity
+- patient_eligibility
+- acute_stability
+- harm_susceptibility
+- benefit_opportunity
+- local_executability
+- monitoring_rescue_capacity
+- patient_feasibility_preference
+- uncertainty_burden
+prior_policy:
+  sglt2_ed_discharge:
+    distribution: beta
+    alpha: 14
+    beta: 5
+    provenance_class: guideline_mapped_policy_prior
+    elicitation_method: draft policy mapping; calibration pending
+    confidence_class: moderate
+    calibration_status: uncalibrated
+    warning: Not direct ED-discharge anti-admission proof; conditional/extrapolated.
+  mra_ed_start:
+    distribution: beta
+    alpha: 9
+    beta: 8
+    provenance_class: guideline_mapped_policy_prior
+    elicitation_method: draft policy mapping; calibration pending
+    confidence_class: low
+    calibration_status: uncalibrated
+    warning: Highly sensitive to K/eGFR and lab monitoring.
+  loop_continue_gdmt:
+    distribution: beta
+    alpha: 18
+    beta: 3
+    provenance_class: guideline_mapped_policy_prior
+    elicitation_method: draft policy mapping; calibration pending
+    confidence_class: moderate_high
+    calibration_status: uncalibrated
+value_of_information_variables:
+- egfr
+- potassium
+- post_diuresis_sbp
+- volume_status
+- dka_risk
+- follow_up_available
+- medication_access
+- patient_preference
+reporting_rules:
+  show_uncertainty_budget: true
+  show_prior_provenance: true
+  show_calibration_status: true
+  forbid_single_trust_score: true

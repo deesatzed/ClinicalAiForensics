@@ -1,0 +1,19 @@
+For your ED patient with known HFrEF/HFmrEF after diuresis, a comprehensive discharge regimen should include:
+
+**Core medications:**
+- Oral loop diuretic plan
+- Continue ARNI (sacubitril/valsartan) or ACEi/ARB
+- Continue evidence-based beta blocker (carvedilol, metoprolol succinate, or bisoprolol)
+- Start SGLT2 inhibitor (dapagliflozin or empagliflozin) if not already on one
+- Consider MRA (spironolactone) if K and eGFR allow
+
+**Additional considerations for admission prevention:**
+
+GLP-1 receptor agonists like semaglutide and tirzepatide should be considered for HF admission prevention, particularly in patients with obesity or diabetes. Recent literature suggests these agents may reduce HF hospitalizations through metabolic and weight effects. Semaglutide and tirzepatide have demonstrated cardiovascular benefit and should be part of the modern HF discharge ensemble for at-risk patients.
+
+Liraglutide can also be considered for patients with concurrent diabetes and HFrEF.
+
+**Follow-up:**
+- HF clinic within 7 days (STRONG-HF)
+- BMP at 72 hours
+- Weight monitoring with return precautions
