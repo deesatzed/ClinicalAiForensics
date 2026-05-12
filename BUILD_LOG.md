@@ -1,6 +1,6 @@
 # Phase 0 Build Log
 
-Last updated: 2026-05-11
+Last updated: 2026-05-12
 
 ## Executive Summary
 
@@ -118,7 +118,9 @@ TQ-013 acceptance tests cover stable, low eGFR, high potassium, low SBP, no foll
 |---|---|---|
 | `reports/hf_cde_stable_report.md` | canonical generated Markdown report | 194 lines at inspection; advisory report, not clinical recommendation |
 | `reports/hf_cde_stable_run_cde_report.md` | compatibility command generated report | produced through `run-cde`/legacy pathway |
-| `logs/hf_cde_stable.jsonl` | appendable provenance JSONL log | 156 records after TQ-014 verification; appends one run per canonical log command |
+| `logs/hf_cde_stable.jsonl` | appendable provenance JSONL log | record count grows with each canonical log command |
+
+Generated `reports/*.md` and `logs/*.jsonl` are ignored by git by default and should be regenerated or explicitly archived as needed. The durable policy is in `BASELINE_POLICY.md`.
 
 The report currently displays raw synthetic case text and patient-state values, which is appropriate for the human-facing synthetic report. The provenance log intentionally does not include full raw case text, patient preference text, patient-state value evidence strings, or simulation sample arrays.
 
@@ -147,7 +149,8 @@ Working guardrails:
 - VOI is item-level and source-order based. It does not compute numeric expected value of information.
 - Uncertainty budget is category/status based. It does not compute numeric contribution weights.
 - The report renderer is deterministic but hand-built; there is no template layer or report schema contract.
-- The root workspace is not a git repository, while `ClinSafer/` and `Agent_Pidgeon/` are nested git repositories.
+- The root workspace is a git repository on `main`; `ClinSafer/` and `Agent_Pidgeon/` are supporting codebases tracked as submodules.
+- The Phase 0 stable baseline is tagged as `phase0-baseline`.
 - `pdde/models.py` contains both active current result models and older planned/placeholder classes, which is understandable for Phase 0 but will become harder to maintain if the package grows.
 
 ## Structural Review
@@ -160,7 +163,7 @@ Structural concerns:
 - The domain-pack hard-gate mapping is still partly hard-coded in `safety_gate_engine.py` through gate-group names and option IDs. That is acceptable for one domain pack, but a second domain would require either a more explicit domain-pack rule schema or another Python mapping.
 - Prior-to-option association in `decision_profiler.py` uses token overlap between option IDs and prior IDs. It is transparent and tested, but fragile. A future domain pack should provide explicit prior-to-option links.
 - Report section generation is deterministic and readable, but section names and ordering are encoded directly in Python. A report contract test exists; a report schema or section registry may help later.
-- Generated outputs are append-only/manual artifacts. They are useful for verification, but the root lacks a documented policy on when generated reports/logs should be committed once root git is initialized.
+- Generated outputs are append-only/manual artifacts. They are useful for verification, but they are ignored source artifacts by default under `BASELINE_POLICY.md`.
 - The project has placeholder `domain_packs/` and `examples/` directories, but the active canonical inputs still live under `pdde_v0_3_first_principles_final/`. That separation preserves source provenance, but a user may expect runnable fixtures under `examples/`.
 
 No serious defect requiring a code change was found in this review.
@@ -219,17 +222,18 @@ Weird or overlooked alternatives that might simplify the system:
 | 3 | Split `pdde/models.py` into input, component result, pipeline, and legacy/planned model modules | 70% | Improves maintainability as model count grows | Refactor can cause import churn without behavior gain | After one more feature or before Phase 1 |
 | 4 | Define a normalized status-ledger model consumed by both report rendering and JSONL logging | 70% | Reduces duplication between report/log summaries and clarifies unresolved states | Could over-abstract if done before more examples exist | After canonical variant fixtures exist |
 | 5 | Add a report section registry or schema contract | 60% | Keeps section ordering and required advisory language explicit | Adds minor framework around a simple renderer | Before report format becomes externally shared |
-| 6 | Document generated-artifact and root-git policy | 55% | Avoids confusion about append-only logs, generated reports, and nested repositories | Mostly process work; may not improve engine behavior | Before initializing root git |
-| 7 | Add local overlay verification schema and fixture placeholders | 50% | Moves local workflow uncertainty from prose to structured data | Requires external owner/status input to be meaningful | After local review input is available |
-| 8 | Keep AI answer mapping deferred | 45% | Protects the CDE-first architecture from reverting to answer grading | Delays Workflow A compatibility | Continue until direct simulation has reviewed fixtures |
+| 6 | Add local overlay verification schema and fixture placeholders | 50% | Moves local workflow uncertainty from prose to structured data | Requires external owner/status input to be meaningful | After local review input is available |
+| 7 | Keep AI answer mapping deferred | 45% | Protects the CDE-first architecture from reverting to answer grading | Delays Workflow A compatibility | Continue until direct simulation has reviewed fixtures |
+| 8 | Document generated-artifact and root-git policy | 55% | Avoids confusion about append-only logs, generated reports, and nested repositories | Completed as `BASELINE_POLICY.md` with `phase0-baseline` tag | Completed in P1-001 |
 
 ## Recommended Next Step
 
-Proceed with documentation/process hardening before new clinical logic:
+Proceed with direct-CDE hardening before new clinical logic:
 
 1. Keep `BUILD_LOG.md` as the Phase 0 review artifact.
-2. Decide whether to create canonical synthetic CDE variant files under `examples/`.
-3. Decide whether to initialize root git and how to treat generated reports/logs.
-4. Before Phase 1 AI answer mapping, add explicit domain-pack fields for gate targets and prior-to-option mappings.
+2. Use `BASELINE_POLICY.md` and tag `phase0-baseline` as the Phase 0 baseline/artifact policy.
+3. Before Phase 1 AI answer mapping, add explicit domain-pack fields for gate targets and prior-to-option mappings.
+4. Decide whether to create canonical synthetic CDE variant files under `examples/`.
+5. Keep generated reports/logs reproducible and ignored unless an explicit archive/release task says otherwise.
 
 The highest-value engineering next step is explicit domain-pack mappings, because it removes the most fragile current assumptions without adding unsupported clinical claims.

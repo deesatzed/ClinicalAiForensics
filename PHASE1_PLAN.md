@@ -2,9 +2,11 @@
 
 ## Planning Status
 
-This is a planning artifact derived from `BUILD_LOG.md` and `PHASE0_HANDOFF.md`. It does not start Phase 1 and does not implement runtime behavior.
+This is a planning artifact derived from `BUILD_LOG.md` and `PHASE0_HANDOFF.md`. It did not start Phase 1 when created and does not implement runtime behavior.
 
 Phase 0 remains the current completed baseline: a local synthetic advisory CLI/API that validates CDE/domain-pack inputs, runs deterministic component layers, renders Markdown Decision Profile reports, and writes status-only JSONL provenance logs.
+
+Phase 1 has since been activated by explicit user instruction. See `TASK_QUEUE.md`, `PROGRESS.md`, and `BASELINE_POLICY.md` for active task state and baseline/artifact policy.
 
 ## Phase 1 Objective
 

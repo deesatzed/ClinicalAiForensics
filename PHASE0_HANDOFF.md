@@ -4,7 +4,9 @@
 
 Phase 0 is implemented as a local Python CLI and API for direct Clinical Decision Episode evaluation. It loads the canonical synthetic HF ED discharge CDE and domain pack, validates both into typed models, runs deterministic component layers, renders an advisory Markdown Decision Profile report, and can append status-only JSONL provenance logs.
 
-No non-deferred Phase 0 implementation tasks remain in `TASK_QUEUE.md`. Phase 1 has not started.
+No non-deferred Phase 0 implementation tasks remain in `TASK_QUEUE.md`. Phase 1 has started with baseline/artifact policy work only.
+
+The Phase 0 stable baseline is tagged as `phase0-baseline`.
 
 Phase 0 is not clinically validated, is not a clinical decision support system, and must not be used with PHI or real patient-care decisions.
 
@@ -79,6 +81,7 @@ python -m py_compile pdde/*.py
 | `REPO_MAP.md` | Repository map, source inventory, architecture summary, risks, and current status. |
 | `BUILD_LOG.md` | Phase 0 build log, manual structural review, and ranked improvement opportunities. |
 | `PHASE0_HANDOFF.md` | This operator-facing Phase 0 handoff package. |
+| `BASELINE_POLICY.md` | Phase 0 baseline tag, root git strategy, submodule policy, and generated report/log artifact policy. |
 | `pyproject.toml` | Python package metadata and dependencies. |
 | `pdde/models.py` | Typed Pydantic models for inputs, component results, pipeline results, reports, and logs. |
 | `pdde/cde_loader.py` | Strict CDE JSON loader. |
@@ -151,7 +154,8 @@ The JSONL log intentionally records IDs, statuses, paths, counts, source referen
 - Monte Carlo output is prior-level only; it is not mapped into per-option posteriors.
 - Wrong-indication claim gates that require AI answer mapping remain unsupported in direct CDE simulation.
 - Local workflow and monitoring-rescue checks remain draft/deferred unless explicit verified source data is added.
-- The root workspace is not a git repository and contains nested supporting repositories.
+- The root workspace is a git repository on `main`; `ClinSafer/` and `Agent_Pidgeon/` are tracked as submodules.
+- Generated `reports/*.md` and `logs/*.jsonl` are ignored reproducible local artifacts by default; see `BASELINE_POLICY.md`.
 - `pdde/models.py` is large because Phase 0 kept typed result models centralized for consistency.
 
 ## Deferred Phase 1 Items
@@ -165,16 +169,16 @@ The JSONL log intentionally records IDs, statuses, paths, counts, source referen
 
 | Rank | Next Task | Estimated Chance Of Improving Goal | Why | Risk | Requires User Input? |
 |---:|---|---:|---|---|---|
-| 1 | Tag/archive the Phase 0 baseline and decide root git/generated-artifact policy | 90% | Freezes the known-good advisory CLI before Phase 1 expands scope and clarifies how reports/logs should be versioned. | Low implementation risk; moderate process risk if skipped. | Yes |
-| 2 | Add explicit domain-pack mappings for gate targets and prior-to-option relationships | 85% | Reduces string-overlap assumptions and is the cleanest prerequisite for trustworthy option-level profiling. | Medium schema-migration risk. | No, unless clinical semantics need approval |
-| 3 | Promote canonical synthetic variant fixtures into `examples/` | 80% | Makes low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missingness cases reusable outside tests. | Low risk if labeled synthetic and derived from current fixture. | No |
-| 4 | Split centralized model definitions into stable submodules or add a status-ledger model | 70% | Improves maintainability and gives report/log layers a single contract for visible unresolved statuses. | Medium refactor risk; should be test-preserving. | No |
-| 5 | Define local overlay verification metadata requirements before implementing local workflow checks | 65% | Prevents draft operational assumptions from becoming hidden clinical logic. | Low code risk; medium governance dependency. | Yes |
+| 1 | Add explicit domain-pack mappings for gate targets and prior-to-option relationships | 85% | Reduces string-overlap assumptions and is the cleanest prerequisite for trustworthy option-level profiling. | Medium schema-migration risk. | No, unless clinical semantics need approval |
+| 2 | Promote canonical synthetic variant fixtures into `examples/` | 80% | Makes low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missingness cases reusable outside tests. | Low risk if labeled synthetic and derived from current fixture. | No |
+| 3 | Define a normalized status-ledger model | 75% | Gives report rendering and JSONL logging one shared contract for visible unresolved statuses. | Medium abstraction risk if made too broad. | No |
+| 4 | Split centralized model definitions into stable submodules | 70% | Improves maintainability before adding more schema and AI-mapping models. | Medium import/refactor risk; should be test-preserving. | No |
+| 5 | Define local overlay verification metadata requirements before implementing local workflow checks | 60% | Prevents draft operational assumptions from becoming hidden clinical logic. | Low code risk; medium governance dependency. | Yes |
 
 ## Stop/Go Recommendation
 
-Go for tagging, archiving, and demoing Phase 0 as a local synthetic advisory prototype.
+Go for demoing and using Phase 0 as the tagged baseline `phase0-baseline` for Phase 1 direct-CDE hardening.
 
-Go for using this codebase as the base for Phase 1 only after an explicit Phase 1 start decision.
+Go for `P1-002: Explicit Domain-Pack Mappings` as the next engineering task after `P1-001`.
 
 Stop for clinical deployment, PHI use, real patient-care use, final recommendation generation, or AI answer mapping until the corresponding deferred tasks are explicitly started and governed.

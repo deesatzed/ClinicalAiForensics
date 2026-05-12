@@ -11,7 +11,7 @@ Initialized: 2026-05-11
 
 ## Current Phase
 
-Phase 0: CLI Clinical Decision Episode simulator.
+Phase 1: direct CDE simulator hardening. Phase 0 is the stable baseline tagged as `phase0-baseline`.
 
 ## Tasks
 
@@ -506,9 +506,190 @@ Verification:
 - canonical `validate`, `report`, and `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` commands passed.
 - `logs/hf_cde_stable.jsonl` parsed successfully as JSONL and contained 195 records after the verification append.
 
+## Phase 1 Tasks
+
+### P1-001: Phase 0 Baseline And Artifact Policy
+
+Status: done
+
+Scope:
+
+- Document root version-control strategy.
+- Document nested `ClinSafer/` and `Agent_Pidgeon/` handling.
+- Document generated report/log policy.
+- Create a Phase 0 baseline identifier.
+- Keep `PHASE0_HANDOFF.md`, `BUILD_LOG.md`, `README.md`, and `DEMO.md` accurate.
+- Do not change runtime behavior.
+
+Acceptance:
+
+- Root version-control strategy is documented.
+- Nested repository handling is documented.
+- Generated report/log policy is documented, including whether `reports/*.md` and `logs/*.jsonl` are committed, regenerated, ignored, or archived.
+- Phase 0 baseline identifier exists.
+- Phase 0 reviewer and handoff docs remain accurate.
+- Verification passes.
+
+Verification:
+
+- `BASELINE_POLICY.md` documents root git strategy, submodule handling, generated artifact policy, and Phase 1 boundary guardrails.
+- Annotated git tag `phase0-baseline` points to Phase 0 baseline commit `0662777`.
+- Tag `phase0-baseline` was pushed to `origin`.
+- `PHASE0_HANDOFF.md`, `BUILD_LOG.md`, `README.md`, and `DEMO.md` were refreshed for root git, submodule, and generated-artifact policy accuracy.
+- No runtime behavior, clinical logic, tests, CLI behavior, report semantics, or AI/LLM mapping was added.
+- `python -m pytest` passed, 91 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL and contained 312 records after the final verification append.
+
+### P1-002: Explicit Domain-Pack Mappings
+
+Status: pending
+
+Scope:
+
+- Add explicit domain-pack fields for safety-gate target option IDs and prior-to-option mappings.
+- Remove reliance on Python-only gate routing where source data should carry routing semantics.
+- Remove token-overlap prior/profile association from the Decision Profiler.
+- Preserve existing canonical fixture behavior except for improved mapping visibility.
+- Do not add clinical thresholds, utilities, final recommendations, hidden scores, or LLM/AI judgment.
+
+Acceptance:
+
+- Domain-pack models and loaders validate mapping targets clearly.
+- Safety gate evaluation and Decision Profiler use explicit source mappings where available.
+- Tests prove malformed mappings fail clearly and prior/profile association no longer depends on token overlap.
+- Reports and logs preserve mapping provenance.
+
+### P1-003: Canonical Synthetic Variant Fixtures
+
+Status: pending
+
+Scope:
+
+- Promote inspectable synthetic CDE variants into `examples/` or another documented canonical fixture directory.
+- Initial variants should cover stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing labs/missing oxygen requirement.
+- Label every fixture synthetic and non-PHI.
+
+Acceptance:
+
+- Fixtures validate through the public loaders/CLI.
+- Expected status changes are covered through public pipeline or CLI tests.
+- Tests no longer rely only on hidden in-test mutations for core scenario coverage.
+- No new clinical thresholds or unsupported assumptions are introduced.
+
+### P1-004: Normalized Status Ledger
+
+Status: pending
+
+Scope:
+
+- Define a typed status-ledger row or equivalent shared contract for visible component states.
+- Project safety gates, priors, Monte Carlo priors, uncertainty-budget items, VOI items, and Decision Profiles into that contract where practical.
+- Preserve report/log visibility for missing, unsupported, blocked, deferred, active, present, resolved, sampled, and eligible statuses.
+
+Acceptance:
+
+- Report rendering and provenance logging can consume the shared status contract or a clearly equivalent projection.
+- Tests prove unresolved statuses do not disappear.
+- Logs remain status-only and avoid raw case text.
+
+### P1-005: Model Module Split
+
+Status: pending
+
+Scope:
+
+- Split `pdde/models.py` into focused modules only after mapping and status contracts are stable enough.
+- Keep public imports backward compatible or document migration explicitly.
+
+Acceptance:
+
+- New modules have clear responsibility.
+- Existing behavior and serialization surfaces remain covered.
+- `pdde/models.py` remains a compatibility re-export module or has an explicit migration note.
+
+### P1-006: Report Section Registry Or Schema Contract
+
+Status: pending
+
+Scope:
+
+- Make report section order, required advisory language, and status-preservation obligations explicit.
+- Keep Markdown rendering deterministic and simple.
+
+Acceptance:
+
+- Required sections are defined in one registry, schema, or equivalent contract.
+- Tests assert required sections and deterministic ordering.
+- Advisory-only and no-final-recommendation language remains required.
+
+### P1-007: Local Overlay Verification Contract
+
+Status: pending
+
+Scope:
+
+- Define schema/fields required for local operational overlay rules.
+- Keep unverified local rules visibly draft or deferred.
+
+Acceptance:
+
+- Local overlay rules require or visibly defer owner, status, source, review cadence, and last-reviewed fields where applicable.
+- Reports and logs display verification state without PHI or operationally sensitive free text.
+- External local workflow owner input is documented if needed.
+
+### P1-008: AI Answer Mapping Interface
+
+Status: deferred
+
+Scope:
+
+- Prepare typed AI-answer mapping only after direct-CDE contracts are hardened and explicit user approval exists.
+- Map answer content into structured claims, omissions, or overstatements that deterministic safety/profile layers can consume.
+
+Acceptance:
+
+- Free-text answers do not directly modify priors, thresholds, safety gates, or recommendations.
+- Mapped claims feed structured deterministic inputs.
+- Unsupported/unmapped claims remain visible.
+- No final clinical recommendation or answer grade is produced as the primary artifact.
+
+### P1-009: Citation/Evidence Audit Handoff
+
+Status: deferred
+
+Scope:
+
+- Define future citation/evidence-audit requirements without implementing full audit.
+- Keep automated evidence validation out of scope.
+
+Acceptance:
+
+- Needed evidence-source fields and report/provenance gaps are documented.
+- No citation scoring, source truth claims, or automated evidence validation is added.
+
+### P1-010: Calibration And Outcome Anchoring Prerequisites
+
+Status: deferred
+
+Scope:
+
+- Define data, governance, and metric prerequisites for later calibration.
+- Do not implement calibration curves or outcome claims.
+
+Acceptance:
+
+- Required labels/outcomes and governance approvals are listed.
+- Current logs are assessed for calibration-seed suitability without PHI.
+- No report language implies validation or calibrated risk.
+
 ## Queue State
 
-No non-deferred Phase 0 implementation task remains in this queue. Phase 0 handoff is complete. Next work should be explicitly selected from deferred Phase 1 items or from the ranked improvement opportunities in `BUILD_LOG.md` and `PHASE0_HANDOFF.md`.
+Phase 1 is active. `P1-001` is complete. The next unblocked task is `P1-002: Explicit Domain-Pack Mappings`.
 
 ## Deferred
 

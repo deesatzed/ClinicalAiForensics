@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, and initial root repository publication are complete. Phase 1 remains inactive.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, and `P1-001: Phase 0 Baseline And Artifact Policy` are complete. The next unblocked task is `P1-002: Explicit Domain-Pack Mappings`.
 
 Created the root project-control files:
 
@@ -15,6 +15,68 @@ Created the root project-control files:
 - `PROGRESS.md`
 - `TASK_QUEUE.md`
 - `REPO_MAP.md`
+
+## Phase 1 Activation
+
+Phase 0 baseline is complete and remains the stable advisory-only, synthetic, non-clinical baseline.
+
+Phase 1 is now active by explicit user instruction. The first selected Phase 1 task is `P1-001: Phase 0 Baseline And Artifact Policy`, from `PHASE1_PLAN.md`.
+
+Assumptions being used:
+
+- The already-published root repository at `https://github.com/deesatzed/ClinicalAiForensics.git` is the root version-control home.
+- `ClinSafer/` and `Agent_Pidgeon/` remain independent supporting codebases tracked as submodules.
+- Generated Markdown reports and JSONL logs remain reproducible local artifacts unless a later release/archive task explicitly says otherwise.
+- Phase 0 runtime behavior should not change while `P1-001` is completed.
+
+Safety constraints being preserved:
+
+- No final clinical recommendations, safe/unsafe discharge conclusions, option rankings, hidden scores, or clinical validation claims.
+- No LLM/AI clinical judgment or AI answer mapping.
+- No invented clinical thresholds, utilities, weights, priors, or recommendation language.
+- No PHI storage or production deployment.
+- Existing status visibility, provenance, and privacy guardrails remain intact.
+
+## P1-001 Completed
+
+Completed `P1-001: Phase 0 Baseline And Artifact Policy` as documentation/process work only.
+
+Created:
+
+- `BASELINE_POLICY.md`
+
+Updated:
+
+- `DECISIONS.md`
+- `TASK_QUEUE.md`
+- `REPO_MAP.md`
+- `BUILD_LOG.md`
+- `PHASE0_HANDOFF.md`
+- `README.md`
+- `DEMO.md`
+- `PHASE1_PLAN.md`
+
+Baseline and artifact policy results:
+
+- Created annotated Phase 0 baseline tag `phase0-baseline` at commit `0662777`.
+- Pushed tag `phase0-baseline` to `origin`.
+- Documented root git strategy on branch `main` with remote `https://github.com/deesatzed/ClinicalAiForensics.git`.
+- Documented `ClinSafer/` and `Agent_Pidgeon/` as submodules, not root-owned source.
+- Documented generated `reports/*.md` and `logs/*.jsonl` as ignored reproducible artifacts by default.
+- Preserved `.gitkeep` files as the tracked output-directory placeholders.
+- Refreshed handoff/reviewer docs so they no longer describe the root workspace as non-git.
+
+No runtime behavior, clinical logic, tests, CLI behavior, report semantics, final recommendation language, AI/LLM judgment, or deployment surface was added.
+
+Verification:
+
+- `python -m pytest` passed, 91 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the final verification append it contained 312 JSONL records.
 
 Created the initial implementation scaffold:
 
@@ -199,7 +261,7 @@ Planning conclusions:
 - Phase 1 should harden the direct CDE simulator before AI answer mapping.
 - `P1-001` is the recommended first task because root git/generated-artifact policy needs user input before safe implementation.
 - `P1-002` is the first recommended engineering task after process policy because explicit domain-pack mappings remove the most fragile current assumptions.
-- Phase 1 has not started, and no runtime behavior, clinical logic, tests, CLI behavior, report semantics, or task queue activation were added.
+- At the time of planning, Phase 1 had not started and no runtime behavior, clinical logic, tests, CLI behavior, report semantics, or task queue activation were added.
 
 Verification:
 
@@ -766,7 +828,7 @@ Recon findings:
 
 - The root workspace is not yet an implemented Python package.
 - No `AGENTS.md` file is present in the repository tree.
-- The root workspace is not a git repository.
+- At recon time, the root workspace was not a git repository.
 - `ClinSafer/` and `Agent_Pidgeon/` are separate nested git repositories and should be treated as supporting source material, not root project code.
 - `pdde_v0_3_first_principles_final/` is the controlling build-direction package.
 - `pdde-build-package/` is a granular older spec package whose implementation details should be adapted when compatible with v0.3.

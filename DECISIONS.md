@@ -249,3 +249,11 @@ Decision: The root workspace is initialized as a git repository on branch `main`
 Reason: The user explicitly requested committing and pushing the root project to GitHub. The supporting codebases already had independent git histories and remotes; recording them as submodules preserves that ownership boundary and avoids broken embedded-repository commits.
 
 Impact: Cloners should use submodule-aware checkout if they need the supporting source material. Generated reports and JSONL logs remain ignored by `.gitignore`; the root repository preserves `reports/` and `logs/` via `.gitkeep` files. Runtime behavior, clinical logic, and Phase 1 implementation remain unchanged.
+
+## D-032: Phase 1 Starts With Baseline And Artifact Policy
+
+Decision: Phase 1 is active by explicit user instruction, and `P1-001` is completed as a documentation/process task. The Phase 0 baseline identifier is the annotated git tag `phase0-baseline` pointing at commit `0662777`. Generated `reports/*.md` and `logs/*.jsonl` remain ignored reproducible artifacts by default, with `.gitkeep` files preserving the output directories. `ClinSafer/` and `Agent_Pidgeon/` remain submodules rather than root-owned source.
+
+Reason: Phase 1 should begin from a clear stable baseline before any schema, fixture, or runtime hardening work. The generated report/log policy prevents append-only logs and regenerated Markdown from becoming accidental source-of-truth files.
+
+Impact: Future Phase 1 work should reference `BASELINE_POLICY.md` for root git, submodule, baseline tag, and generated-artifact rules. Runtime behavior, clinical logic, report semantics, recommendation policy, LLM/AI judgment, and provenance/privacy guardrails remain unchanged.

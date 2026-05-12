@@ -4,7 +4,7 @@ Last updated: 2026-05-12
 
 ## Recon Summary
 
-This root folder is now a git-backed project-planning and source-material workspace with an initial Python package scaffold for building `ClinAIForensics`. It has a root `pyproject.toml`, a scaffolded `pdde/` package, initial data models, minimal CDE/domain-pack loaders, a deterministic safety gate engine, a deterministic prior resolver, a seeded Monte Carlo prior sampler, uncertainty-budget and value-of-information item evaluators, a deterministic Decision Profiler assembly layer, a typed end-to-end evaluation pipeline, a deterministic Markdown report renderer, CLI report/run wiring, JSONL provenance logging, Phase 0 acceptance tests, a Phase 0 build log/manual structural review, a Phase 0 handoff package, technical reviewer documentation, a Phase 1 planning artifact, a focused `tests/` directory, canonical support directories, and a root remote at `https://github.com/deesatzed/ClinicalAiForensics.git`.
+This root folder is now a git-backed project-planning and source-material workspace with an initial Python package scaffold for building `ClinAIForensics`. It has a root `pyproject.toml`, a scaffolded `pdde/` package, initial data models, minimal CDE/domain-pack loaders, a deterministic safety gate engine, a deterministic prior resolver, a seeded Monte Carlo prior sampler, uncertainty-budget and value-of-information item evaluators, a deterministic Decision Profiler assembly layer, a typed end-to-end evaluation pipeline, a deterministic Markdown report renderer, CLI report/run wiring, JSONL provenance logging, Phase 0 acceptance tests, a Phase 0 build log/manual structural review, a Phase 0 handoff package, technical reviewer documentation, a Phase 1 planning artifact, a Phase 0 baseline/artifact policy, a focused `tests/` directory, canonical support directories, and a root remote at `https://github.com/deesatzed/ClinicalAiForensics.git`.
 
 The intended project appears to be a Phase 0 Python CLI for PDDE: a Clinical Decision Episode simulator and governance engine for HF ED discharge decisions. It should load synthetic CDE fixtures and an HF domain pack, run deterministic safety gates before probabilistic simulation, and render advisory-only Markdown Decision Profiles with provenance, uncertainty budget, value-of-information, local overlay status, and calibration status.
 
@@ -29,8 +29,9 @@ The supporting `ClinSafer/` and `Agent_Pidgeon/` workspaces are tracked from the
 | `BUILD_LOG.md` | Phase 0 build log, manual structural review, first-principles review, alien-goggles review, and ranked improvement opportunities. |
 | `PHASE0_HANDOFF.md` | Concise operator-facing Phase 0 handoff package with commands, limitations, deferred items, next tasks, and stop/go recommendation. |
 | `PHASE1_PLAN.md` | Planning-only Phase 1 roadmap with ranked tasks, acceptance criteria, verification expectations, user-input needs, and stop conditions. |
+| `BASELINE_POLICY.md` | Phase 0 baseline tag, root git strategy, submodule policy, generated report/log artifact policy, and Phase 1 boundary guardrails. |
 | `pyproject.toml` | Initial Python package metadata and dependency groups. |
-| `.gitignore` | Local/generated-file ignore rules for future root git use. |
+| `.gitignore` | Local/generated-file ignore rules, including ignored generated `reports/*.md` and `logs/*.jsonl`. |
 | `pdde/` | Phase 0 implementation package. Contains CLI wiring, initial Pydantic data models, minimal CDE/domain-pack loaders, deterministic safety gate evaluation, deterministic prior resolution, seeded prior-level Monte Carlo sampling, item-level uncertainty/VOI evaluation, deterministic Decision Profile assembly, a typed evaluation pipeline, deterministic Markdown report rendering, and JSONL provenance logging. |
 | `tests/` | Focused scaffold, model, loader, safety gate, prior resolver, Monte Carlo prior-sampling, uncertainty/VOI, Decision Profiler, evaluation pipeline, report-renderer, CLI report, provenance-logger, and Phase 0 acceptance tests. |
 | `domain_packs/` | Canonical future domain-pack location. |
@@ -222,7 +223,7 @@ Expected data flow:
 
 ## Current Build Status
 
-`TQ-001: Project Setup And Source Normalization`, `TQ-002: Data Models`, `TQ-003: CDE And Domain-Pack Loaders`, `TQ-004: Deterministic Safety Gate Engine`, `TQ-005: Prior Resolver`, `TQ-006: Monte Carlo Engine`, `TQ-007: Uncertainty Budget And Value Of Information`, `TQ-008: Decision Profiler`, `TQ-009: Evaluation Pipeline`, `TQ-010: Markdown Report Renderer`, `TQ-011: CLI Run And Validate Commands`, `TQ-012: Provenance Logging`, `TQ-013: Phase 0 Acceptance Tests`, `TQ-014: Build Log And Manual Structural Review`, and `TQ-015: Phase 0 Handoff Package` are complete. No non-deferred Phase 0 implementation task remains in `TASK_QUEUE.md`.
+`TQ-001: Project Setup And Source Normalization`, `TQ-002: Data Models`, `TQ-003: CDE And Domain-Pack Loaders`, `TQ-004: Deterministic Safety Gate Engine`, `TQ-005: Prior Resolver`, `TQ-006: Monte Carlo Engine`, `TQ-007: Uncertainty Budget And Value Of Information`, `TQ-008: Decision Profiler`, `TQ-009: Evaluation Pipeline`, `TQ-010: Markdown Report Renderer`, `TQ-011: CLI Run And Validate Commands`, `TQ-012: Provenance Logging`, `TQ-013: Phase 0 Acceptance Tests`, `TQ-014: Build Log And Manual Structural Review`, `TQ-015: Phase 0 Handoff Package`, and `P1-001: Phase 0 Baseline And Artifact Policy` are complete. Phase 1 is active.
 
 Completed setup/model work:
 
@@ -275,6 +276,7 @@ Completed setup/model work:
 - technical reviewer overview in `README.md`,
 - five-minute technical reviewer demo guide in `DEMO.md`,
 - Phase 1 planning artifact in `PHASE1_PLAN.md`,
+- Phase 0 baseline/artifact policy in `BASELINE_POLICY.md`,
 - generated verification log in `logs/hf_cde_stable.jsonl`.
 
 The package intentionally does not include final recommendation ranking, numeric decision-fitness synthesis, database logging, external telemetry, AI/LLM logging, production monitoring, or PHI storage.
@@ -283,7 +285,7 @@ The package intentionally does not include final recommendation ranking, numeric
 
 No non-deferred Phase 0 implementation task remains in the current task queue, and the Phase 0 handoff package is complete.
 
-Next work should be explicitly selected from `PHASE1_PLAN.md`, deferred Phase 1 items, or from the ranked improvement opportunities in `BUILD_LOG.md` and `PHASE0_HANDOFF.md`. The highest-ranked review recommendation remains to tag/archive the Phase 0 baseline and decide root git/generated-artifact policy before broadening domains or starting AI answer mapping.
+The next unblocked Phase 1 task is `P1-002: Explicit Domain-Pack Mappings`.
 
 ## Risks And Blockers
 
@@ -324,10 +326,11 @@ Mitigation: reuse patterns only in Phase 0 unless a later decision approves depe
 
 - Root is now a git repository on branch `main`.
 - Root remote `origin` points to `https://github.com/deesatzed/ClinicalAiForensics.git`.
+- The Phase 0 stable baseline is tagged as `phase0-baseline`.
 - `ClinSafer/` and `Agent_Pidgeon/` are separate git repositories tracked from the root as submodules.
 - Generated Markdown reports and JSONL logs remain ignored; `.gitkeep` files preserve the output directories.
 
-Mitigation: keep submodule URLs current and decide generated-artifact archival policy before relying on generated reports/logs as release artifacts.
+Mitigation: keep submodule URLs current and follow `BASELINE_POLICY.md` before relying on generated reports/logs as release artifacts.
 
 ### Clinical Content Governance
 

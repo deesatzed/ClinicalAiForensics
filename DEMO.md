@@ -222,4 +222,5 @@ Avoid these claims:
 | `pdde/report_renderer.py` | Report section and language boundary. |
 | `pdde/provenance_logger.py` | Status-only audit-log boundary. |
 | `PHASE0_HANDOFF.md` | Phase 0 status and stop/go recommendation. |
-| `PHASE1_PLAN.md` | Planning-only Phase 1 roadmap. |
+| `PHASE1_PLAN.md` | Phase 1 roadmap and acceptance criteria. |
+| `BASELINE_POLICY.md` | Phase 0 baseline tag, submodule policy, and generated-artifact rules. |

@@ -34,6 +34,19 @@ Phase 0 is local, CLI-only, synthetic, advisory-only, uncalibrated, and not clin
 
 ## Quickstart
 
+Clone with supporting submodules when starting from GitHub:
+
+```bash
+git clone --recurse-submodules https://github.com/deesatzed/ClinicalAiForensics.git
+cd ClinicalAiForensics
+```
+
+For an existing checkout that lacks supporting folders:
+
+```bash
+git submodule update --init --recursive
+```
+
 Optional virtual environment:
 
 ```bash
@@ -117,6 +130,7 @@ python -m pdde run-cde --cde pdde_v0_3_first_principles_final/examples/hf_cde_st
 `reports/hf_cde_stable_report.md`
 
 - Generated advisory Markdown report.
+- Ignored by git by default; regenerate it from the canonical fixtures when needed.
 - Shows case/domain identifiers, safety gate results, Decision Profile statuses, VOI items, uncertainty-budget items, prior provenance, Monte Carlo prior summaries, unresolved items, calibration status, provenance references, and limitations.
 - Displays synthetic case text and patient-state values because the report is a human-facing synthetic artifact.
 - Does not provide a final recommendation or top option.
@@ -124,6 +138,7 @@ python -m pdde run-cde --cde pdde_v0_3_first_principles_final/examples/hf_cde_st
 `logs/hf_cde_stable.jsonl`
 
 - Appendable provenance log.
+- Ignored by git by default; repeated local runs append records and should not be treated as a stable source fixture.
 - Each line is JSON.
 - Records run metadata, component status summaries, safety gate statuses, prior-resolution statuses, Monte Carlo prior statuses, uncertainty-budget statuses, VOI statuses, Decision Profile statuses, source references, command name, package version, seed, iteration count, and report path.
 - Intentionally avoids full raw case text, full patient-state payloads, PHI, gate evidence strings, and raw simulation sample arrays.
@@ -188,6 +203,6 @@ The suite covers model validation, loaders, deterministic safety gates, prior re
 
 ## Phase 1
 
-Phase 1 has not started. See `PHASE1_PLAN.md` for the planning-only roadmap, ranked next tasks, acceptance criteria, verification expectations, user-input needs, and stop conditions.
+Phase 1 is active for direct-CDE hardening. The Phase 0 stable baseline is tagged as `phase0-baseline`.
 
-The recommended first Phase 1 task is to tag/archive the Phase 0 baseline and decide root git/generated-artifact policy before any runtime work.
+See `PHASE1_PLAN.md` for the roadmap and `BASELINE_POLICY.md` for the Phase 0 baseline, submodule, and generated-artifact policy. Runtime clinical behavior remains Phase 0 advisory-only until a later task explicitly changes it.
