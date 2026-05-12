@@ -297,3 +297,11 @@ Decision: `P1-006` adds `pdde/report_contract.py` as the single registry for req
 Reason: Phase 1 needs the report format to be reviewable as a stable external contract before more report/log semantics or AI-mapping inputs are added. Keeping section order and advisory language in one small module prevents tests, renderer code, and future docs from drifting independently.
 
 Impact: The report renderer now fails clearly if a required section or required advisory phrase is dropped. Existing report content, CLI behavior, clinical logic, status ledger behavior, provenance logging, generated-artifact policy, final-recommendation prohibition, and AI/LLM boundaries remain unchanged.
+
+## D-038: Local Overlay Verification Is Metadata-Only
+
+Decision: `P1-007` adds a typed local overlay verification contract and evaluator that read explicit local overlay metadata from CDE `local_context` only. Required governance fields are owner, status, source, review cadence, and last reviewed. Missing or malformed metadata is surfaced as `missing`, `unsupported`, `draft`, or `deferred`; draft or incomplete local overlay rules remain inactive.
+
+Reason: Local operational workflow assumptions are governance data, not clinical reasoning rules. The canonical fixtures only provide `overlay_status: draft`, and the older local-overlay source material is explicitly unverified. A metadata-only contract prevents draft local pathways from becoming hidden clinical logic while still making the verification gap visible to reviewers.
+
+Impact: Pipeline results, reports, status-ledger rows, and provenance summaries now include local overlay verification state. Reports and logs avoid printing raw local overlay owner/source/review values; logs record presence booleans, statuses, missing fields, and safe source paths. No CLI behavior, final recommendation logic, AI/LLM mapping, hidden scoring, thresholds, utilities, clinical formulas, or active local workflow rules were added.

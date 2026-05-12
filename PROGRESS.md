@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, and `P1-006: Report Section Registry Or Schema Contract` are complete. The next unblocked task is `P1-007: Local Overlay Verification Contract`.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, and `P1-007: Local Overlay Verification Contract` are complete. `P1-008: AI Answer Mapping Interface` remains deferred until explicitly authorized.
 
 Created the root project-control files:
 
@@ -248,6 +248,40 @@ Verification:
 - all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
 - all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/...`.
 - `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the final verification append it contained 741 JSONL records.
+
+## P1-007 Completed
+
+Completed `P1-007: Local Overlay Verification Contract`.
+
+Implemented:
+
+- `pdde/local_overlay.py` evaluates explicit local overlay verification metadata from CDE `local_context`.
+- `pdde/component_models.py` now includes typed `LocalOverlayVerificationItem` and `LocalOverlayVerificationSet` models.
+- `pdde/evaluation_pipeline.py` and `pdde/pipeline_models.py` preserve local overlay verification output in the top-level pipeline result.
+- `pdde/status_ledger.py` projects local overlay statuses into the shared ledger so draft/deferred state remains visible.
+- `pdde/report_renderer.py` displays a local overlay verification table and avoids printing raw local workflow text from local context.
+- `pdde/provenance_logger.py` records local overlay status, missing fields, presence booleans, and safe source paths without raw owner/source/review values.
+- `tests/test_local_overlay.py` covers draft, verified, missing, malformed, unsupported, source-traced, and serialization behavior.
+- report, provenance, status-ledger, model-facade, and pipeline tests cover local overlay integration.
+- `README.md`, `DEMO.md`, `DECISIONS.md`, `TASK_QUEUE.md`, and `REPO_MAP.md` were updated for reviewer-facing and project-control visibility.
+
+Guardrails preserved:
+
+- no CLI behavior, final clinical recommendations, AI/LLM judgment, AI answer mapping, hidden scoring, thresholds, utilities, clinical formulas, PHI storage, or active local workflow rules were added.
+- draft or incomplete local overlay metadata remains inactive and visible as draft/deferred/missing/unsupported.
+- provenance logs do not include raw local overlay owner/source/review-cadence/last-reviewed values.
+
+Verification:
+
+- `python -m pytest` passed, 124 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
+- all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/...`.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the final verification append it contained 821 JSONL records.
 
 Created the initial implementation scaffold:
 

@@ -92,6 +92,7 @@ What to look for:
 - `## Why There Is No Top Option`
 - `## Missing Variables And Value Of Information`
 - `## Uncertainty Budget`
+- `### Local Overlay Verification`
 - `## Prior Provenance`
 - `## Monte Carlo Prior Summaries`
 - `## Missing Unsupported Deferred And Blocked Items`
@@ -102,6 +103,7 @@ Reviewer checks:
 
 - `oxygen_requirement` remains visible as missing.
 - wrong-indication claim gates remain visible as unsupported because AI answer mapping is deferred.
+- local overlay verification remains visible as draft/deferred unless owner/source/review metadata is explicit.
 - Monte Carlo summaries are prior-level only.
 - the report says it is not clinically validated and not a final clinical recommendation.
 - the report does not name a top option.
@@ -167,11 +169,12 @@ What to look for:
 - `monte_carlo_prior`
 - `uncertainty_budget_item`
 - `value_of_information_item`
+- `local_overlay_verification`
 - `decision_profile`
 
 Safe explanation:
 
-> The log records statuses, IDs, paths, counts, seed, command metadata, and source references. It intentionally avoids raw clinical payloads and raw simulation samples.
+> The log records statuses, IDs, paths, counts, seed, command metadata, and source references. It intentionally avoids raw clinical payloads, raw simulation samples, and raw local overlay owner/source/review values.
 
 ### 6. Run The Test Suite
 
@@ -183,11 +186,11 @@ python -m pytest
 
 What to look for:
 
-- `103 passed`
+- `124 passed`
 
 Safe explanation:
 
-> The test suite checks deterministic behavior, validation failures, missingness, hard gates, provenance, CLI behavior, and report guardrails. Passing tests do not imply clinical validity.
+> The test suite checks deterministic behavior, validation failures, missingness, hard gates, local overlay verification, provenance, CLI behavior, and report guardrails. Passing tests do not imply clinical validity.
 
 ## Optional Scenario Fixture Check
 
@@ -229,7 +232,7 @@ Safe explanation:
 
 Use this framing:
 
-> This is a deterministic Phase 0 scaffold for preserving the structure of a clinical decision episode. It shows which explicit gates passed, which inputs are missing, which priors were sampled, which items are deferred or unsupported, and where provenance came from. It is not a clinical recommendation engine.
+> This is a deterministic Phase 0 scaffold for preserving the structure of a clinical decision episode. It shows which explicit gates passed, which inputs are missing, which priors were sampled, which local overlay verification metadata is still draft or deferred, which items are unsupported, and where provenance came from. It is not a clinical recommendation engine.
 
 Avoid these claims:
 
@@ -238,6 +241,7 @@ Avoid these claims:
 - "This is validated risk."
 - "This is an AI clinical judgment."
 - "This ranks the options."
+- "Draft local workflow rules are active."
 - "This can run on PHI or production data."
 
 ## Files To Review After The Demo

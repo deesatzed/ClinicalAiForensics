@@ -92,6 +92,7 @@ def test_blocked_missing_deferred_and_unsupported_statuses_are_visible() -> None
     assert "monitoring/rescue category is explicit" in canonical_report
     assert "| safety_gate | wrong_indication_blocks:sotalol_as_hf_beta_blocker | unsupported |" in canonical_report
     assert "| decision_profiler | decision_fitness_formula | deferred |" in canonical_report
+    assert "| local_overlay | local_overlay | draft | cde:hf_cde_stable.local_context.overlay_status |" in canonical_report
 
 
 def test_provenance_and_source_references_are_preserved() -> None:
@@ -103,8 +104,35 @@ def test_provenance_and_source_references_are_preserved() -> None:
     assert "domain_pack:hf_ed_discharge_v0_3.mappings.prior_to_options.sglt2_ed_discharge" in report
     assert "domain_pack:hf_ed_discharge_v0_3.mappings.safety_gate_targets.sglt2_blocks" in report
     assert "domain_pack:hf_ed_discharge_v0_3.value_of_information_variables" in report
+    assert "cde:hf_cde_stable.local_context.overlay_status" in report
     assert "pdde_v0_3_first_principles_final/05_PRIOR_AND_UNCERTAINTY_GOVERNANCE.md#Uncertainty Budget" in report
     assert "pdde_v0_3_first_principles_final/schemas/decision_profile.schema.json" in report
+
+
+def test_report_displays_local_overlay_state_without_raw_operational_text() -> None:
+    domain = load_domain_pack(V03_DOMAIN)
+    cde = load_cde(V03_CDE).model_copy(
+        update={
+            "local_context": {
+                "overlay_status": "verified",
+                "overlay_owner": "local workflow owner should not be printed",
+                "overlay_source": "local workflow text should not be printed",
+                "overlay_review_cadence": "quarterly sensitive cadence note",
+                "overlay_last_reviewed": "2026-05-12",
+                "local_free_text": "operational escalation instructions should not be printed",
+            }
+        }
+    )
+
+    report = render_markdown_report(evaluate_cde(cde, domain, n_iterations=10, random_seed=1))
+
+    assert "### Local Overlay Verification" in report
+    assert "| local_overlay | verified | present | present | present | present | none |" in report
+    assert "redacted_local_context_fields=5" in report
+    assert "local workflow owner should not be printed" not in report
+    assert "local workflow text should not be printed" not in report
+    assert "quarterly sensitive cadence note" not in report
+    assert "operational escalation instructions should not be printed" not in report
 
 
 def test_report_does_not_invent_final_conclusions_or_rankings() -> None:

@@ -67,6 +67,7 @@ def test_pipeline_preserves_component_outputs_visibly() -> None:
         "sampled",
         "sampled",
     ]
+    assert result.local_overlay.items[0].status == "draft"
     assert result.value_of_information.items[0].variable == "egfr"
     assert len(result.uncertainty_budget.items) == 7
     assert set(result.decision_profiles.profiles_by_option()) == {
@@ -131,4 +132,5 @@ def test_pipeline_result_serializes_with_all_major_components() -> None:
     assert serialized["simulation"]["prior_simulations"][0]["sample_count"] == 5
     assert serialized["value_of_information"]["items"]
     assert serialized["uncertainty_budget"]["items"]
+    assert serialized["local_overlay"]["items"][0]["status"] == "draft"
     assert serialized["decision_profiles"]["profiles"]

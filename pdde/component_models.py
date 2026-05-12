@@ -267,6 +267,58 @@ class ValueOfInformationEvaluationSet(StrictModel):
         return [item for item in self.items if item.status == "deferred"]
 
 
+LocalOverlayVerificationStatus = Literal["verified", "draft", "deferred", "missing", "unsupported"]
+LocalOverlayRequiredField = Literal["owner", "status", "source", "review_cadence", "last_reviewed"]
+
+
+class LocalOverlayVerificationItem(StrictModel):
+    overlay_id: NonEmptyString
+    status: LocalOverlayVerificationStatus
+    reason: NonEmptyString
+    source: NonEmptyString
+    owner: NonEmptyString | None = None
+    source_reference: NonEmptyString | None = None
+    review_cadence: NonEmptyString | None = None
+    last_reviewed: NonEmptyString | None = None
+    missing_fields: list[LocalOverlayRequiredField] = Field(default_factory=list)
+    external_input_required: bool = False
+    active: bool = False
+
+    @model_validator(mode="after")
+    def require_verified_metadata(self) -> Self:
+        if len(set(self.missing_fields)) != len(self.missing_fields):
+            raise ValueError("local overlay missing_fields cannot contain duplicates")
+
+        metadata_missing = [
+            field_name
+            for field_name, value in {
+                "owner": self.owner,
+                "source": self.source_reference,
+                "review_cadence": self.review_cadence,
+                "last_reviewed": self.last_reviewed,
+            }.items()
+            if value is None
+        ]
+        if self.status == "verified" and (metadata_missing or self.missing_fields):
+            raise ValueError(
+                "verified local overlay items require owner, source, review_cadence, and last_reviewed"
+            )
+        if self.status == "missing" and "status" not in self.missing_fields:
+            raise ValueError("missing local overlay items must identify status as missing")
+        if self.active and self.status != "verified":
+            raise ValueError("only verified local overlay items can be marked active")
+        return self
+
+
+class LocalOverlayVerificationSet(StrictModel):
+    cde_id: NonEmptyString
+    domain_pack_id: NonEmptyString
+    items: list[LocalOverlayVerificationItem] = Field(default_factory=list)
+
+    def unverified_items(self) -> list[LocalOverlayVerificationItem]:
+        return [item for item in self.items if item.status != "verified" or item.missing_fields]
+
+
 DecisionProfileEvaluationStatus = Literal[
     "eligible",
     "blocked",
@@ -356,6 +408,7 @@ StatusLedgerComponent = Literal[
     "monte_carlo_prior",
     "uncertainty_budget_item",
     "value_of_information_item",
+    "local_overlay",
     "decision_profile",
     "decision_profiler",
 ]
@@ -375,6 +428,7 @@ class StatusLedgerRow(StrictModel):
             "active",
             "blocked",
             "deferred",
+            "draft",
             "missing",
             "triggered",
             "unsupported",

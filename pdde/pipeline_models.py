@@ -8,6 +8,7 @@ from pydantic import Field, model_validator
 
 from .component_models import (
     DecisionProfileEvaluationSet,
+    LocalOverlayVerificationSet,
     MonteCarloSimulationResult,
     PriorResolutionSet,
     SafetyGateEvaluationSet,
@@ -31,6 +32,7 @@ class EvaluationPipelineResult(StrictModel):
     simulation: MonteCarloSimulationResult
     value_of_information: ValueOfInformationEvaluationSet
     uncertainty_budget: UncertaintyBudgetEvaluationSet
+    local_overlay: LocalOverlayVerificationSet
     decision_profiles: DecisionProfileEvaluationSet
 
     @model_validator(mode="after")
@@ -43,6 +45,7 @@ class EvaluationPipelineResult(StrictModel):
             (self.simulation.cde_id, self.simulation.domain_pack_id, "simulation"),
             (self.value_of_information.cde_id, self.value_of_information.domain_pack_id, "value_of_information"),
             (self.uncertainty_budget.cde_id, self.uncertainty_budget.domain_pack_id, "uncertainty_budget"),
+            (self.local_overlay.cde_id, self.local_overlay.domain_pack_id, "local_overlay"),
             (self.decision_profiles.cde_id, self.decision_profiles.domain_pack_id, "decision_profiles"),
         ]
         for component_cde_id, component_domain_pack_id, name in component_pairs:

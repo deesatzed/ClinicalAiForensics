@@ -41,6 +41,7 @@ def test_status_ledger_projects_all_pipeline_components() -> None:
         "monte_carlo_prior",
         "uncertainty_budget_item",
         "value_of_information_item",
+        "local_overlay",
         "decision_profile",
         "decision_profiler",
     }.issubset({row.component for row in ledger.rows})
@@ -49,6 +50,7 @@ def test_status_ledger_projects_all_pipeline_components() -> None:
     assert ("prior_resolution", "resolved") in statuses
     assert ("monte_carlo_prior", "sampled") in statuses
     assert ("value_of_information_item", "present") in statuses
+    assert ("local_overlay", "draft") in statuses
     assert ("decision_profile", "eligible") in statuses
     assert ("decision_profiler", "deferred") in statuses
 
@@ -101,6 +103,7 @@ def test_status_ledger_preserves_source_traceability_and_serializes() -> None:
     serialized = json.loads(ledger.model_dump_json())
     assert serialized["rows"][0]["component"] == "decision_option"
     assert any(row["component"] == "decision_profiler" for row in serialized["rows"])
+    assert any(row["component"] == "local_overlay" for row in serialized["rows"])
 
 
 def test_status_ledger_row_rejects_unknown_components() -> None:

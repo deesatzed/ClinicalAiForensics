@@ -152,6 +152,23 @@ def create_provenance_records(
             },
         )
 
+    for item in result.local_overlay.items:
+        append(
+            "local_overlay_verification",
+            {
+                "overlay_id": item.overlay_id,
+                "status": item.status,
+                "source": item.source,
+                "missing_fields": item.missing_fields,
+                "owner_present": item.owner is not None,
+                "source_reference_present": item.source_reference is not None,
+                "review_cadence_present": item.review_cadence is not None,
+                "last_reviewed_present": item.last_reviewed is not None,
+                "external_input_required": item.external_input_required,
+                "active": item.active,
+            },
+        )
+
     for profile in result.decision_profiles.profiles:
         append(
             "decision_profile",
@@ -231,6 +248,7 @@ def _component_counts(result: EvaluationPipelineResult) -> dict[str, int]:
         "monte_carlo_priors": len(result.simulation.prior_simulations),
         "uncertainty_budget_items": len(result.uncertainty_budget.items),
         "value_of_information_items": len(result.value_of_information.items),
+        "local_overlay_items": len(result.local_overlay.items),
         "decision_profiles": len(result.decision_profiles.profiles),
     }
 
@@ -242,6 +260,7 @@ def _component_status_summary(result: EvaluationPipelineResult) -> dict[str, Any
         "monte_carlo_priors": _status_counts(simulation.status for simulation in result.simulation.prior_simulations),
         "uncertainty_budget_items": _status_counts(item.status for item in result.uncertainty_budget.items),
         "value_of_information_items": _status_counts(item.status for item in result.value_of_information.items),
+        "local_overlay_items": _status_counts(item.status for item in result.local_overlay.items),
         "decision_profiles": _status_counts(profile.status for profile in result.decision_profiles.profiles),
         "status_ledger": build_status_ledger(result).status_counts_by_component(),
     }
@@ -262,6 +281,7 @@ def _provenance_references(result: EvaluationPipelineResult) -> list[str]:
             *[simulation.source for simulation in result.simulation.prior_simulations],
             *[item.source for item in result.uncertainty_budget.items],
             *[item.source for item in result.value_of_information.items],
+            *[item.source for item in result.local_overlay.items],
             *[summary.source for summary in result.decision_profiles.input_summaries],
             *[
                 reference

@@ -17,6 +17,7 @@ Phase 0 is local, CLI-only, synthetic, advisory-only, uncalibrated, and not clin
 - Resolves explicit priors from the domain pack while preserving provenance.
 - Samples explicit beta priors with deterministic seeding.
 - Evaluates explicit uncertainty-budget and value-of-information definitions.
+- Records local overlay verification metadata while leaving draft or incomplete local rules inactive.
 - Assembles Decision Profile status records.
 - Renders advisory Markdown reports.
 - Writes status-only provenance JSONL logs.
@@ -32,6 +33,7 @@ Phase 0 is local, CLI-only, synthetic, advisory-only, uncalibrated, and not clin
 - No production deployment.
 - No EHR integration, auth, UI, API service, PDF export, or production database.
 - No AI answer extraction or claim mapping in the Phase 0 runtime path.
+- No active local operational overlay rules without explicit owner/source/review metadata.
 - No validated risk, outcome claim, or calibration claim.
 
 ## Quickstart
@@ -149,6 +151,7 @@ python -m pdde run-cde --cde pdde_v0_3_first_principles_final/examples/hf_cde_st
 - Ignored by git by default; regenerate it from the canonical fixtures when needed.
 - Shows case/domain identifiers, safety gate results, Decision Profile statuses, VOI items, uncertainty-budget items, prior provenance, Monte Carlo prior summaries, unresolved items, calibration status, provenance references, and limitations.
 - Displays synthetic case text and patient-state values because the report is a human-facing synthetic artifact.
+- Displays local overlay verification state, but does not print raw local workflow text.
 - Does not provide a final recommendation or top option.
 
 `logs/hf_cde_stable.jsonl`
@@ -157,7 +160,7 @@ python -m pdde run-cde --cde pdde_v0_3_first_principles_final/examples/hf_cde_st
 - Ignored by git by default; repeated local runs append records and should not be treated as a stable source fixture.
 - Each line is JSON.
 - Records run metadata, component status summaries, safety gate statuses, prior-resolution statuses, Monte Carlo prior statuses, uncertainty-budget statuses, VOI statuses, Decision Profile statuses, source references, command name, package version, seed, iteration count, and report path.
-- Intentionally avoids full raw case text, full patient-state payloads, PHI, gate evidence strings, and raw simulation sample arrays.
+- Intentionally avoids full raw case text, full patient-state payloads, PHI, gate evidence strings, raw simulation sample arrays, and raw local overlay owner/source/review values.
 
 ## Architecture Overview
 
@@ -171,7 +174,10 @@ CLI
   -> Monte Carlo prior sampler
   -> value-of-information evaluator
   -> uncertainty-budget evaluator
+  -> local overlay verification evaluator
   -> Decision Profiler assembler
+  -> status ledger projection
+  -> report section contract
   -> Markdown renderer
   -> JSONL provenance logger
 ```
@@ -181,15 +187,18 @@ CLI
 | `pdde/run_cde.py` | CLI parser and handlers for `validate`, `report`, and `run-cde`. |
 | `pdde/cde_loader.py` | Reads and validates CDE JSON. |
 | `pdde/domain_pack_loader.py` | Reads and validates domain-pack YAML. |
-| `pdde/models.py` | Pydantic data contracts for inputs, explicit domain-pack mappings, component results, pipeline results, reports, and logs. |
+| `pdde/model_base.py`, `pdde/input_models.py`, `pdde/component_models.py`, `pdde/pipeline_models.py`, `pdde/legacy_models.py` | Focused Pydantic data contracts for inputs, explicit domain-pack mappings, component results, pipeline results, and legacy report/log models. |
+| `pdde/models.py` | Backwards-compatible re-export facade for model imports. |
 | `pdde/safety_gate_engine.py` | Evaluates explicit deterministic safety gates using domain-pack gate-target mappings. |
 | `pdde/prior_resolver.py` | Resolves explicit allowed priors and blocks unsupported prior classes. |
 | `pdde/monte_carlo_engine.py` | Samples explicit resolved beta priors with deterministic seeds. |
 | `pdde/value_of_information.py` | Evaluates explicit VOI definitions without inventing VOI math. |
 | `pdde/uncertainty_budget.py` | Evaluates uncertainty-budget categories and deferred items. |
+| `pdde/local_overlay.py` | Evaluates local overlay verification metadata and keeps draft/incomplete local rules inactive. |
 | `pdde/decision_profiler.py` | Assembles Decision Profile statuses using explicit prior-to-option mappings without ranking or recommendation logic. |
 | `pdde/evaluation_pipeline.py` | Orchestrates the deterministic component chain. |
 | `pdde/status_ledger.py` | Projects visible component statuses into a shared ledger for report and provenance summaries. |
+| `pdde/report_contract.py` | Defines required Markdown report sections, ordering, advisory language, and forbidden recommendation phrases. |
 | `pdde/report_renderer.py` | Renders advisory Markdown from the typed pipeline result. |
 | `pdde/provenance_logger.py` | Writes status-only JSONL provenance records. |
 
@@ -204,12 +213,14 @@ CLI
 - Unsupported gates and deferred claim-type gates remain visible rather than silently passing.
 - LLM-unverified priors are blocked from active direct simulation.
 - Monte Carlo is prior-level only and does not produce option rankings.
+- Local overlay rules remain draft, deferred, missing, or unsupported unless explicit verification metadata is complete; even verified metadata does not create local clinical logic.
 - Provenance logs use IDs, statuses, counts, paths, and source references rather than raw clinical payloads.
+- Provenance logs redact raw local overlay owner, source, review-cadence, and last-reviewed values.
 - Tests remove common API-key environment variables and block network access in acceptance coverage.
 
 ## Test Status
 
-Current test status: 107 passing tests across 14 test files.
+Current test status: 124 passing tests across 17 test files.
 
 Run:
 
@@ -217,7 +228,7 @@ Run:
 python -m pytest
 ```
 
-The suite covers model validation, loaders, deterministic safety gates, prior resolution, Monte Carlo reproducibility, uncertainty/VOI evaluation, Decision Profiler assembly, evaluation pipeline, status-ledger projection, report rendering, CLI behavior, provenance logging, and Phase 0 acceptance workflows.
+The suite covers model validation, loaders, deterministic safety gates, prior resolution, Monte Carlo reproducibility, uncertainty/VOI evaluation, local overlay verification, Decision Profiler assembly, evaluation pipeline, status-ledger projection, report-contract guardrails, report rendering, CLI behavior, provenance logging, and Phase 0 acceptance workflows.
 
 ## Phase 1
 

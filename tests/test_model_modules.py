@@ -12,6 +12,7 @@ def test_models_facade_reexports_focused_model_classes() -> None:
     assert models.DomainPack is input_models.DomainPack
     assert models.Prior is input_models.Prior
     assert models.SafetyGateEvaluation is component_models.SafetyGateEvaluation
+    assert models.LocalOverlayVerificationSet is component_models.LocalOverlayVerificationSet
     assert models.StatusLedger is component_models.StatusLedger
     assert models.EvaluationPipelineResult is pipeline_models.EvaluationPipelineResult
     assert models.DecisionProfile is legacy_models.DecisionProfile
@@ -34,6 +35,7 @@ def test_pipeline_result_serialization_surface_survives_module_split() -> None:
     assert isinstance(result, pipeline_models.EvaluationPipelineResult)
     assert isinstance(result.cde, input_models.ClinicalDecisionEpisode)
     assert isinstance(result.safety_gates, component_models.SafetyGateEvaluationSet)
+    assert isinstance(result.local_overlay, component_models.LocalOverlayVerificationSet)
 
     serialized = json.loads(result.model_dump_json())
     assert serialized["workflow_mode"] == "direct_cde_simulation"

@@ -13,6 +13,7 @@ from .cde_loader import load_cde
 from .decision_profiler import assemble_decision_profiles
 from .domain_pack_loader import load_domain_pack
 from .input_models import ClinicalDecisionEpisode, DomainPack
+from .local_overlay import evaluate_local_overlay
 from .monte_carlo_engine import DEFAULT_ITERATIONS, simulate_resolved_priors
 from .pipeline_models import EvaluationPipelineResult
 from .prior_resolver import resolve_priors
@@ -73,6 +74,7 @@ def evaluate_cde(
         simulation=simulation,
         value_of_information=value_of_information,
     )
+    local_overlay = evaluate_local_overlay(cde, domain_pack)
     decision_profiles = assemble_decision_profiles(
         cde,
         domain_pack,
@@ -95,5 +97,6 @@ def evaluate_cde(
         simulation=simulation,
         value_of_information=value_of_information,
         uncertainty_budget=uncertainty_budget,
+        local_overlay=local_overlay,
         decision_profiles=decision_profiles,
     )

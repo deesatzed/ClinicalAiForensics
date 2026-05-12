@@ -73,7 +73,7 @@ def _decision_episode_summary(result: EvaluationPipelineResult) -> str:
         ("Candidate options", result.cde.candidate_options),
         ("Patient state", patient_state),
         ("Source recommendations", source_recommendations),
-        ("Local context", _dict_items(result.cde.local_context) or ["n/a"]),
+        ("Local context metadata", _safe_local_context_items(result.cde.local_context) or ["n/a"]),
         ("Outcome tracking", _dict_items(result.cde.outcome_tracking) or ["n/a"]),
     ]
     return "## Decision Episode Summary\n\n" + _table(["Field", "Value"], rows)
@@ -204,7 +204,19 @@ def _uncertainty_budget(result: EvaluationPipelineResult) -> str:
 
 
 def _local_execution_checklist(result: EvaluationPipelineResult) -> str:
-    local_context = _dict_items(result.cde.local_context) or ["No CDE local_context fields provided."]
+    overlay_rows = [
+        (
+            item.overlay_id,
+            item.status,
+            _present(item.owner),
+            _present(item.source_reference),
+            _present(item.review_cadence),
+            _present(item.last_reviewed),
+            item.missing_fields or "none",
+            item.reason,
+        )
+        for item in result.local_overlay.items
+    ]
     local_items = [
         item
         for item in result.uncertainty_budget.items
@@ -223,9 +235,23 @@ def _local_execution_checklist(result: EvaluationPipelineResult) -> str:
         rows = [("local_execution_uncertainty", "deferred", "n/a", "No local execution items returned.")]
     return (
         "## Local Execution Checklist\n\n"
-        "The current renderer does not verify local workflow. It displays existing local "
-        "context and pipeline items only.\n\n"
-        f"Local context: {_inline(local_context)}\n\n"
+        "The pipeline records local overlay verification metadata only. It does not apply "
+        "local workflow rules, and raw local workflow text is not printed.\n\n"
+        "### Local Overlay Verification\n\n"
+        + _table(
+            [
+                "Overlay",
+                "Status",
+                "Owner",
+                "Source",
+                "Review cadence",
+                "Last reviewed",
+                "Missing fields",
+                "Reason",
+            ],
+            overlay_rows,
+        )
+        + "\n\n### Local Uncertainty Items\n\n"
         + _table(["Item", "Status", "Required data", "Reason"], rows)
     )
 
@@ -373,6 +399,7 @@ def _provenance_references(result: EvaluationPipelineResult) -> str:
             *[item.source for item in result.simulation.prior_simulations],
             *[item.source for item in result.value_of_information.items],
             *[item.source for item in result.uncertainty_budget.items],
+            *[item.source for item in result.local_overlay.items],
             *[item.source for item in result.decision_profiles.input_summaries],
             *[
                 reference
@@ -393,6 +420,7 @@ def _limitations() -> str:
         "Monte Carlo summaries are prior-level only and cannot override safety gates.",
         "Wrong-indication claim gates that require AI answer mapping remain unsupported in direct CDE simulation.",
         "Local workflow and monitoring pathways remain draft or deferred unless explicitly verified in source data.",
+        "Local overlay verification records metadata presence only and does not activate local clinical rules.",
         "No PHI should be used; current fixtures are synthetic.",
     ]
     return "## Limitations\n\n" + "\n".join(f"- {item}" for item in limitations)
@@ -448,6 +476,26 @@ def _inline(value: Any) -> str:
 
 def _dict_items(value: dict[str, Any]) -> list[str]:
     return [f"{key}={_inline(value[key])}" for key in sorted(value)]
+
+
+def _safe_local_context_items(value: dict[str, Any]) -> list[str]:
+    safe_keys = {
+        "derived_from",
+        "fixture_kind",
+        "overlay_status",
+        "phi_status",
+        "synthetic",
+        "variant_focus",
+    }
+    items = [f"{key}={_inline(value[key])}" for key in sorted(value) if key in safe_keys]
+    hidden_count = len([key for key in value if key not in safe_keys])
+    if hidden_count:
+        items.append(f"redacted_local_context_fields={hidden_count}")
+    return items
+
+
+def _present(value: Any | None) -> str:
+    return "present" if value is not None else "missing"
 
 
 def _parameters(parameters: dict[str, float] | None) -> str:

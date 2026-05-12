@@ -34,6 +34,7 @@ def build_status_ledger(result: EvaluationPipelineResult) -> StatusLedger:
     rows.extend(_monte_carlo_rows(result))
     rows.extend(_uncertainty_budget_rows(result))
     rows.extend(_value_of_information_rows(result))
+    rows.extend(_local_overlay_rows(result))
     rows.extend(_decision_profile_rows(result))
 
     return StatusLedger(
@@ -152,6 +153,21 @@ def _value_of_information_rows(result: EvaluationPipelineResult) -> list[StatusL
     ]
 
 
+def _local_overlay_rows(result: EvaluationPipelineResult) -> list[StatusLedgerRow]:
+    return [
+        StatusLedgerRow(
+            component="local_overlay",
+            identifier=item.overlay_id,
+            status=item.status,
+            reason=item.reason,
+            source=item.source,
+            provenance_references=_unique([item.source]),
+            related_entity_ids=_related_entities(local_overlay_ids=[item.overlay_id]),
+        )
+        for item in result.local_overlay.items
+    ]
+
+
 def _decision_profile_rows(result: EvaluationPipelineResult) -> list[StatusLedgerRow]:
     prior_ids_by_option = result.domain_pack.mappings.prior_ids_by_option()
     return [
@@ -199,6 +215,7 @@ def _related_entities(
     claim_types: Iterable[str | None] = (),
     uncertainty_items: Iterable[str | None] = (),
     value_of_information_items: Iterable[str | None] = (),
+    local_overlay_ids: Iterable[str | None] = (),
 ) -> dict[str, list[str]]:
     related = {
         "option_ids": _unique(option_ids),
@@ -208,6 +225,7 @@ def _related_entities(
         "claim_types": _unique(claim_types),
         "uncertainty_items": _unique(uncertainty_items),
         "value_of_information_items": _unique(value_of_information_items),
+        "local_overlay_ids": _unique(local_overlay_ids),
     }
     return {key: values for key, values in related.items() if values}
 

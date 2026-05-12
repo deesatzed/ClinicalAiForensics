@@ -722,7 +722,7 @@ Verification:
 
 ### P1-007: Local Overlay Verification Contract
 
-Status: pending
+Status: done
 
 Scope:
 
@@ -734,6 +734,25 @@ Acceptance:
 - Local overlay rules require or visibly defer owner, status, source, review cadence, and last-reviewed fields where applicable.
 - Reports and logs display verification state without PHI or operationally sensitive free text.
 - External local workflow owner input is documented if needed.
+
+Verification:
+
+- `pdde/local_overlay.py` evaluates explicit CDE `local_context` overlay metadata only.
+- typed local overlay verification models require verified metadata and reject malformed verified objects.
+- missing, malformed, unsupported, draft, and deferred local overlay states remain visible.
+- reports display local overlay verification state and avoid raw local workflow text.
+- JSONL logs record local overlay status, missing fields, and metadata-presence booleans without raw owner/source/review values.
+- status ledger includes `local_overlay` rows so draft overlay status appears in unresolved items.
+- no local rule becomes active solely because it exists in a draft source file.
+- `python -m pytest` passed, 124 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL.
 
 ### P1-008: AI Answer Mapping Interface
 
@@ -782,7 +801,7 @@ Acceptance:
 
 ## Queue State
 
-Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, and `P1-006` are complete. The next unblocked task is `P1-007: Local Overlay Verification Contract`.
+Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, and `P1-007` are complete. `P1-008: AI Answer Mapping Interface` remains deferred until explicit authorization exists for AI answer mapping.
 
 ## Deferred
 

@@ -3,7 +3,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from pdde.evaluation_pipeline import run_evaluation_pipeline
+from pdde.cde_loader import load_cde
+from pdde.domain_pack_loader import load_domain_pack
+from pdde.evaluation_pipeline import evaluate_cde, run_evaluation_pipeline
 from pdde.provenance_logger import append_jsonl, create_provenance_records, records_to_jsonl, write_jsonl
 
 
@@ -69,13 +71,29 @@ def test_log_records_include_key_component_statuses() -> None:
     assert summary["payload"]["monte_carlo_priors"] == {"sampled": 3}
     assert summary["payload"]["uncertainty_budget_items"]["deferred"] == 2
     assert summary["payload"]["value_of_information_items"] == {"present": 8}
+    assert summary["payload"]["local_overlay_items"] == {"draft": 1}
     assert summary["payload"]["decision_profiles"]["eligible"] == 4
     assert summary["payload"]["decision_profiles"]["missing"] == 1
     assert summary["payload"]["status_ledger"]["safety_gate"]["missing"] == 1
     assert summary["payload"]["status_ledger"]["safety_gate"]["unsupported"] == 2
     assert summary["payload"]["status_ledger"]["prior_resolution"] == {"resolved": 3}
     assert summary["payload"]["status_ledger"]["monte_carlo_prior"] == {"sampled": 3}
+    assert summary["payload"]["status_ledger"]["local_overlay"] == {"draft": 1}
     assert summary["payload"]["status_ledger"]["decision_profiler"] == {"deferred": 1}
+
+    overlay_record = next(record for record in records if record["log_type"] == "local_overlay_verification")
+    assert overlay_record["payload"] == {
+        "overlay_id": "local_overlay",
+        "status": "draft",
+        "source": "cde:hf_cde_stable.local_context.overlay_status",
+        "missing_fields": ["owner", "source", "review_cadence", "last_reviewed"],
+        "owner_present": False,
+        "source_reference_present": False,
+        "review_cadence_present": False,
+        "last_reviewed_present": False,
+        "external_input_required": True,
+        "active": False,
+    }
 
     profile_records = [record for record in records if record["log_type"] == "decision_profile"]
     assert {record["payload"]["option_id"] for record in profile_records} == {
@@ -112,6 +130,46 @@ def test_log_records_do_not_include_full_raw_case_content_or_values() -> None:
     assert "samples" not in jsonl
     assert "case_text" not in jsonl
     assert '"patient_state":' not in jsonl
+    assert "local workflow text" not in jsonl
+    assert "overlay_owner" not in jsonl
+    assert '"source_reference":' not in jsonl
+
+
+def test_local_overlay_log_redacts_raw_owner_source_and_review_values() -> None:
+    cde = load_cde(V03_CDE).model_copy(
+        update={
+            "local_context": {
+                "overlay_status": "verified",
+                "overlay_owner": "local workflow owner should not be logged",
+                "overlay_source": "local workflow text should not be logged",
+                "overlay_review_cadence": "quarterly sensitive cadence note",
+                "overlay_last_reviewed": "2026-05-12",
+            }
+        }
+    )
+    result = evaluate_cde(cde, load_domain_pack(V03_DOMAIN), n_iterations=5, random_seed=17)
+
+    jsonl = records_to_jsonl(
+        create_provenance_records(
+            result,
+            command_name="report",
+            timestamp=TIMESTAMP,
+            run_id="run_overlay_redaction",
+        )
+    )
+
+    assert "local workflow owner should not be logged" not in jsonl
+    assert "local workflow text should not be logged" not in jsonl
+    assert "quarterly sensitive cadence note" not in jsonl
+    assert "2026-05-12" not in jsonl
+    overlay_record = next(
+        json.loads(line)
+        for line in jsonl.splitlines()
+        if json.loads(line)["log_type"] == "local_overlay_verification"
+    )
+    assert overlay_record["payload"]["status"] == "verified"
+    assert overlay_record["payload"]["owner_present"] is True
+    assert overlay_record["payload"]["source_reference_present"] is True
 
 
 def test_timestamp_and_derived_run_id_can_be_deterministic() -> None:
