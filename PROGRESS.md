@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, and `P1-003: Canonical Synthetic Variant Fixtures` are complete. The next unblocked task is `P1-004: Normalized Status Ledger`.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, and `P1-004: Normalized Status Ledger` are complete. The next unblocked task is `P1-005: Model Module Split`.
 
 Created the root project-control files:
 
@@ -151,6 +151,41 @@ Verification:
 - all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
 - all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/...`.
 - `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the final verification append it contained 468 JSONL records.
+
+## P1-004 Completed
+
+Completed `P1-004: Normalized Status Ledger`.
+
+Implemented:
+
+- `StatusLedgerRow` and `StatusLedger` typed models in `pdde/models.py`.
+- `pdde/status_ledger.py` as a deterministic projection layer over existing pipeline outputs.
+- status-ledger projection for decision options, explicit domain mappings, safety gates, prior resolutions, Monte Carlo priors, uncertainty-budget items, VOI items, Decision Profiles, and the deferred Decision Profiler formula.
+- report unresolved-items rendering from `StatusLedger.unresolved_rows()`.
+- provenance component summaries from `StatusLedger.status_counts_by_component()` without logging ledger reasons or raw case values.
+
+Test updates:
+
+- added `tests/test_status_ledger.py`.
+- extended report-renderer tests to prove ledger-backed unresolved rows remain visible.
+- extended provenance-logger tests to prove ledger status summaries are emitted without adding raw clinical text.
+
+Guardrails preserved:
+
+- no runtime clinical logic, CLI behavior, final recommendations, AI/LLM judgment, hidden scoring, thresholds, utilities, formulas, PHI handling, or production behavior were added.
+- the ledger is a projection and status-visibility contract only; it does not evaluate gates, resolve priors, sample distributions, or assemble profiles.
+
+Verification:
+
+- `python -m pytest` passed, 107 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
+- all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/...`.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL.
 
 Created the initial implementation scaffold:
 

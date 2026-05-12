@@ -71,6 +71,11 @@ def test_log_records_include_key_component_statuses() -> None:
     assert summary["payload"]["value_of_information_items"] == {"present": 8}
     assert summary["payload"]["decision_profiles"]["eligible"] == 4
     assert summary["payload"]["decision_profiles"]["missing"] == 1
+    assert summary["payload"]["status_ledger"]["safety_gate"]["missing"] == 1
+    assert summary["payload"]["status_ledger"]["safety_gate"]["unsupported"] == 2
+    assert summary["payload"]["status_ledger"]["prior_resolution"] == {"resolved": 3}
+    assert summary["payload"]["status_ledger"]["monte_carlo_prior"] == {"sampled": 3}
+    assert summary["payload"]["status_ledger"]["decision_profiler"] == {"deferred": 1}
 
     profile_records = [record for record in records if record["log_type"] == "decision_profile"]
     assert {record["payload"]["option_id"] for record in profile_records} == {

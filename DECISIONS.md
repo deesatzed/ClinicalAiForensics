@@ -273,3 +273,11 @@ Decision: `P1-003` promotes the stable, low eGFR, high potassium, low SBP, no fo
 Reason: Phase 1 needs inspectable scenario fixtures that reviewers can validate and run through the public CLI/API, instead of relying only on hidden in-test mutations. Keeping them under root `examples/` matches `IMPLEMENT.md` and leaves the original v0.3 source package intact.
 
 Impact: Tests now exercise core scenario behavior through fixture files and public pipeline/CLI boundaries. No runtime behavior, CLI behavior, domain-pack mappings, clinical thresholds, utilities, scoring formulas, final recommendations, PHI handling, or AI/LLM judgment were added.
+
+## D-035: Normalized Status Ledger Is A Projection Contract
+
+Decision: `P1-004` adds `StatusLedgerRow`, `StatusLedger`, and `pdde/status_ledger.py` as a shared projection over existing typed component outputs. Report rendering consumes unresolved ledger rows, and provenance logging consumes ledger status counts only.
+
+Reason: Phase 1 needs one auditable status contract for missing, unsupported, blocked, active, deferred, present, resolved, sampled, and eligible states before report/log semantics expand further. Keeping the ledger as a projection avoids turning it into a hidden reasoning layer.
+
+Impact: The ledger preserves component identifiers, statuses, reasons for report display, source references, provenance references, and related entity IDs. JSONL logs intentionally use aggregate ledger status counts rather than ledger reasons so raw clinical evidence strings and patient-state values are not added to logs. No clinical thresholds, utilities, formulas, final recommendations, AI/LLM judgment, CLI behavior, or PHI handling were added.

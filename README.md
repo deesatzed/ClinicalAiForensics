@@ -189,6 +189,7 @@ CLI
 | `pdde/uncertainty_budget.py` | Evaluates uncertainty-budget categories and deferred items. |
 | `pdde/decision_profiler.py` | Assembles Decision Profile statuses using explicit prior-to-option mappings without ranking or recommendation logic. |
 | `pdde/evaluation_pipeline.py` | Orchestrates the deterministic component chain. |
+| `pdde/status_ledger.py` | Projects visible component statuses into a shared ledger for report and provenance summaries. |
 | `pdde/report_renderer.py` | Renders advisory Markdown from the typed pipeline result. |
 | `pdde/provenance_logger.py` | Writes status-only JSONL provenance records. |
 
@@ -208,7 +209,7 @@ CLI
 
 ## Test Status
 
-Current test status: 103 passing tests across 13 test files.
+Current test status: 107 passing tests across 14 test files.
 
 Run:
 
@@ -216,7 +217,7 @@ Run:
 python -m pytest
 ```
 
-The suite covers model validation, loaders, deterministic safety gates, prior resolution, Monte Carlo reproducibility, uncertainty/VOI evaluation, Decision Profiler assembly, evaluation pipeline, report rendering, CLI behavior, provenance logging, and Phase 0 acceptance workflows.
+The suite covers model validation, loaders, deterministic safety gates, prior resolution, Monte Carlo reproducibility, uncertainty/VOI evaluation, Decision Profiler assembly, evaluation pipeline, status-ledger projection, report rendering, CLI behavior, provenance logging, and Phase 0 acceptance workflows.
 
 ## Phase 1
 

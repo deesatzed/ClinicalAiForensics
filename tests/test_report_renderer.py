@@ -96,6 +96,8 @@ def test_blocked_missing_deferred_and_unsupported_statuses_are_visible() -> None
     assert "claim_type gate 'sotalol_as_hf_beta_blocker' requires mapped claim types" in canonical_report
     assert "deferred" in canonical_report
     assert "monitoring/rescue category is explicit" in canonical_report
+    assert "| safety_gate | wrong_indication_blocks:sotalol_as_hf_beta_blocker | unsupported |" in canonical_report
+    assert "| decision_profiler | decision_fitness_formula | deferred |" in canonical_report
 
 
 def test_provenance_and_source_references_are_preserved() -> None:

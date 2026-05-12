@@ -618,7 +618,7 @@ Verification:
 
 ### P1-004: Normalized Status Ledger
 
-Status: pending
+Status: done
 
 Scope:
 
@@ -631,6 +631,24 @@ Acceptance:
 - Report rendering and provenance logging can consume the shared status contract or a clearly equivalent projection.
 - Tests prove unresolved statuses do not disappear.
 - Logs remain status-only and avoid raw case text.
+
+Verification:
+
+- `StatusLedgerRow` and `StatusLedger` provide the typed shared status contract.
+- `pdde/status_ledger.py` projects decision-option, domain-mapping, safety-gate, prior-resolution, Monte Carlo prior, uncertainty-budget, VOI, Decision Profile, and Decision Profiler statuses into deterministic ledger rows.
+- The Markdown report unresolved-items section consumes `StatusLedger.unresolved_rows()` so missing, unsupported, blocked, active, and deferred items stay visible.
+- JSONL provenance logging consumes `StatusLedger.status_counts_by_component()` in the component summary while avoiding ledger reasons and raw case content.
+- Tests cover ledger projection, source/provenance traceability, serialization, unknown-component validation failure, unresolved status preservation, report visibility, and log status summaries.
+- No runtime clinical logic, CLI behavior, final recommendations, AI/LLM judgment, hidden scoring, thresholds, utilities, formulas, or PHI handling were added.
+- `python -m pytest` passed, 107 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL.
 
 ### P1-005: Model Module Split
 
@@ -724,7 +742,7 @@ Acceptance:
 
 ## Queue State
 
-Phase 1 is active. `P1-001`, `P1-002`, and `P1-003` are complete. The next unblocked task is `P1-004: Normalized Status Ledger`.
+Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, and `P1-004` are complete. The next unblocked task is `P1-005: Model Module Split`.
 
 ## Deferred
 

@@ -4,7 +4,7 @@ Last updated: 2026-05-12
 
 ## Recon Summary
 
-This root folder is now a git-backed project-planning and source-material workspace with an initial Python package scaffold for building `ClinAIForensics`. It has a root `pyproject.toml`, a scaffolded `pdde/` package, initial data models, minimal CDE/domain-pack loaders, explicit domain-pack mapping models, a deterministic safety gate engine, a deterministic prior resolver, a seeded Monte Carlo prior sampler, uncertainty-budget and value-of-information item evaluators, a deterministic Decision Profiler assembly layer, a typed end-to-end evaluation pipeline, a deterministic Markdown report renderer, CLI report/run wiring, JSONL provenance logging, canonical synthetic example CDE fixtures, Phase 0 acceptance tests, a Phase 0 build log/manual structural review, a Phase 0 handoff package, technical reviewer documentation, a Phase 1 planning artifact, a Phase 0 baseline/artifact policy, a focused `tests/` directory, canonical support directories, and a root remote at `https://github.com/deesatzed/ClinicalAiForensics.git`.
+This root folder is now a git-backed project-planning and source-material workspace with an initial Python package scaffold for building `ClinAIForensics`. It has a root `pyproject.toml`, a scaffolded `pdde/` package, initial data models, minimal CDE/domain-pack loaders, explicit domain-pack mapping models, a deterministic safety gate engine, a deterministic prior resolver, a seeded Monte Carlo prior sampler, uncertainty-budget and value-of-information item evaluators, a deterministic Decision Profiler assembly layer, a typed end-to-end evaluation pipeline, a normalized status-ledger projection layer, a deterministic Markdown report renderer, CLI report/run wiring, JSONL provenance logging, canonical synthetic example CDE fixtures, Phase 0 acceptance tests, a Phase 0 build log/manual structural review, a Phase 0 handoff package, technical reviewer documentation, a Phase 1 planning artifact, a Phase 0 baseline/artifact policy, a focused `tests/` directory, canonical support directories, and a root remote at `https://github.com/deesatzed/ClinicalAiForensics.git`.
 
 The intended project appears to be a Phase 0 Python CLI for PDDE: a Clinical Decision Episode simulator and governance engine for HF ED discharge decisions. It should load synthetic CDE fixtures and an HF domain pack, run deterministic safety gates before probabilistic simulation, and render advisory-only Markdown Decision Profiles with provenance, uncertainty budget, value-of-information, local overlay status, and calibration status.
 
@@ -32,8 +32,8 @@ The supporting `ClinSafer/` and `Agent_Pidgeon/` workspaces are tracked from the
 | `BASELINE_POLICY.md` | Phase 0 baseline tag, root git strategy, submodule policy, generated report/log artifact policy, and Phase 1 boundary guardrails. |
 | `pyproject.toml` | Initial Python package metadata and dependency groups. |
 | `.gitignore` | Local/generated-file ignore rules, including ignored generated `reports/*.md` and `logs/*.jsonl`. |
-| `pdde/` | Phase 0/Phase 1 implementation package. Contains CLI wiring, Pydantic data models, explicit domain-pack mapping models, CDE/domain-pack loaders, deterministic safety gate evaluation, deterministic prior resolution, seeded prior-level Monte Carlo sampling, item-level uncertainty/VOI evaluation, deterministic Decision Profile assembly, a typed evaluation pipeline, deterministic Markdown report rendering, and JSONL provenance logging. |
-| `tests/` | Focused scaffold, model, loader, safety gate, prior resolver, Monte Carlo prior-sampling, uncertainty/VOI, Decision Profiler, evaluation pipeline, report-renderer, CLI report, provenance-logger, and acceptance tests. |
+| `pdde/` | Phase 0/Phase 1 implementation package. Contains CLI wiring, Pydantic data models, explicit domain-pack mapping models, CDE/domain-pack loaders, deterministic safety gate evaluation, deterministic prior resolution, seeded prior-level Monte Carlo sampling, item-level uncertainty/VOI evaluation, deterministic Decision Profile assembly, a typed evaluation pipeline, normalized status-ledger projection, deterministic Markdown report rendering, and JSONL provenance logging. |
+| `tests/` | Focused scaffold, model, loader, safety gate, prior resolver, Monte Carlo prior-sampling, uncertainty/VOI, Decision Profiler, evaluation pipeline, status-ledger, report-renderer, CLI report, provenance-logger, and acceptance tests. |
 | `domain_packs/` | Canonical future domain-pack location. |
 | `examples/` | Canonical root synthetic CDE fixture location. Contains stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing-labs/missing-oxygen CDE fixtures derived from the v0.3 stable fixture. |
 | `reports/` | Canonical generated report output location. Contains generated fixture reports from TQ-011 verification. |
@@ -195,6 +195,7 @@ CLI
     -> Value-of-information ranker
     -> Uncertainty budget generator
     -> Decision profiler
+    -> Status ledger projection
   -> Markdown report renderer
   -> JSONL provenance logger
 ```
@@ -213,6 +214,7 @@ pdde/
   value_of_information.py
   decision_profiler.py
   evaluation_pipeline.py
+  status_ledger.py
   report_renderer.py
   provenance_logger.py
   run_cde.py
@@ -227,11 +229,12 @@ Expected data flow:
 5. Evaluate deterministic hard gates through explicit domain-pack gate-target mappings.
 6. Run Monte Carlo only for soft, non-overriding tradeoffs.
 7. Generate one Decision Profile per option using explicit prior-to-option mappings.
-8. Render Markdown and append JSONL-compatible audit records.
+8. Project component statuses into a normalized status ledger for report/log visibility.
+9. Render Markdown and append JSONL-compatible audit records.
 
 ## Current Build Status
 
-`TQ-001: Project Setup And Source Normalization`, `TQ-002: Data Models`, `TQ-003: CDE And Domain-Pack Loaders`, `TQ-004: Deterministic Safety Gate Engine`, `TQ-005: Prior Resolver`, `TQ-006: Monte Carlo Engine`, `TQ-007: Uncertainty Budget And Value Of Information`, `TQ-008: Decision Profiler`, `TQ-009: Evaluation Pipeline`, `TQ-010: Markdown Report Renderer`, `TQ-011: CLI Run And Validate Commands`, `TQ-012: Provenance Logging`, `TQ-013: Phase 0 Acceptance Tests`, `TQ-014: Build Log And Manual Structural Review`, `TQ-015: Phase 0 Handoff Package`, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, and `P1-003: Canonical Synthetic Variant Fixtures` are complete. Phase 1 is active.
+`TQ-001: Project Setup And Source Normalization`, `TQ-002: Data Models`, `TQ-003: CDE And Domain-Pack Loaders`, `TQ-004: Deterministic Safety Gate Engine`, `TQ-005: Prior Resolver`, `TQ-006: Monte Carlo Engine`, `TQ-007: Uncertainty Budget And Value Of Information`, `TQ-008: Decision Profiler`, `TQ-009: Evaluation Pipeline`, `TQ-010: Markdown Report Renderer`, `TQ-011: CLI Run And Validate Commands`, `TQ-012: Provenance Logging`, `TQ-013: Phase 0 Acceptance Tests`, `TQ-014: Build Log And Manual Structural Review`, `TQ-015: Phase 0 Handoff Package`, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, and `P1-004: Normalized Status Ledger` are complete. Phase 1 is active.
 
 Completed setup/model work:
 
@@ -269,6 +272,9 @@ Completed setup/model work:
 - evaluation pipeline result model in `pdde/models.py`,
 - direct CDE evaluation pipeline in `pdde/evaluation_pipeline.py`,
 - evaluation pipeline tests in `tests/test_evaluation_pipeline.py`,
+- normalized status-ledger models in `pdde/models.py`,
+- deterministic status-ledger projection in `pdde/status_ledger.py`,
+- status-ledger tests in `tests/test_status_ledger.py`,
 - deterministic Markdown report renderer in `pdde/report_renderer.py`,
 - report renderer tests in `tests/test_report_renderer.py`,
 - `report` CLI command that prints Markdown to stdout or writes `--output`,
@@ -295,7 +301,7 @@ The package intentionally does not include final recommendation ranking, numeric
 
 No non-deferred Phase 0 implementation task remains in the current task queue, and the Phase 0 handoff package is complete.
 
-The next unblocked Phase 1 task is `P1-004: Normalized Status Ledger`.
+The next unblocked Phase 1 task is `P1-005: Model Module Split`.
 
 ## Risks And Blockers
 
@@ -321,7 +327,7 @@ Mitigation: the current prior resolver blocks `llm_unverified` and `low_unverifi
 - The current Monte Carlo layer samples resolved priors only; it does not produce numeric per-option posteriors.
 - The current uncertainty/VOI layer returns item statuses and deferred states, not numeric sensitivity or expected-value claims.
 - The current Decision Profiler assembles transparent status profiles but does not compute ranks, median fitness, final categories, or uncertainty intervals because the v0.3 source files do not define those formulas.
-- The current evaluation pipeline preserves all component outputs, the CLI/report renderer displays them as advisory Markdown, and the provenance logger records status-only JSONL without adding recommendation ranking or raw clinical payload logs.
+- The current evaluation pipeline preserves all component outputs, the status ledger projects visible component statuses without adding reasoning, the CLI/report renderer displays advisory Markdown, and the provenance logger records status-only JSONL without adding recommendation ranking or raw clinical payload logs.
 
 Mitigation: every report needs advisory warnings, prior provenance, calibration status, uncertainty budget, and visible limitations.
 

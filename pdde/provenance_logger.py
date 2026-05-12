@@ -12,6 +12,7 @@ from typing import Any
 
 from . import __version__
 from .models import EvaluationPipelineResult
+from .status_ledger import build_status_ledger
 
 
 ProvenanceRecord = dict[str, Any]
@@ -234,7 +235,7 @@ def _component_counts(result: EvaluationPipelineResult) -> dict[str, int]:
     }
 
 
-def _component_status_summary(result: EvaluationPipelineResult) -> dict[str, dict[str, int]]:
+def _component_status_summary(result: EvaluationPipelineResult) -> dict[str, Any]:
     return {
         "safety_gates": _status_counts(evaluation.status for evaluation in result.safety_gates.evaluations),
         "prior_resolutions": _status_counts(resolution.status for resolution in result.prior_resolutions.resolutions),
@@ -242,6 +243,7 @@ def _component_status_summary(result: EvaluationPipelineResult) -> dict[str, dic
         "uncertainty_budget_items": _status_counts(item.status for item in result.uncertainty_budget.items),
         "value_of_information_items": _status_counts(item.status for item in result.value_of_information.items),
         "decision_profiles": _status_counts(profile.status for profile in result.decision_profiles.profiles),
+        "status_ledger": build_status_ledger(result).status_counts_by_component(),
     }
 
 

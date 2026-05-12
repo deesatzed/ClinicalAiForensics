@@ -12,6 +12,7 @@ from collections.abc import Iterable
 from typing import Any
 
 from .models import EvaluationPipelineResult
+from .status_ledger import build_status_ledger
 
 
 def render_markdown_report(result: EvaluationPipelineResult) -> str:
@@ -327,26 +328,17 @@ def _monte_carlo_summaries(result: EvaluationPipelineResult) -> str:
 
 
 def _items_requiring_attention(result: EvaluationPipelineResult) -> str:
-    rows: list[tuple[Any, ...]] = []
-    for summary in result.decision_profiles.unresolved_inputs():
-        rows.append(
-            (
-                summary.input_type,
-                summary.identifier,
-                summary.status,
-                summary.source or "n/a",
-                summary.reason,
-            )
+    ledger = build_status_ledger(result)
+    rows: list[tuple[Any, ...]] = [
+        (
+            row.component,
+            row.identifier,
+            row.status,
+            row.source or "n/a",
+            row.reason,
         )
-    for profile in result.decision_profiles.profiles:
-        for blocker in profile.active_blockers:
-            rows.append(("decision_profile", profile.option_id, "blocked", profile.source, blocker))
-        for missing in profile.missing_data:
-            rows.append(("decision_profile", profile.option_id, "missing", profile.source, missing))
-        for unsupported in profile.unsupported_inputs:
-            rows.append(("decision_profile", profile.option_id, "unsupported", profile.source, unsupported))
-        for deferred in profile.deferred_reasons:
-            rows.append(("decision_profile", profile.option_id, "deferred", profile.source, deferred))
+        for row in ledger.unresolved_rows()
+    ]
     if not rows:
         rows = [("pipeline", "none", "none", "n/a", "No missing, unsupported, blocked, active, or deferred items.")]
     return "## Missing Unsupported Deferred And Blocked Items\n\n" + _table(

@@ -466,6 +466,58 @@ class DecisionProfileEvaluationSet(StrictModel):
         return [item for item in self.input_summaries if item.status == "deferred"]
 
 
+StatusLedgerComponent = Literal[
+    "decision_option",
+    "domain_mapping",
+    "safety_gate",
+    "prior_resolution",
+    "monte_carlo_prior",
+    "uncertainty_budget_item",
+    "value_of_information_item",
+    "decision_profile",
+    "decision_profiler",
+]
+
+
+class StatusLedgerRow(StrictModel):
+    component: StatusLedgerComponent
+    identifier: NonEmptyString
+    status: NonEmptyString
+    reason: NonEmptyString
+    source: NonEmptyString | None = None
+    provenance_references: list[NonEmptyString] = Field(default_factory=list)
+    related_entity_ids: dict[str, list[NonEmptyString]] = Field(default_factory=dict)
+
+    def is_unresolved(self) -> bool:
+        return self.status in {
+            "active",
+            "blocked",
+            "deferred",
+            "missing",
+            "triggered",
+            "unsupported",
+        }
+
+
+class StatusLedger(StrictModel):
+    cde_id: NonEmptyString
+    domain_pack_id: NonEmptyString
+    rows: list[StatusLedgerRow] = Field(default_factory=list)
+
+    def unresolved_rows(self) -> list[StatusLedgerRow]:
+        return [row for row in self.rows if row.is_unresolved()]
+
+    def status_counts_by_component(self) -> dict[str, dict[str, int]]:
+        counts: dict[str, dict[str, int]] = {}
+        for row in self.rows:
+            component_counts = counts.setdefault(row.component, {})
+            component_counts[row.status] = component_counts.get(row.status, 0) + 1
+        return {
+            component: dict(sorted(component_counts.items()))
+            for component, component_counts in sorted(counts.items())
+        }
+
+
 class DomainPack(StrictModel):
     domain_pack_id: NonEmptyString
     version: NonEmptyString
