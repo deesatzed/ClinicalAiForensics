@@ -171,7 +171,7 @@ python -m pytest
 
 What to look for:
 
-- `91 passed`
+- `96 passed`
 
 Safe explanation:
 

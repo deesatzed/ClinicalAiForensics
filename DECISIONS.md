@@ -257,3 +257,11 @@ Decision: Phase 1 is active by explicit user instruction, and `P1-001` is comple
 Reason: Phase 1 should begin from a clear stable baseline before any schema, fixture, or runtime hardening work. The generated report/log policy prevents append-only logs and regenerated Markdown from becoming accidental source-of-truth files.
 
 Impact: Future Phase 1 work should reference `BASELINE_POLICY.md` for root git, submodule, baseline tag, and generated-artifact rules. Runtime behavior, clinical logic, report semantics, recommendation policy, LLM/AI judgment, and provenance/privacy guardrails remain unchanged.
+
+## D-033: Explicit Domain-Pack Mappings Replace Hidden Routing
+
+Decision: `P1-002` adds a typed `mappings` section to `DomainPack` with `safety_gate_targets` and `prior_to_options`. The canonical HF domain pack now carries explicit safety-gate target option IDs/matched statuses and explicit prior-to-option links. The safety gate engine no longer uses the Python `_GATE_TARGETS` fallback table, and the Decision Profiler no longer associates priors to profiles by token overlap.
+
+Reason: Phase 1 should remove hidden inference before adding domains or AI answer mapping. Gate routing and prior/profile association are domain facts, not Python heuristics or clinical guesses.
+
+Impact: Malformed mapping targets fail strict domain-pack validation. Missing safety-gate mappings are surfaced as unsupported rather than silently routed. Profiles attach only explicitly mapped priors/simulations, and mapping provenance appears in reports/logs through source references. No thresholds, utilities, profile weights, option rankings, final clinical recommendations, or AI/LLM judgment were added.

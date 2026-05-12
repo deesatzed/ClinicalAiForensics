@@ -547,7 +547,7 @@ Verification:
 
 ### P1-002: Explicit Domain-Pack Mappings
 
-Status: pending
+Status: done
 
 Scope:
 
@@ -563,6 +563,23 @@ Acceptance:
 - Safety gate evaluation and Decision Profiler use explicit source mappings where available.
 - Tests prove malformed mappings fail clearly and prior/profile association no longer depends on token overlap.
 - Reports and logs preserve mapping provenance.
+
+Verification:
+
+- `DomainPackMappings`, `SafetyGateTargetMapping`, and `PriorToOptionMapping` provide typed explicit mapping contracts.
+- The canonical HF domain pack defines `mappings.safety_gate_targets` and `mappings.prior_to_options`.
+- Domain-pack model validation rejects mappings to unknown gate groups, decision options, or priors.
+- The safety gate engine uses explicit gate-target mappings and marks missing mappings unsupported without Python fallback.
+- The Decision Profiler uses explicit prior-to-option mappings and no longer uses token-overlap association.
+- Reports and JSONL logs preserve mapping source/provenance references.
+- Tests cover successful mappings, missing mappings, malformed mappings, no fuzzy/invented prior/profile mapping, Phase 0 fixture compatibility, and serialization through existing result models.
+- `python -m pytest` passed, 96 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL and contained 390 records after the final verification append.
 
 ### P1-003: Canonical Synthetic Variant Fixtures
 
@@ -689,7 +706,7 @@ Acceptance:
 
 ## Queue State
 
-Phase 1 is active. `P1-001` is complete. The next unblocked task is `P1-002: Explicit Domain-Pack Mappings`.
+Phase 1 is active. `P1-001` and `P1-002` are complete. The next unblocked task is `P1-003: Canonical Synthetic Variant Fixtures`.
 
 ## Deferred
 

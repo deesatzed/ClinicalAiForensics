@@ -29,6 +29,7 @@ def test_load_domain_pack_returns_typed_model() -> None:
 
     assert domain_pack.domain_pack_id == "hf_ed_discharge_v0_3"
     assert domain_pack.hard_gates["mra_blocks"][0].variable == "potassium"
+    assert domain_pack.mappings.safety_gate_target_by_group()["mra_blocks"].matched_status == "blocked"
 
 
 def test_load_cde_reports_parse_error(tmp_path: Path) -> None:
@@ -52,6 +53,36 @@ def test_load_domain_pack_reports_validation_error(tmp_path: Path) -> None:
     invalid_domain.write_text("domain_pack_id: missing_required_fields\n", encoding="utf-8")
 
     with pytest.raises(LoaderError, match="Domain pack validation failed"):
+        load_domain_pack(invalid_domain)
+
+
+def test_load_domain_pack_reports_malformed_explicit_mapping(tmp_path: Path) -> None:
+    invalid_domain = tmp_path / "invalid_mapping.yaml"
+    invalid_domain.write_text(
+        """
+domain_pack_id: bad_mapping
+version: "0.1"
+status: draft
+clinical_owner: pending
+calibration_status: uncalibrated
+decision_options:
+  - id: option_a
+    label: Option A
+hard_gates:
+  gate_a:
+    - variable: sbp
+      condition: <90
+      reason: hypotension
+mappings:
+  safety_gate_targets:
+    - gate_group: gate_a
+      option_id: missing_option
+      matched_status: blocked
+""",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(LoaderError, match="unknown option_id"):
         load_domain_pack(invalid_domain)
 
 
@@ -85,4 +116,3 @@ def test_validate_command_requires_an_input(capsys) -> None:
     captured = capsys.readouterr()
 
     assert "validate requires" in captured.err
-

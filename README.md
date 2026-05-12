@@ -11,6 +11,7 @@ Phase 0 is local, CLI-only, synthetic, advisory-only, uncalibrated, and not clin
 ## What It Does
 
 - Loads CDE JSON and domain-pack YAML files through strict typed loaders.
+- Validates explicit domain-pack mappings for safety-gate targets and prior-to-option links.
 - Evaluates deterministic safety gates before probabilistic sampling.
 - Resolves explicit priors from the domain pack while preserving provenance.
 - Samples explicit beta priors with deterministic seeding.
@@ -149,6 +150,7 @@ python -m pdde run-cde --cde pdde_v0_3_first_principles_final/examples/hf_cde_st
 CLI
   -> strict CDE loader
   -> strict domain-pack loader
+  -> explicit domain-pack mappings
   -> safety gate engine
   -> prior resolver
   -> Monte Carlo prior sampler
@@ -164,13 +166,13 @@ CLI
 | `pdde/run_cde.py` | CLI parser and handlers for `validate`, `report`, and `run-cde`. |
 | `pdde/cde_loader.py` | Reads and validates CDE JSON. |
 | `pdde/domain_pack_loader.py` | Reads and validates domain-pack YAML. |
-| `pdde/models.py` | Pydantic data contracts for inputs, component results, pipeline results, reports, and logs. |
-| `pdde/safety_gate_engine.py` | Evaluates explicit deterministic safety gates. |
+| `pdde/models.py` | Pydantic data contracts for inputs, explicit domain-pack mappings, component results, pipeline results, reports, and logs. |
+| `pdde/safety_gate_engine.py` | Evaluates explicit deterministic safety gates using domain-pack gate-target mappings. |
 | `pdde/prior_resolver.py` | Resolves explicit allowed priors and blocks unsupported prior classes. |
 | `pdde/monte_carlo_engine.py` | Samples explicit resolved beta priors with deterministic seeds. |
 | `pdde/value_of_information.py` | Evaluates explicit VOI definitions without inventing VOI math. |
 | `pdde/uncertainty_budget.py` | Evaluates uncertainty-budget categories and deferred items. |
-| `pdde/decision_profiler.py` | Assembles Decision Profile statuses without ranking or recommendation logic. |
+| `pdde/decision_profiler.py` | Assembles Decision Profile statuses using explicit prior-to-option mappings without ranking or recommendation logic. |
 | `pdde/evaluation_pipeline.py` | Orchestrates the deterministic component chain. |
 | `pdde/report_renderer.py` | Renders advisory Markdown from the typed pipeline result. |
 | `pdde/provenance_logger.py` | Writes status-only JSONL provenance records. |
@@ -191,7 +193,7 @@ CLI
 
 ## Test Status
 
-Current test status: 91 passing tests across 13 test files.
+Current test status: 96 passing tests across 13 test files.
 
 Run:
 

@@ -22,11 +22,6 @@ from .models import (
 _MISSING = object()
 _NUMERIC_CONDITION = re.compile(r"^(<=|>=|<|>|==|=)\s*(-?\d+(?:\.\d+)?)$")
 _RANGE_CONDITION = re.compile(r"^(-?\d+(?:\.\d+)?)\s*-\s*(-?\d+(?:\.\d+)?)$")
-_GATE_TARGETS: dict[str, tuple[str, Literal["blocked", "triggered"]]] = {
-    "admit_or_observe_triggers": ("admit_or_observe", "triggered"),
-    "mra_blocks": ("discharge_add_mra", "blocked"),
-    "sglt2_blocks": ("discharge_add_sglt2", "blocked"),
-}
 _COMPOUND_STRING_CONDITIONS: dict[str, set[str]] = {
     "active_ketosis_or_prior_euglycemic_dka_high_risk": {
         "active_ketosis",
@@ -58,31 +53,58 @@ def evaluate_safety_gates(
     """Evaluate deterministic hard gates and return typed result records."""
 
     option_ids = {option.id for option in domain_pack.decision_options}
+    gate_targets = domain_pack.mappings.safety_gate_target_by_group()
     evaluations: list[SafetyGateEvaluation] = []
 
     for gate_group, gates in domain_pack.hard_gates.items():
-        target = _GATE_TARGETS.get(gate_group)
         if gate_group == "wrong_indication_blocks":
-            evaluations.extend(_unsupported_claim_gate(gate_group, gate) for gate in gates)
-            continue
-        if target is None:
-            evaluations.extend(_unsupported_gate_group(gate_group, gate) for gate in gates)
+            evaluations.extend(_unsupported_claim_gate(domain_pack, gate_group, gate) for gate in gates)
             continue
 
-        option_id, matched_status = target
+        target = gate_targets.get(gate_group)
+        if target is None:
+            evaluations.extend(
+                _unsupported_gate_group(
+                    domain_pack,
+                    gate_group,
+                    gate,
+                    evidence=(
+                        f"missing explicit safety_gate_targets mapping for hard gate group "
+                        f"{gate_group!r}; no Python fallback was applied"
+                    ),
+                )
+                for gate in gates
+            )
+            continue
+
+        option_id = target.option_id
+        matched_status = target.matched_status
+        mapping_source = _mapping_source(domain_pack, gate_group)
         if option_id not in option_ids:
             evaluations.extend(
                 _unsupported_gate_group(
+                    domain_pack,
                     gate_group,
                     gate,
                     evidence=f"gate group {gate_group!r} maps to missing option {option_id!r}",
+                    mapping_source=mapping_source,
                 )
                 for gate in gates
             )
             continue
 
         for gate in gates:
-            evaluations.append(_evaluate_variable_gate(cde, gate_group, option_id, matched_status, gate))
+            evaluations.append(
+                _evaluate_variable_gate(
+                    cde,
+                    domain_pack,
+                    gate_group,
+                    option_id,
+                    matched_status,
+                    gate,
+                    mapping_source=mapping_source,
+                )
+            )
 
     return SafetyGateEvaluationSet(
         cde_id=cde.cde_id,
@@ -93,10 +115,13 @@ def evaluate_safety_gates(
 
 def _evaluate_variable_gate(
     cde: ClinicalDecisionEpisode,
+    domain_pack: DomainPack,
     gate_group: str,
     option_id: str,
     matched_status: Literal["blocked", "triggered"],
     gate: SafetyGate,
+    *,
+    mapping_source: str,
 ) -> SafetyGateEvaluation:
     if gate.variable is None or gate.condition is None:
         return SafetyGateEvaluation(
@@ -105,6 +130,8 @@ def _evaluate_variable_gate(
             status="unsupported",
             reason=gate.reason,
             evidence="variable gate requires both variable and condition",
+            source=_gate_source(domain_pack, gate_group),
+            mapping_source=mapping_source,
             variable=gate.variable,
             condition=gate.condition,
             claim_type=gate.claim_type,
@@ -118,6 +145,8 @@ def _evaluate_variable_gate(
             status="missing",
             reason=gate.reason,
             evidence=f"{gate.variable} is missing; condition {gate.condition} was not evaluated",
+            source=_gate_source(domain_pack, gate_group),
+            mapping_source=mapping_source,
             variable=gate.variable,
             condition=gate.condition,
             observed_value=None,
@@ -132,6 +161,8 @@ def _evaluate_variable_gate(
             status="unsupported",
             reason=gate.reason,
             evidence=str(exc),
+            source=_gate_source(domain_pack, gate_group),
+            mapping_source=mapping_source,
             variable=gate.variable,
             condition=gate.condition,
             observed_value=observed_value,
@@ -145,6 +176,8 @@ def _evaluate_variable_gate(
         status=status,
         reason=gate.reason,
         evidence=f"{gate.variable}={observed_value!r} {comparator} {gate.condition}",
+        source=_gate_source(domain_pack, gate_group),
+        mapping_source=mapping_source,
         variable=gate.variable,
         condition=gate.condition,
         observed_value=observed_value,
@@ -220,28 +253,45 @@ def _coerce_bool(value: Any, condition: str) -> bool:
     raise UnsupportedSafetyGate(f"condition {condition!r} requires a boolean value, got {value!r}")
 
 
-def _unsupported_claim_gate(gate_group: str, gate: SafetyGate) -> SafetyGateEvaluation:
+def _unsupported_claim_gate(
+    domain_pack: DomainPack,
+    gate_group: str,
+    gate: SafetyGate,
+) -> SafetyGateEvaluation:
     claim_type = gate.claim_type or "<missing>"
     return SafetyGateEvaluation(
         gate_group=gate_group,
         status="unsupported",
         reason=gate.reason,
         evidence=f"claim_type gate {claim_type!r} requires mapped claim types; AI answer mapping is deferred",
+        source=_gate_source(domain_pack, gate_group),
         claim_type=gate.claim_type,
     )
 
 
 def _unsupported_gate_group(
+    domain_pack: DomainPack,
     gate_group: str,
     gate: SafetyGate,
     evidence: str | None = None,
+    mapping_source: str | None = None,
 ) -> SafetyGateEvaluation:
     return SafetyGateEvaluation(
         gate_group=gate_group,
         status="unsupported",
         reason=gate.reason,
         evidence=evidence or f"unsupported hard gate group {gate_group!r}; no deterministic mapping defined",
+        source=_gate_source(domain_pack, gate_group),
+        mapping_source=mapping_source,
         variable=gate.variable,
         condition=gate.condition,
         claim_type=gate.claim_type,
     )
+
+
+def _gate_source(domain_pack: DomainPack, gate_group: str) -> str:
+    return f"domain_pack:{domain_pack.domain_pack_id}.hard_gates.{gate_group}"
+
+
+def _mapping_source(domain_pack: DomainPack, gate_group: str) -> str:
+    return f"domain_pack:{domain_pack.domain_pack_id}.mappings.safety_gate_targets.{gate_group}"

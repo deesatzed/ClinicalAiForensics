@@ -104,6 +104,8 @@ def test_provenance_and_source_references_are_preserved() -> None:
     assert str(V03_CDE) in report
     assert str(V03_DOMAIN) in report
     assert "domain_pack:hf_ed_discharge_v0_3.prior_policy.sglt2_ed_discharge" in report
+    assert "domain_pack:hf_ed_discharge_v0_3.mappings.prior_to_options.sglt2_ed_discharge" in report
+    assert "domain_pack:hf_ed_discharge_v0_3.mappings.safety_gate_targets.sglt2_blocks" in report
     assert "domain_pack:hf_ed_discharge_v0_3.value_of_information_variables" in report
     assert "pdde_v0_3_first_principles_final/05_PRIOR_AND_UNCERTAINTY_GOVERNANCE.md#Uncertainty Budget" in report
     assert "pdde_v0_3_first_principles_final/schemas/decision_profile.schema.json" in report

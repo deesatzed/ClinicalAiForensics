@@ -73,6 +73,10 @@ def test_stable_case_passes_explicit_numeric_hard_gates() -> None:
 
     assert potassium.status == "passed"
     assert potassium.evidence == "potassium=4.5 does not meet >=5.5"
+    assert potassium.source == "domain_pack:hf_ed_discharge_v0_3.hard_gates.mra_blocks"
+    assert potassium.mapping_source == (
+        "domain_pack:hf_ed_discharge_v0_3.mappings.safety_gate_targets.mra_blocks"
+    )
     assert sbp.status == "passed"
     assert result.active_hard_stops() == []
 
@@ -162,6 +166,21 @@ def test_missing_gate_input_is_not_silently_passed() -> None:
     assert potassium.evidence == "potassium is missing; condition >=5.5 was not evaluated"
 
 
+def test_missing_gate_mapping_is_unsupported_without_python_fallback() -> None:
+    domain = _domain()
+    mappings = domain.mappings.model_copy(update={"safety_gate_targets": []})
+    domain = domain.model_copy(update={"mappings": mappings})
+
+    result = evaluate_safety_gates(_cde(potassium=5.7), domain)
+    potassium = _find(result.evaluations, gate_group="mra_blocks", variable="potassium")
+
+    assert potassium.status == "unsupported"
+    assert potassium.option_id is None
+    assert "missing explicit safety_gate_targets mapping" in potassium.evidence
+    assert "no Python fallback" in potassium.evidence
+    assert result.hard_stops_by_option() == {}
+
+
 def test_malformed_gate_input_is_unsupported_not_passed() -> None:
     result = evaluate_safety_gates(_cde(sbp="low"), _domain())
 
@@ -201,4 +220,4 @@ def test_unknown_gate_group_is_unsupported_not_passed() -> None:
     custom = _find(result.evaluations, gate_group="custom_blocks", variable="sbp")
 
     assert custom.status == "unsupported"
-    assert "unsupported hard gate group" in custom.evidence
+    assert "missing explicit safety_gate_targets mapping" in custom.evidence

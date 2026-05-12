@@ -14,11 +14,11 @@ Phase 0 is not clinically validated, is not a clinical decision support system, 
 
 - Strict CDE JSON and domain-pack YAML loading with clear loader errors.
 - Pydantic v2 typed models for CDEs, domain packs, component outputs, evaluation results, reports, and provenance records.
-- Deterministic safety gate evaluation for explicit hard gates in the canonical domain pack.
+- Deterministic safety gate evaluation for explicit hard gates using domain-pack gate-target mappings.
 - Deterministic prior resolution for explicit allowed priors, with blocked/unsupported/missing states preserved.
 - Seeded prior-level Monte Carlo sampling for explicit numeric beta priors.
 - Uncertainty-budget and value-of-information item classification without invented VOI math.
-- Decision Profile assembly that preserves blockers, triggers, missing data, unsupported inputs, deferred items, and provenance.
+- Decision Profile assembly that uses explicit prior-to-option mappings and preserves blockers, triggers, missing data, unsupported inputs, deferred items, and provenance.
 - End-to-end evaluation pipeline through `pdde/evaluation_pipeline.py`.
 - Deterministic advisory Markdown report rendering.
 - CLI validation, report generation to stdout, report generation to file, and optional provenance JSONL logging.
@@ -118,7 +118,7 @@ python -m pdde.run_cde --cde <path> --domain <path> --out <report.md>
 
 ## Test Summary
 
-The current test suite contains 91 tests across 13 test files:
+The current test suite contains 96 tests across 13 test files:
 
 - models and serialization
 - loaders and validate CLI behavior
@@ -169,16 +169,16 @@ The JSONL log intentionally records IDs, statuses, paths, counts, source referen
 
 | Rank | Next Task | Estimated Chance Of Improving Goal | Why | Risk | Requires User Input? |
 |---:|---|---:|---|---|---|
-| 1 | Add explicit domain-pack mappings for gate targets and prior-to-option relationships | 85% | Reduces string-overlap assumptions and is the cleanest prerequisite for trustworthy option-level profiling. | Medium schema-migration risk. | No, unless clinical semantics need approval |
-| 2 | Promote canonical synthetic variant fixtures into `examples/` | 80% | Makes low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missingness cases reusable outside tests. | Low risk if labeled synthetic and derived from current fixture. | No |
-| 3 | Define a normalized status-ledger model | 75% | Gives report rendering and JSONL logging one shared contract for visible unresolved statuses. | Medium abstraction risk if made too broad. | No |
-| 4 | Split centralized model definitions into stable submodules | 70% | Improves maintainability before adding more schema and AI-mapping models. | Medium import/refactor risk; should be test-preserving. | No |
-| 5 | Define local overlay verification metadata requirements before implementing local workflow checks | 60% | Prevents draft operational assumptions from becoming hidden clinical logic. | Low code risk; medium governance dependency. | Yes |
+| 1 | Promote canonical synthetic variant fixtures into `examples/` | 80% | Makes low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missingness cases reusable outside tests. | Low risk if labeled synthetic and derived from current fixture. | No |
+| 2 | Define a normalized status-ledger model | 75% | Gives report rendering and JSONL logging one shared contract for visible unresolved statuses. | Medium abstraction risk if made too broad. | No |
+| 3 | Split centralized model definitions into stable submodules | 70% | Improves maintainability before adding more schema and AI-mapping models. | Medium import/refactor risk; should be test-preserving. | No |
+| 4 | Define local overlay verification metadata requirements before implementing local workflow checks | 60% | Prevents draft operational assumptions from becoming hidden clinical logic. | Low code risk; medium governance dependency. | Yes |
+| 5 | Keep AI answer mapping deferred until direct-CDE fixtures and status contracts are reviewed | 45% | Protects the simulator from reverting to answer grading before its deterministic base is stable. | Medium workflow delay for AI-answer comparison use cases. | Yes |
 
 ## Stop/Go Recommendation
 
 Go for demoing and using Phase 0 as the tagged baseline `phase0-baseline` for Phase 1 direct-CDE hardening.
 
-Go for `P1-002: Explicit Domain-Pack Mappings` as the next engineering task after `P1-001`.
+Go for `P1-003: Canonical Synthetic Variant Fixtures` as the next engineering task after completed `P1-002` mapping hardening.
 
 Stop for clinical deployment, PHI use, real patient-care use, final recommendation generation, or AI answer mapping until the corresponding deferred tasks are explicitly started and governed.

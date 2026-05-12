@@ -94,7 +94,7 @@ python -m pdde report \
 
 ## Test And Verification Summary
 
-The test suite currently has 13 test files and 91 collected pytest cases. It covers:
+The test suite currently has 13 test files and 96 collected pytest cases. It covers:
 
 - CLI help.
 - CDE/domain-pack loading and validation errors.
@@ -160,8 +160,8 @@ The current module split is coherent for Phase 0. The strongest design choice is
 Structural concerns:
 
 - `pdde/models.py` is the main gravity well. It holds input models, active result models, legacy/planned output models, and log placeholders. This is manageable now but may obscure which models are actually used by the current pipeline.
-- The domain-pack hard-gate mapping is still partly hard-coded in `safety_gate_engine.py` through gate-group names and option IDs. That is acceptable for one domain pack, but a second domain would require either a more explicit domain-pack rule schema or another Python mapping.
-- Prior-to-option association in `decision_profiler.py` uses token overlap between option IDs and prior IDs. It is transparent and tested, but fragile. A future domain pack should provide explicit prior-to-option links.
+- P1-002 moved hard-gate target routing into explicit domain-pack `mappings.safety_gate_targets`. Missing mappings now surface as unsupported instead of falling back to Python routing.
+- P1-002 moved prior-to-option association into explicit domain-pack `mappings.prior_to_options`. The Decision Profiler no longer uses token overlap between option IDs and prior IDs.
 - Report section generation is deterministic and readable, but section names and ordering are encoded directly in Python. A report contract test exists; a report schema or section registry may help later.
 - Generated outputs are append-only/manual artifacts. They are useful for verification, but they are ignored source artifacts by default under `BASELINE_POLICY.md`.
 - The project has placeholder `domain_packs/` and `examples/` directories, but the active canonical inputs still live under `pdde_v0_3_first_principles_final/`. That separation preserves source provenance, but a user may expect runnable fixtures under `examples/`.
@@ -217,14 +217,14 @@ Weird or overlooked alternatives that might simplify the system:
 
 | Rank | Improvement | Estimated Chance Of Improving Goal | Why | Risk | Recommended Timing |
 |---:|---|---:|---|---|---|
-| 1 | Add explicit prior-to-option and gate-target mappings to the domain-pack schema | 85% | Removes token-overlap and hard-coded gate routing; makes additional domains safer | Requires schema migration and fixture updates | Next implementation phase before adding domains |
-| 2 | Create canonical synthetic CDE fixture files under `examples/` for stable and variant cases | 80% | Makes CLI demos and acceptance coverage easier for users to inspect | May duplicate v0.3 source fixtures unless provenance is documented | Soon, after build-log review |
+| 1 | Create canonical synthetic CDE fixture files under `examples/` for stable and variant cases | 80% | Makes CLI demos and acceptance coverage easier for users to inspect | May duplicate v0.3 source fixtures unless provenance is documented | Next Phase 1 task |
+| 2 | Define a normalized status-ledger model consumed by both report rendering and JSONL logging | 70% | Reduces duplication between report/log summaries and clarifies unresolved states | Could over-abstract if done before more examples exist | After canonical variant fixtures exist |
 | 3 | Split `pdde/models.py` into input, component result, pipeline, and legacy/planned model modules | 70% | Improves maintainability as model count grows | Refactor can cause import churn without behavior gain | After one more feature or before Phase 1 |
-| 4 | Define a normalized status-ledger model consumed by both report rendering and JSONL logging | 70% | Reduces duplication between report/log summaries and clarifies unresolved states | Could over-abstract if done before more examples exist | After canonical variant fixtures exist |
-| 5 | Add a report section registry or schema contract | 60% | Keeps section ordering and required advisory language explicit | Adds minor framework around a simple renderer | Before report format becomes externally shared |
-| 6 | Add local overlay verification schema and fixture placeholders | 50% | Moves local workflow uncertainty from prose to structured data | Requires external owner/status input to be meaningful | After local review input is available |
-| 7 | Keep AI answer mapping deferred | 45% | Protects the CDE-first architecture from reverting to answer grading | Delays Workflow A compatibility | Continue until direct simulation has reviewed fixtures |
-| 8 | Document generated-artifact and root-git policy | 55% | Avoids confusion about append-only logs, generated reports, and nested repositories | Completed as `BASELINE_POLICY.md` with `phase0-baseline` tag | Completed in P1-001 |
+| 4 | Add a report section registry or schema contract | 60% | Keeps section ordering and required advisory language explicit | Adds minor framework around a simple renderer | Before report format becomes externally shared |
+| 5 | Add local overlay verification schema and fixture placeholders | 50% | Moves local workflow uncertainty from prose to structured data | Requires external owner/status input to be meaningful | After local review input is available |
+| 6 | Keep AI answer mapping deferred | 45% | Protects the CDE-first architecture from reverting to answer grading | Delays Workflow A compatibility | Continue until direct simulation has reviewed fixtures |
+| 7 | Document generated-artifact and root-git policy | 55% | Avoids confusion about append-only logs, generated reports, and nested repositories | Completed as `BASELINE_POLICY.md` with `phase0-baseline` tag | Completed in P1-001 |
+| 8 | Add explicit prior-to-option and gate-target mappings to the domain-pack schema | 85% | Removed token-overlap and hard-coded gate routing | Completed with mapping provenance in reports/logs | Completed in P1-002 |
 
 ## Recommended Next Step
 
@@ -232,8 +232,7 @@ Proceed with direct-CDE hardening before new clinical logic:
 
 1. Keep `BUILD_LOG.md` as the Phase 0 review artifact.
 2. Use `BASELINE_POLICY.md` and tag `phase0-baseline` as the Phase 0 baseline/artifact policy.
-3. Before Phase 1 AI answer mapping, add explicit domain-pack fields for gate targets and prior-to-option mappings.
-4. Decide whether to create canonical synthetic CDE variant files under `examples/`.
-5. Keep generated reports/logs reproducible and ignored unless an explicit archive/release task says otherwise.
+3. Decide whether to create canonical synthetic CDE variant files under `examples/`.
+4. Keep generated reports/logs reproducible and ignored unless an explicit archive/release task says otherwise.
 
-The highest-value engineering next step is explicit domain-pack mappings, because it removes the most fragile current assumptions without adding unsupported clinical claims.
+The highest-value next engineering step is canonical synthetic variant fixtures, because they make the existing safety-gate and missingness behavior inspectable outside test-only mutations without adding unsupported clinical claims.

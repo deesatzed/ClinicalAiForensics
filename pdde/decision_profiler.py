@@ -9,7 +9,6 @@ recommendations.
 from __future__ import annotations
 
 from dataclasses import dataclass
-import re
 
 from pydantic import ValidationError
 
@@ -38,18 +37,6 @@ _DECISION_FITNESS_DEFERRED_REASON = (
     "No explicit decision-fitness formula, ranking threshold, or option utility was provided; "
     "the profiler assembled evidence only and did not create a final recommendation."
 )
-_TOKEN_SPLIT = re.compile(r"[^a-z0-9]+")
-_PRIOR_TOKEN_STOPWORDS = {
-    "add",
-    "discharge",
-    "ed",
-    "new",
-    "no",
-    "or",
-    "restart",
-    "start",
-    "with",
-}
 
 
 @dataclass(frozen=True)
@@ -86,6 +73,7 @@ def assemble_decision_profiles(
     profiles = [
         _assemble_profile(
             spec,
+            domain_pack=domain_pack,
             safety_gates=safety_gates,
             prior_resolutions=prior_resolutions,
             simulation=simulation,
@@ -106,6 +94,7 @@ def assemble_decision_profiles(
 def _assemble_profile(
     spec: _OptionSpec,
     *,
+    domain_pack: DomainPack,
     safety_gates: SafetyGateEvaluationSet | None,
     prior_resolutions: PriorResolutionSet | None,
     simulation: MonteCarloSimulationResult | None,
@@ -120,14 +109,16 @@ def _assemble_profile(
     unsupported_inputs = _gate_summaries(direct_gates, "unsupported")
     deferred_reasons = [_DECISION_FITNESS_DEFERRED_REASON]
     provenance_references = [spec.source, _PROFILE_SCHEMA_SOURCE]
+    provenance_references.extend(_gate_sources(direct_gates))
 
     if not spec.valid and spec.reason is not None:
         unsupported_inputs.append(spec.reason)
 
-    related_prior_ids = _related_prior_ids(spec.option_id, prior_resolutions)
+    related_prior_ids = _related_prior_ids(spec.option_id, domain_pack)
     supporting_priors, prior_unsupported, prior_sources = _prior_summaries(
         related_prior_ids,
         prior_resolutions,
+        domain_pack,
     )
     unsupported_inputs.extend(prior_unsupported)
     provenance_references.extend(prior_sources)
@@ -296,6 +287,7 @@ def _input_summaries(
 ) -> list[DecisionProfileInputSummary]:
     summaries: list[DecisionProfileInputSummary] = []
     summaries.extend(_option_input_summaries(option_specs))
+    summaries.extend(_mapping_input_summaries(domain_pack))
     summaries.extend(_safety_input_summaries(domain_pack, safety_gates))
     summaries.extend(_prior_input_summaries(prior_resolutions))
     summaries.extend(_simulation_input_summaries(simulation))
@@ -327,6 +319,79 @@ def _option_input_summaries(option_specs: list[_OptionSpec]) -> list[DecisionPro
     ]
 
 
+def _mapping_input_summaries(domain_pack: DomainPack) -> list[DecisionProfileInputSummary]:
+    summaries: list[DecisionProfileInputSummary] = []
+
+    safety_mappings = domain_pack.mappings.safety_gate_target_by_group()
+    if not safety_mappings:
+        summaries.append(
+            DecisionProfileInputSummary(
+                input_type="domain_mapping",
+                identifier="safety_gate_targets",
+                status="missing",
+                source=f"domain_pack:{domain_pack.domain_pack_id}.mappings.safety_gate_targets",
+                reason="domain pack does not define explicit safety gate target mappings",
+            )
+        )
+    else:
+        for mapping in domain_pack.mappings.safety_gate_targets:
+            summaries.append(
+                DecisionProfileInputSummary(
+                    input_type="domain_mapping",
+                    identifier=f"safety_gate_targets.{mapping.gate_group}",
+                    status="defined",
+                    source=_safety_mapping_source(domain_pack, mapping.gate_group),
+                    reason=(
+                        f"gate group {mapping.gate_group!r} maps to option "
+                        f"{mapping.option_id!r} with matched_status={mapping.matched_status!r}"
+                    ),
+                )
+            )
+
+    for gate_group in domain_pack.hard_gates:
+        if gate_group == "wrong_indication_blocks" or gate_group in safety_mappings:
+            continue
+        summaries.append(
+            DecisionProfileInputSummary(
+                input_type="domain_mapping",
+                identifier=f"safety_gate_targets.{gate_group}",
+                status="missing",
+                source=f"domain_pack:{domain_pack.domain_pack_id}.mappings.safety_gate_targets",
+                reason=(
+                    f"hard gate group {gate_group!r} has no explicit safety gate target mapping; "
+                    "the safety gate engine will not apply a Python fallback"
+                ),
+            )
+        )
+
+    if not domain_pack.mappings.prior_to_options:
+        summaries.append(
+            DecisionProfileInputSummary(
+                input_type="domain_mapping",
+                identifier="prior_to_options",
+                status="missing",
+                source=f"domain_pack:{domain_pack.domain_pack_id}.mappings.prior_to_options",
+                reason="domain pack does not define explicit prior-to-option mappings",
+            )
+        )
+    else:
+        for mapping in domain_pack.mappings.prior_to_options:
+            summaries.append(
+                DecisionProfileInputSummary(
+                    input_type="domain_mapping",
+                    identifier=f"prior_to_options.{mapping.prior_id}",
+                    status="defined",
+                    source=_prior_mapping_source(domain_pack, mapping.prior_id),
+                    reason=(
+                        f"prior {mapping.prior_id!r} maps to option id(s): "
+                        f"{', '.join(mapping.option_ids)}"
+                    ),
+                )
+            )
+
+    return summaries
+
+
 def _safety_input_summaries(
     domain_pack: DomainPack,
     safety_gates: SafetyGateEvaluationSet | None,
@@ -347,7 +412,7 @@ def _safety_input_summaries(
             input_type="safety_gate",
             identifier=_gate_identifier(evaluation),
             status=evaluation.status,
-            source=f"domain_pack:{domain_pack.domain_pack_id}.hard_gates.{evaluation.gate_group}",
+            source=evaluation.source or f"domain_pack:{domain_pack.domain_pack_id}.hard_gates.{evaluation.gate_group}",
             reason=f"{evaluation.reason}: {evaluation.evidence}",
         )
         for evaluation in safety_gates.evaluations
@@ -463,6 +528,16 @@ def _direct_gates(
     return [evaluation for evaluation in safety_gates.evaluations if evaluation.option_id == option_id]
 
 
+def _gate_sources(gates: list[SafetyGateEvaluation]) -> list[str]:
+    sources: list[str] = []
+    for gate in gates:
+        if gate.source is not None:
+            sources.append(gate.source)
+        if gate.mapping_source is not None:
+            sources.append(gate.mapping_source)
+    return sources
+
+
 def _gate_summaries(gates: list[SafetyGateEvaluation], status: str) -> list[str]:
     return [
         f"{gate.gate_group}: {gate.reason}; {gate.evidence}"
@@ -478,21 +553,15 @@ def _gate_identifier(evaluation: SafetyGateEvaluation) -> str:
 
 def _related_prior_ids(
     option_id: str,
-    prior_resolutions: PriorResolutionSet | None,
+    domain_pack: DomainPack,
 ) -> list[str]:
-    if prior_resolutions is None:
-        return []
-    option_tokens = _tokens(option_id)
-    return [
-        resolution.prior_id
-        for resolution in prior_resolutions.resolutions
-        if option_tokens.intersection(_tokens(resolution.prior_id))
-    ]
+    return domain_pack.mappings.prior_ids_by_option().get(option_id, [])
 
 
 def _prior_summaries(
     related_prior_ids: list[str],
     prior_resolutions: PriorResolutionSet | None,
+    domain_pack: DomainPack,
 ) -> tuple[list[str], list[str], list[str]]:
     if prior_resolutions is None:
         return [], [], []
@@ -502,7 +571,14 @@ def _prior_summaries(
     unsupported: list[str] = []
     sources: list[str] = []
     for prior_id in related_prior_ids:
-        resolution = by_prior_id[prior_id]
+        sources.append(_prior_mapping_source(domain_pack, prior_id))
+        resolution = by_prior_id.get(prior_id)
+        if resolution is None:
+            unsupported.append(
+                f"{prior_id}: missing; explicit prior-to-option mapping exists but no "
+                "prior-resolution result was provided"
+            )
+            continue
         summary = _prior_summary(resolution)
         if resolution.source is not None:
             sources.append(resolution.source)
@@ -621,12 +697,12 @@ def _value_of_information_deferred_reasons(
     ]
 
 
-def _tokens(value: str) -> set[str]:
-    return {
-        token
-        for token in _TOKEN_SPLIT.split(value.lower())
-        if token and token not in _PRIOR_TOKEN_STOPWORDS
-    }
+def _safety_mapping_source(domain_pack: DomainPack, gate_group: str) -> str:
+    return f"domain_pack:{domain_pack.domain_pack_id}.mappings.safety_gate_targets.{gate_group}"
+
+
+def _prior_mapping_source(domain_pack: DomainPack, prior_id: str) -> str:
+    return f"domain_pack:{domain_pack.domain_pack_id}.mappings.prior_to_options.{prior_id}"
 
 
 def _unique(values: list[str]) -> list[str]:

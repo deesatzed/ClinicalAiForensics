@@ -81,6 +81,21 @@ def test_log_records_include_key_component_statuses() -> None:
         "discharge_urgent_followup_no_new_dmt",
     }
 
+    safety_record = next(
+        record
+        for record in records
+        if record["log_type"] == "safety_gate_result"
+        and record["payload"]["gate_group"] == "sglt2_blocks"
+        and record["payload"]["variable"] == "egfr"
+    )
+    assert safety_record["payload"]["mapping_source"] == (
+        "domain_pack:hf_ed_discharge_v0_3.mappings.safety_gate_targets.sglt2_blocks"
+    )
+    assert (
+        "domain_pack:hf_ed_discharge_v0_3.mappings.prior_to_options.sglt2_ed_discharge"
+        in records[0]["payload"]["provenance_references"]
+    )
+
 
 def test_log_records_do_not_include_full_raw_case_content_or_values() -> None:
     jsonl = records_to_jsonl(_records())

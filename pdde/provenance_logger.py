@@ -82,7 +82,9 @@ def create_provenance_records(
                 "variable": evaluation.variable,
                 "condition": evaluation.condition,
                 "claim_type": evaluation.claim_type,
-                "source": f"domain_pack:{result.domain_pack.domain_pack_id}.hard_gates.{evaluation.gate_group}",
+                "source": evaluation.source
+                or f"domain_pack:{result.domain_pack.domain_pack_id}.hard_gates.{evaluation.gate_group}",
+                "mapping_source": evaluation.mapping_source,
             },
         )
 
@@ -252,6 +254,8 @@ def _provenance_references(result: EvaluationPipelineResult) -> list[str]:
         [
             result.cde_source,
             result.domain_pack_source,
+            *[evaluation.source for evaluation in result.safety_gates.evaluations],
+            *[evaluation.mapping_source for evaluation in result.safety_gates.evaluations],
             *[resolution.source for resolution in result.prior_resolutions.resolutions],
             *[simulation.source for simulation in result.simulation.prior_simulations],
             *[item.source for item in result.uncertainty_budget.items],

@@ -49,6 +49,34 @@ def test_domain_pack_accepts_v03_fixture() -> None:
     assert domain_pack.domain_pack_id == "hf_ed_discharge_v0_3"
     assert len(domain_pack.decision_options) == 5
     assert domain_pack.prior_policy["sglt2_ed_discharge"].alpha == 14
+    assert domain_pack.mappings.safety_gate_target_by_group()["mra_blocks"].option_id == "discharge_add_mra"
+    assert domain_pack.mappings.prior_ids_by_option()["discharge_add_sglt2"] == [
+        "sglt2_ed_discharge"
+    ]
+
+
+def test_domain_pack_rejects_malformed_explicit_mappings() -> None:
+    payload = yaml.safe_load(
+        (
+            ROOT
+            / "pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml"
+        ).read_text()
+    )
+    payload["mappings"]["safety_gate_targets"][0]["option_id"] = "not_a_domain_option"
+
+    with pytest.raises(ValidationError, match="unknown option_id"):
+        DomainPack.model_validate(payload)
+
+    payload = yaml.safe_load(
+        (
+            ROOT
+            / "pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml"
+        ).read_text()
+    )
+    payload["mappings"]["prior_to_options"][0]["prior_id"] = "not_a_prior"
+
+    with pytest.raises(ValidationError, match="unknown prior_id"):
+        DomainPack.model_validate(payload)
 
 
 def test_prior_without_provenance_fails_validation() -> None:

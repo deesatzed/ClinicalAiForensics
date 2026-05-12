@@ -85,7 +85,13 @@ def test_stable_explicit_profile_is_eligible_with_traceability() -> None:
     assert any("sglt2_ed_discharge: resolved" in prior for prior in sglt2.supporting_priors)
     assert any("sglt2_ed_discharge: sampled" in item for item in sglt2.supporting_simulations)
     assert any("domain_pack:hf_ed_discharge_v0_3.prior_policy.sglt2_ed_discharge" in source for source in sglt2.provenance_references)
+    assert any("domain_pack:hf_ed_discharge_v0_3.mappings.prior_to_options.sglt2_ed_discharge" in source for source in sglt2.provenance_references)
+    assert any("domain_pack:hf_ed_discharge_v0_3.mappings.safety_gate_targets.sglt2_blocks" in source for source in sglt2.provenance_references)
     assert "not a recommendation or ranking" in sglt2.reason
+
+    mapping_summaries = [item for item in result.input_summaries if item.input_type == "domain_mapping"]
+    assert any(item.identifier == "safety_gate_targets.sglt2_blocks" for item in mapping_summaries)
+    assert any(item.identifier == "prior_to_options.sglt2_ed_discharge" for item in mapping_summaries)
 
 
 def test_profile_is_blocked_by_explicit_safety_gate() -> None:
@@ -106,6 +112,44 @@ def test_profile_with_missing_required_gate_data_is_missing() -> None:
         "mra_blocks: hyperkalemia risk; potassium is missing; condition >=5.5 was not evaluated"
     ]
     assert "Missing required safety-gate input" in mra.reason
+
+
+def test_prior_profile_association_uses_explicit_mapping_not_token_overlap() -> None:
+    domain = _domain()
+    prior_policy = {
+        **domain.prior_policy,
+        "sglt2_unmapped_extra": domain.prior_policy["sglt2_ed_discharge"],
+    }
+    domain = domain.model_copy(update={"prior_policy": prior_policy})
+
+    result = _profiles(_cde(), domain)
+    sglt2 = _profile(result, "discharge_add_sglt2")
+
+    assert any("sglt2_ed_discharge: resolved" in prior for prior in sglt2.supporting_priors)
+    assert all("sglt2_unmapped_extra" not in prior for prior in sglt2.supporting_priors)
+    assert all("sglt2_unmapped_extra" not in item for item in sglt2.supporting_simulations)
+
+
+def test_missing_mapped_prior_resolution_stays_visible() -> None:
+    cde = _cde()
+    domain = _domain()
+    safety = evaluate_safety_gates(cde, domain)
+    priors = resolve_priors(domain, cde=cde, prior_ids=["sglt2_ed_discharge"])
+    simulation = simulate_resolved_priors(priors, n_iterations=10, random_seed=17)
+
+    result = assemble_decision_profiles(
+        cde,
+        domain,
+        safety_gates=safety,
+        prior_resolutions=priors,
+        simulation=simulation,
+    )
+    mra = _profile(result, "discharge_add_mra")
+
+    assert mra.status == "unsupported"
+    assert any("mra_ed_start: missing; explicit prior-to-option mapping exists" in item for item in mra.unsupported_inputs)
+    assert any("mra_ed_start: missing; no Monte Carlo simulation result" in item for item in mra.unsupported_inputs)
+    assert any("mappings.prior_to_options.mra_ed_start" in source for source in mra.provenance_references)
 
 
 def test_malformed_profile_definition_is_unsupported_and_visible() -> None:

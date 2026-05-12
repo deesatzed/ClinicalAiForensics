@@ -50,6 +50,27 @@ hard_gates:
     reason: wrong indication for HF GDMT
   - claim_type: glp1_hf_admission_prevention
     reason: unsupported for HFrEF/HFmrEF ED anti-admission purpose
+mappings:
+  safety_gate_targets:
+  - gate_group: admit_or_observe_triggers
+    option_id: admit_or_observe
+    matched_status: triggered
+  - gate_group: mra_blocks
+    option_id: discharge_add_mra
+    matched_status: blocked
+  - gate_group: sglt2_blocks
+    option_id: discharge_add_sglt2
+    matched_status: blocked
+  prior_to_options:
+  - prior_id: sglt2_ed_discharge
+    option_ids:
+    - discharge_add_sglt2
+  - prior_id: mra_ed_start
+    option_ids:
+    - discharge_add_mra
+  - prior_id: loop_continue_gdmt
+    option_ids:
+    - discharge_loop_continue_gdmt
 soft_nodes:
 - evidence_applicability
 - evidence_maturity

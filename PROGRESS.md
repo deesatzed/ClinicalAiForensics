@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, and `P1-001: Phase 0 Baseline And Artifact Policy` are complete. The next unblocked task is `P1-002: Explicit Domain-Pack Mappings`.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, and `P1-002: Explicit Domain-Pack Mappings` are complete. The next unblocked task is `P1-003: Canonical Synthetic Variant Fixtures`.
 
 Created the root project-control files:
 
@@ -77,6 +77,38 @@ Verification:
 - `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
 - `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
 - `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the final verification append it contained 312 JSONL records.
+
+## P1-002 Completed
+
+Completed `P1-002: Explicit Domain-Pack Mappings` as the first Phase 1 engineering hardening task.
+
+Implemented:
+
+- typed `DomainPackMappings`, `SafetyGateTargetMapping`, and `PriorToOptionMapping` models in `pdde/models.py`.
+- strict domain-pack validation that rejects mapping references to unknown gate groups, decision options, or priors.
+- explicit canonical HF domain-pack mappings for:
+  - safety-gate target option IDs and matched statuses.
+  - prior-to-option relationships.
+- safety-gate evaluation through domain-pack `mappings.safety_gate_targets` instead of Python-only routing.
+- Decision Profiler prior/profile association through domain-pack `mappings.prior_to_options` instead of token overlap.
+- mapping provenance references in safety-gate results, Decision Profile evidence, reports, and JSONL logs.
+
+Guardrails preserved:
+
+- no final clinical recommendations, option rankings, hidden scores, utility weights, decision thresholds, or clinical formulas were added.
+- no LLM/AI judgment or answer mapping was added.
+- unsupported claim-type gates still remain visible and unsupported in direct CDE mode.
+- missing mappings surface as unsupported instead of silently passing or falling back to fuzzy matching.
+
+Verification:
+
+- `python -m pytest` passed, 96 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the final verification append it contained 390 JSONL records.
 
 Created the initial implementation scaffold:
 

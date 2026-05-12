@@ -59,6 +59,52 @@ class SafetyGate(StrictModel):
         return self
 
 
+SafetyGateMatchedStatus = Literal["blocked", "triggered"]
+
+
+class SafetyGateTargetMapping(StrictModel):
+    gate_group: NonEmptyString
+    option_id: NonEmptyString
+    matched_status: SafetyGateMatchedStatus
+
+
+class PriorToOptionMapping(StrictModel):
+    prior_id: NonEmptyString
+    option_ids: list[NonEmptyString] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def require_unique_option_ids(self) -> Self:
+        if len(set(self.option_ids)) != len(self.option_ids):
+            raise ValueError("prior-to-option mappings cannot repeat option ids")
+        return self
+
+
+class DomainPackMappings(StrictModel):
+    safety_gate_targets: list[SafetyGateTargetMapping] = Field(default_factory=list)
+    prior_to_options: list[PriorToOptionMapping] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def require_unique_mapping_keys(self) -> Self:
+        gate_groups = [mapping.gate_group for mapping in self.safety_gate_targets]
+        if len(set(gate_groups)) != len(gate_groups):
+            raise ValueError("safety gate target mappings must use unique gate_group values")
+
+        prior_ids = [mapping.prior_id for mapping in self.prior_to_options]
+        if len(set(prior_ids)) != len(prior_ids):
+            raise ValueError("prior-to-option mappings must use unique prior_id values")
+        return self
+
+    def safety_gate_target_by_group(self) -> dict[str, SafetyGateTargetMapping]:
+        return {mapping.gate_group: mapping for mapping in self.safety_gate_targets}
+
+    def prior_ids_by_option(self) -> dict[str, list[str]]:
+        by_option: dict[str, list[str]] = {}
+        for mapping in self.prior_to_options:
+            for option_id in mapping.option_ids:
+                by_option.setdefault(option_id, []).append(mapping.prior_id)
+        return by_option
+
+
 SafetyGateStatus = Literal["passed", "blocked", "triggered", "missing", "unsupported"]
 
 
@@ -67,6 +113,8 @@ class SafetyGateEvaluation(StrictModel):
     status: SafetyGateStatus
     reason: NonEmptyString
     evidence: NonEmptyString
+    source: NonEmptyString | None = None
+    mapping_source: NonEmptyString | None = None
     option_id: NonEmptyString | None = None
     variable: NonEmptyString | None = None
     condition: NonEmptyString | None = None
@@ -347,6 +395,7 @@ DecisionProfileEvaluationStatus = Literal[
 ]
 DecisionProfileInputType = Literal[
     "decision_option",
+    "domain_mapping",
     "safety_gate",
     "prior_resolution",
     "monte_carlo_simulation",
@@ -425,6 +474,7 @@ class DomainPack(StrictModel):
     calibration_status: NonEmptyString
     decision_options: list[DecisionOption] = Field(min_length=1)
     hard_gates: dict[str, list[SafetyGate]] = Field(default_factory=dict)
+    mappings: DomainPackMappings = Field(default_factory=DomainPackMappings)
     soft_nodes: list[NonEmptyString] = Field(default_factory=list)
     prior_policy: dict[str, Prior] = Field(default_factory=dict)
     value_of_information_variables: list[NonEmptyString] = Field(default_factory=list)
@@ -435,6 +485,38 @@ class DomainPack(StrictModel):
         option_ids = [option.id for option in self.decision_options]
         if len(set(option_ids)) != len(option_ids):
             raise ValueError("decision option ids must be unique")
+        return self
+
+    @model_validator(mode="after")
+    def validate_explicit_mappings(self) -> Self:
+        option_ids = {option.id for option in self.decision_options}
+        gate_groups = set(self.hard_gates)
+        prior_ids = set(self.prior_policy)
+
+        for mapping in self.mappings.safety_gate_targets:
+            if mapping.gate_group not in gate_groups:
+                raise ValueError(
+                    f"safety gate mapping references unknown gate_group {mapping.gate_group!r}"
+                )
+            if mapping.option_id not in option_ids:
+                raise ValueError(
+                    f"safety gate mapping for {mapping.gate_group!r} references "
+                    f"unknown option_id {mapping.option_id!r}"
+                )
+
+        for mapping in self.mappings.prior_to_options:
+            if mapping.prior_id not in prior_ids:
+                raise ValueError(
+                    f"prior-to-option mapping references unknown prior_id {mapping.prior_id!r}"
+                )
+            unknown_option_ids = [
+                option_id for option_id in mapping.option_ids if option_id not in option_ids
+            ]
+            if unknown_option_ids:
+                raise ValueError(
+                    f"prior-to-option mapping for {mapping.prior_id!r} references "
+                    f"unknown option_id(s): {', '.join(unknown_option_ids)}"
+                )
         return self
 
 
