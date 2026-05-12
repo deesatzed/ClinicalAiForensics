@@ -329,3 +329,11 @@ Decision: `P1-010` creates `CALIBRATION_OUTCOME_PREREQUISITES.md` as a documenta
 Reason: The project has status-only provenance logs and visible calibration-pending report language, but it does not have expert labels, clinician action distributions, governed outcome anchors, PHI/data-use approvals, numeric option-level calibrated probabilities, or metric definitions. Defining prerequisites now reduces future scope risk without implying validation.
 
 Impact: No runtime behavior, CLI behavior, report wording, provenance schema, calibration curves, reliability metrics, Brier/ECE computation, prior updating, drift detection, outcome linkage, expert label collection, PHI handling, outcome claims, calibrated-risk language, final recommendation logic, hidden scoring, thresholds, utilities, priors, clinical formulas, LLM judgment, or answer grading were added. Calibration and outcome anchoring remain deferred until governance, labels, outcomes, and data-handling rules are approved.
+
+## D-042: Phase 1 Completion Review Is Documentation-Only And Recommends A Stable Baseline
+
+Decision: `PHASE1_COMPLETION_REVIEW.md` records Phase 1 completion across `P1-001` through `P1-010` and recommends tagging Phase 1 as a stable baseline only after the review is committed and the user approves the tag name.
+
+Reason: Phase 1 hardened the Phase 0 scaffold, added explicit mapping/status/report/provenance boundaries, and documented evidence and calibration prerequisites. A completion review gives the next reviewer a concise stop/go record before any Phase 2 scope begins.
+
+Impact: No Phase 2 work, runtime behavior, CLI behavior, clinical logic, final recommendations, LLM/AI judgment, outcome linkage, calibration metrics, thresholds, utilities, priors, or formulas are added by the review. Phase 2 remains deferred until a specific candidate direction is selected and governed.
