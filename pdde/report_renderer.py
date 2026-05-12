@@ -8,10 +8,11 @@ hidden scores.
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from typing import Any
 
 from .pipeline_models import EvaluationPipelineResult
+from .report_contract import REPORT_SECTIONS, validate_report_contract
 from .status_ledger import build_status_ledger
 
 
@@ -20,23 +21,19 @@ def render_markdown_report(result: EvaluationPipelineResult) -> str:
 
     sections = [
         _header(result),
-        _advisory_status(),
-        _decision_episode_summary(result),
-        _safety_gate_results(result),
-        _decision_profile_statuses(result),
-        _why_no_top_option(),
-        _missing_and_value_of_information(result),
-        _uncertainty_budget(result),
-        _local_execution_checklist(result),
-        _patient_feasibility_preference_gaps(result),
-        _prior_provenance(result),
-        _monte_carlo_summaries(result),
-        _items_requiring_attention(result),
-        _calibration_status(result),
-        _provenance_references(result),
-        _limitations(),
+        *[_render_section(section.section_id, result) for section in REPORT_SECTIONS],
     ]
-    return "\n\n".join(section.rstrip() for section in sections) + "\n"
+    markdown = "\n\n".join(section.rstrip() for section in sections) + "\n"
+    validate_report_contract(markdown)
+    return markdown
+
+
+def _render_section(section_id: str, result: EvaluationPipelineResult) -> str:
+    try:
+        renderer = _SECTION_RENDERERS[section_id]
+    except KeyError as exc:
+        raise RuntimeError(f"missing report renderer for required section {section_id!r}") from exc
+    return renderer(result)
 
 
 def _header(result: EvaluationPipelineResult) -> str:
@@ -399,6 +396,25 @@ def _limitations() -> str:
         "No PHI should be used; current fixtures are synthetic.",
     ]
     return "## Limitations\n\n" + "\n".join(f"- {item}" for item in limitations)
+
+
+_SECTION_RENDERERS: dict[str, Callable[[EvaluationPipelineResult], str]] = {
+    "advisory_status": lambda _result: _advisory_status(),
+    "decision_episode_summary": _decision_episode_summary,
+    "safety_gate_results": _safety_gate_results,
+    "decision_profile_statuses": _decision_profile_statuses,
+    "why_no_top_option": lambda _result: _why_no_top_option(),
+    "missing_and_value_of_information": _missing_and_value_of_information,
+    "uncertainty_budget": _uncertainty_budget,
+    "local_execution_checklist": _local_execution_checklist,
+    "patient_feasibility_preference_gaps": _patient_feasibility_preference_gaps,
+    "prior_provenance": _prior_provenance,
+    "monte_carlo_summaries": _monte_carlo_summaries,
+    "items_requiring_attention": _items_requiring_attention,
+    "calibration_status": _calibration_status,
+    "provenance_references": _provenance_references,
+    "limitations": lambda _result: _limitations(),
+}
 
 
 def _table(headers: list[str], rows: Iterable[tuple[Any, ...]]) -> str:

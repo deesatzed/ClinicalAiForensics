@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from pdde.cde_loader import load_cde
 from pdde.domain_pack_loader import load_domain_pack
 from pdde.evaluation_pipeline import evaluate_cde, run_evaluation_pipeline
 from pdde.models import ClinicalDecisionEpisode
+from pdde.report_contract import REQUIRED_REPORT_HEADINGS
 from pdde.report_renderer import render_markdown_report
 
 
@@ -56,24 +58,16 @@ def test_renders_valid_pipeline_result_to_markdown() -> None:
 def test_major_report_sections_are_present() -> None:
     report = _canonical_report()
 
-    for heading in [
-        "## Advisory Status",
-        "## Decision Episode Summary",
-        "## Safety Gate Results",
-        "## Decision Profile Statuses",
-        "## Why There Is No Top Option",
-        "## Missing Variables And Value Of Information",
-        "## Uncertainty Budget",
-        "## Local Execution Checklist",
-        "## Patient Feasibility And Preference Gaps",
-        "## Prior Provenance",
-        "## Monte Carlo Prior Summaries",
-        "## Missing Unsupported Deferred And Blocked Items",
-        "## Calibration Status",
-        "## Provenance References",
-        "## Limitations",
-    ]:
+    for heading in REQUIRED_REPORT_HEADINGS:
         assert heading in report
+
+
+def test_report_sections_follow_registry_order() -> None:
+    report = _canonical_report()
+
+    rendered_headings = re.findall(r"^## .+$", report, flags=re.MULTILINE)
+
+    assert rendered_headings == list(REQUIRED_REPORT_HEADINGS)
 
 
 def test_blocked_missing_deferred_and_unsupported_statuses_are_visible() -> None:

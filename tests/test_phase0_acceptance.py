@@ -13,6 +13,7 @@ from pdde.cde_loader import load_cde
 from pdde.domain_pack_loader import load_domain_pack
 from pdde.evaluation_pipeline import run_evaluation_pipeline
 from pdde.provenance_logger import create_provenance_records, records_to_jsonl
+from pdde.report_contract import FORBIDDEN_FINAL_RECOMMENDATION_PHRASES, REQUIRED_REPORT_HEADINGS
 from pdde.report_renderer import render_markdown_report
 
 
@@ -23,34 +24,6 @@ V03_DOMAIN = (
 )
 EXAMPLES = ROOT / "examples"
 TIMESTAMP = "2026-05-11T00:00:00Z"
-
-EXPECTED_REPORT_SECTIONS = [
-    "## Advisory Status",
-    "## Decision Episode Summary",
-    "## Safety Gate Results",
-    "## Decision Profile Statuses",
-    "## Why There Is No Top Option",
-    "## Missing Variables And Value Of Information",
-    "## Uncertainty Budget",
-    "## Local Execution Checklist",
-    "## Patient Feasibility And Preference Gaps",
-    "## Prior Provenance",
-    "## Monte Carlo Prior Summaries",
-    "## Missing Unsupported Deferred And Blocked Items",
-    "## Calibration Status",
-    "## Provenance References",
-    "## Limitations",
-]
-
-FORBIDDEN_FINAL_RECOMMENDATION_TEXT = [
-    "top-ranked",
-    "highest-fitness",
-    "defensible conclusion",
-    "we recommend",
-    "ranked decision options",
-    "category probabilities",
-    "median fitness",
-]
 
 RAW_FIXTURE_TEXT_THAT_SHOULD_NOT_BE_LOGGED = [
     "Known HFrEF/HFmrEF",
@@ -91,10 +64,10 @@ def _assert_phase0_report_guardrails(report: str) -> None:
     assert "not a final clinical recommendation" in report.lower()
     assert "unsupported" in report
     assert "deferred" in report
-    for heading in EXPECTED_REPORT_SECTIONS:
+    for heading in REQUIRED_REPORT_HEADINGS:
         assert heading in report
     lower_report = report.lower()
-    for forbidden in FORBIDDEN_FINAL_RECOMMENDATION_TEXT:
+    for forbidden in FORBIDDEN_FINAL_RECOMMENDATION_PHRASES:
         assert forbidden not in lower_report
 
 

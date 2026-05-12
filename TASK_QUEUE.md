@@ -688,7 +688,7 @@ Verification:
 
 ### P1-006: Report Section Registry Or Schema Contract
 
-Status: pending
+Status: done
 
 Scope:
 
@@ -700,6 +700,25 @@ Acceptance:
 - Required sections are defined in one registry, schema, or equivalent contract.
 - Tests assert required sections and deterministic ordering.
 - Advisory-only and no-final-recommendation language remains required.
+
+Verification:
+
+- `pdde/report_contract.py` defines the required report title, section registry, section obligations, required advisory guardrail phrases, forbidden final-recommendation phrases, and status-preservation obligations.
+- `pdde/report_renderer.py` renders by `REPORT_SECTIONS` order and validates final Markdown with `validate_report_contract`.
+- tests assert required headings are included in deterministic registry order.
+- tests assert advisory-only, uncalibrated, not-clinically-validated, and no-final-recommendation language remains required.
+- tests assert dropped sections or dropped guardrail language fail clearly.
+- tests assert missing, unsupported, blocked, and deferred status obligations remain visible across canonical and high-potassium reports.
+- no CLI behavior, clinical logic, final recommendations, AI/LLM judgment, hidden scoring, thresholds, utilities, formulas, status-ledger semantics, provenance/privacy behavior, or generated-artifact policy changed.
+- `python -m pytest` passed, 116 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL.
 
 ### P1-007: Local Overlay Verification Contract
 
@@ -763,7 +782,7 @@ Acceptance:
 
 ## Queue State
 
-Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, and `P1-005` are complete. The next unblocked task is `P1-006: Report Section Registry Or Schema Contract`.
+Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, and `P1-006` are complete. The next unblocked task is `P1-007: Local Overlay Verification Contract`.
 
 ## Deferred
 

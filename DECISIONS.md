@@ -289,3 +289,11 @@ Decision: `P1-005` splits model definitions out of the centralized `pdde/models.
 Reason: The P1-002 explicit mapping contracts, P1-003 fixtures, and P1-004 status-ledger contract are now stable enough to reduce model-file gravity without changing runtime behavior. Focused modules make future schema work easier to review before AI mapping or local overlay work expands the model surface.
 
 Impact: Existing imports from `pdde.models` continue to work, while internal runtime modules now import from the focused modules. No CLI behavior, clinical logic, final recommendations, AI/LLM judgment, thresholds, utilities, hidden scoring, provenance semantics, or PHI handling were changed.
+
+## D-037: Report Section Contract Is The Renderer Source Of Truth
+
+Decision: `P1-006` adds `pdde/report_contract.py` as the single registry for required Markdown report sections, deterministic section ordering, advisory guardrail phrases, forbidden final-recommendation phrases, and visible status-preservation obligations. `pdde/report_renderer.py` now renders sections by that registry and validates the final Markdown against the contract.
+
+Reason: Phase 1 needs the report format to be reviewable as a stable external contract before more report/log semantics or AI-mapping inputs are added. Keeping section order and advisory language in one small module prevents tests, renderer code, and future docs from drifting independently.
+
+Impact: The report renderer now fails clearly if a required section or required advisory phrase is dropped. Existing report content, CLI behavior, clinical logic, status ledger behavior, provenance logging, generated-artifact policy, final-recommendation prohibition, and AI/LLM boundaries remain unchanged.
