@@ -313,3 +313,11 @@ Decision: `P1-008` adds `pdde/ai_answer_mapping.py` and typed `AIAnswerMappingRe
 Reason: Phase 1 needed a narrow bridge from answer-derived claims to deterministic gates without reopening hidden clinical inference. The v0.3 and v0.1 source materials explicitly identify these wrong-indication claim types and detection patterns, while also requiring direct CDE simulation to remain separate from AI answer mapping.
 
 Impact: Free-text answers do not directly modify priors, thresholds, safety gates, recommendations, simulations, or reports. Only explicit mapped claim records can activate claim-type gates, and unmapped or unsupported claims remain visible through pipeline results, the status ledger, reports, and provenance records. No CLI AI-answer mapping, LLM extraction, answer grading, final recommendation, hidden scoring, thresholds, utilities, or new clinical formulas were added.
+
+## D-040: Citation/Evidence Audit Remains A Handoff Specification
+
+Decision: `P1-009` creates `EVIDENCE_AUDIT_HANDOFF.md` as a documentation-only handoff for future citation/evidence audit requirements. The handoff lists candidate evidence-source fields, current report/provenance gaps, relationship to prior and uncertainty governance, deferred workflow steps, out-of-scope audit features, and open user/governance inputs.
+
+Reason: Phase 1 can clarify what future evidence support review requires without starting Phase 3-style citation verification. The current system has provenance strings and status-only logs, but it does not have governed source registries, bibliographic IDs, support-status decisions, source freshness checks, or source-to-claim alignment.
+
+Impact: No runtime behavior, CLI behavior, report wording, provenance schema, automated source checking, citation scoring, source truth claims, LLM judgment, answer grading, final recommendation logic, hidden scoring, thresholds, utilities, priors, or clinical formulas were added. Full citation/evidence audit remains deferred until source ownership, allowed identifiers, review statuses, support statuses, and network/data-access rules are explicitly governed.

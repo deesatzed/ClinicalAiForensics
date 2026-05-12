@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, and `P1-008: AI Answer Mapping Interface` are complete. `P1-009: Citation/Evidence Audit Handoff` remains deferred.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, and `P1-009: Citation/Evidence Audit Handoff` are complete. `P1-010: Calibration And Outcome Anchoring Prerequisites` remains deferred.
 
 Created the root project-control files:
 
@@ -316,6 +316,40 @@ Verification:
 - all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
 - all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/pdde_p1_008_reports/...`.
 - `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the final verification append it contained 901 JSONL records.
+
+## P1-009 Completed
+
+Completed `P1-009: Citation/Evidence Audit Handoff` as documentation-only work.
+
+Created:
+
+- `EVIDENCE_AUDIT_HANDOFF.md`
+
+Documented:
+
+- candidate future evidence-source fields, including stable source IDs, source types, bibliographic IDs, review status, support status, review cadence, supported entity IDs, support scope, limitations, and audit decision metadata.
+- relationship to `pdde_v0_3_first_principles_final/05_PRIOR_AND_UNCERTAINTY_GOVERNANCE.md`.
+- current Markdown report gaps around source registry, bibliographic identifiers, freshness, support status, and source-to-entity mapping.
+- current JSONL provenance gaps around evidence source IDs, support status, review status, retrieval status, and conflict/retraction state.
+- deferred future audit workflow and open user/governance inputs.
+
+Guardrails preserved:
+
+- no runtime behavior, CLI behavior, report wording, provenance schema, automated source validation, citation scoring, source truth claims, LLM judgment, answer grading, final recommendation logic, hidden scoring, thresholds, utilities, priors, or clinical formulas were added.
+- full citation/evidence audit remains deferred until source ownership, allowed identifiers, review statuses, support statuses, and network/data-access rules are governed.
+
+Verification:
+
+- P1-009 implementation is documentation-only; no new runtime behavior or tests were added.
+- `python -m pytest` passed, 131 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
+- all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/pdde_p1_009_reports/...`.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL.
 
 Created the initial implementation scaffold:
 

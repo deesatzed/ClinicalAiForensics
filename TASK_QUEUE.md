@@ -790,7 +790,7 @@ Verification:
 
 ### P1-009: Citation/Evidence Audit Handoff
 
-Status: deferred
+Status: complete
 
 Scope:
 
@@ -801,6 +801,21 @@ Acceptance:
 
 - Needed evidence-source fields and report/provenance gaps are documented.
 - No citation scoring, source truth claims, or automated evidence validation is added.
+
+Verification:
+
+- `EVIDENCE_AUDIT_HANDOFF.md` documents future evidence-source fields, report/provenance gaps, relationship to prior and uncertainty governance, deferred workflow steps, out-of-scope features, and open user/governance inputs.
+- no runtime behavior, CLI behavior, report wording, provenance schema, source checking, citation scoring, source truth claims, LLM judgment, answer grading, final recommendations, hidden scoring, thresholds, utilities, priors, or clinical formulas were added.
+- full citation/evidence audit remains deferred until source ownership, identifiers, review statuses, support statuses, and network/data-access rules are governed.
+- `python -m pytest` passed, 131 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL.
 
 ### P1-010: Calibration And Outcome Anchoring Prerequisites
 
@@ -819,7 +834,7 @@ Acceptance:
 
 ## Queue State
 
-Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, and `P1-008` are complete. `P1-009: Citation/Evidence Audit Handoff` remains deferred.
+Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, and `P1-009` are complete. `P1-010: Calibration And Outcome Anchoring Prerequisites` remains deferred.
 
 ## Deferred
 
@@ -860,7 +875,7 @@ Scope:
 
 Reason Deferred:
 
-- Explicitly Phase 3 in v0.3.
+- `P1-009` documents the handoff requirements only. Full source support checking, citation integrity validation, citation scoring, source truth claims, and automated evidence validation remain explicitly deferred to a later governed scope.
 
 ### TQ-D004: Calibration And Outcome Anchoring
 
