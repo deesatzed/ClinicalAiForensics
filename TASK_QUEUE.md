@@ -819,7 +819,7 @@ Verification:
 
 ### P1-010: Calibration And Outcome Anchoring Prerequisites
 
-Status: deferred
+Status: complete
 
 Scope:
 
@@ -831,10 +831,27 @@ Acceptance:
 - Required labels/outcomes and governance approvals are listed.
 - Current logs are assessed for calibration-seed suitability without PHI.
 - No report language implies validation or calibrated risk.
+- No outcome claims are added.
+- Open user/governance inputs are listed.
+
+Verification:
+
+- `CALIBRATION_OUTCOME_PREREQUISITES.md` documents required label families, candidate outcome anchors needing governance, required approvals, data-handling constraints, metric prerequisites, current JSONL log suitability, report-language guardrails, deferred implementation boundaries, out-of-scope features, and open user/governance inputs.
+- current logs are assessed as suitable for run inventory and audit checklist seeding, but not sufficient for Brier scores, ECE, reliability diagrams, outcome claims, or prior updating.
+- no runtime behavior, CLI behavior, report wording, provenance schema, calibration curves, reliability metrics, Brier/ECE computation, prior updating, drift detection, outcome linkage, expert label collection, PHI handling, outcome claims, calibrated-risk language, final recommendations, hidden scoring, thresholds, utilities, priors, clinical formulas, LLM judgment, or answer grading were added.
+- `python -m pytest` passed, 131 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL.
 
 ## Queue State
 
-Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, and `P1-009` are complete. `P1-010: Calibration And Outcome Anchoring Prerequisites` remains deferred.
+Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, `P1-009`, and `P1-010` are complete. No unblocked Phase 1 implementation task follows `P1-010` in the current queue.
 
 ## Deferred
 
@@ -887,4 +904,4 @@ Scope:
 
 Reason Deferred:
 
-- Requires governance, labels, and outcome data beyond Phase 0.
+- `P1-010` documents prerequisite labels, outcome anchors, governance approvals, data-handling constraints, metric prerequisites, and current log suitability only. Actual calibration curves, reliability metrics, outcome linkage, prior drift analysis, PHI handling, expert label collection, and outcome claims remain deferred to a later governed scope.

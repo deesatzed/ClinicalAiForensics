@@ -321,3 +321,11 @@ Decision: `P1-009` creates `EVIDENCE_AUDIT_HANDOFF.md` as a documentation-only h
 Reason: Phase 1 can clarify what future evidence support review requires without starting Phase 3-style citation verification. The current system has provenance strings and status-only logs, but it does not have governed source registries, bibliographic IDs, support-status decisions, source freshness checks, or source-to-claim alignment.
 
 Impact: No runtime behavior, CLI behavior, report wording, provenance schema, automated source checking, citation scoring, source truth claims, LLM judgment, answer grading, final recommendation logic, hidden scoring, thresholds, utilities, priors, or clinical formulas were added. Full citation/evidence audit remains deferred until source ownership, allowed identifiers, review statuses, support statuses, and network/data-access rules are explicitly governed.
+
+## D-041: Calibration And Outcome Anchoring Remain Prerequisites-Only
+
+Decision: `P1-010` creates `CALIBRATION_OUTCOME_PREREQUISITES.md` as a documentation-only handoff for future calibration and outcome anchoring. The handoff lists required label families, candidate outcome anchors that need governance, required approvals, data-handling constraints, metric prerequisites, current JSONL log suitability, report-language guardrails, out-of-scope calibration features, and open user/governance inputs.
+
+Reason: The project has status-only provenance logs and visible calibration-pending report language, but it does not have expert labels, clinician action distributions, governed outcome anchors, PHI/data-use approvals, numeric option-level calibrated probabilities, or metric definitions. Defining prerequisites now reduces future scope risk without implying validation.
+
+Impact: No runtime behavior, CLI behavior, report wording, provenance schema, calibration curves, reliability metrics, Brier/ECE computation, prior updating, drift detection, outcome linkage, expert label collection, PHI handling, outcome claims, calibrated-risk language, final recommendation logic, hidden scoring, thresholds, utilities, priors, clinical formulas, LLM judgment, or answer grading were added. Calibration and outcome anchoring remain deferred until governance, labels, outcomes, and data-handling rules are approved.

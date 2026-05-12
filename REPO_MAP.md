@@ -31,6 +31,7 @@ The supporting `ClinSafer/` and `Agent_Pidgeon/` workspaces are tracked from the
 | `PHASE1_PLAN.md` | Planning-only Phase 1 roadmap with ranked tasks, acceptance criteria, verification expectations, user-input needs, and stop conditions. |
 | `BASELINE_POLICY.md` | Phase 0 baseline tag, root git strategy, submodule policy, generated report/log artifact policy, and Phase 1 boundary guardrails. |
 | `EVIDENCE_AUDIT_HANDOFF.md` | P1-009 documentation-only handoff for future citation/evidence audit fields, report/provenance gaps, governance inputs, and out-of-scope boundaries. |
+| `CALIBRATION_OUTCOME_PREREQUISITES.md` | P1-010 documentation-only handoff for future calibration/outcome labels, governance approvals, data constraints, metric prerequisites, log suitability, and out-of-scope boundaries. |
 | `pyproject.toml` | Initial Python package metadata and dependency groups. |
 | `.gitignore` | Local/generated-file ignore rules, including ignored generated `reports/*.md` and `logs/*.jsonl`. |
 | `pdde/` | Phase 0/Phase 1 implementation package. Contains CLI wiring, focused Pydantic model modules, a compatibility `pdde.models` facade, explicit domain-pack mapping models, CDE/domain-pack loaders, deterministic safety gate evaluation, API-only AI-answer claim mapping, deterministic prior resolution, seeded prior-level Monte Carlo sampling, item-level uncertainty/VOI evaluation, local overlay verification, deterministic Decision Profile assembly, a typed evaluation pipeline, normalized status-ledger projection, explicit report section contract, deterministic Markdown report rendering, and JSONL provenance logging. |
@@ -243,7 +244,7 @@ Expected data flow:
 
 ## Current Build Status
 
-`TQ-001: Project Setup And Source Normalization`, `TQ-002: Data Models`, `TQ-003: CDE And Domain-Pack Loaders`, `TQ-004: Deterministic Safety Gate Engine`, `TQ-005: Prior Resolver`, `TQ-006: Monte Carlo Engine`, `TQ-007: Uncertainty Budget And Value Of Information`, `TQ-008: Decision Profiler`, `TQ-009: Evaluation Pipeline`, `TQ-010: Markdown Report Renderer`, `TQ-011: CLI Run And Validate Commands`, `TQ-012: Provenance Logging`, `TQ-013: Phase 0 Acceptance Tests`, `TQ-014: Build Log And Manual Structural Review`, `TQ-015: Phase 0 Handoff Package`, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, and `P1-009: Citation/Evidence Audit Handoff` are complete. Phase 1 is active.
+`TQ-001: Project Setup And Source Normalization`, `TQ-002: Data Models`, `TQ-003: CDE And Domain-Pack Loaders`, `TQ-004: Deterministic Safety Gate Engine`, `TQ-005: Prior Resolver`, `TQ-006: Monte Carlo Engine`, `TQ-007: Uncertainty Budget And Value Of Information`, `TQ-008: Decision Profiler`, `TQ-009: Evaluation Pipeline`, `TQ-010: Markdown Report Renderer`, `TQ-011: CLI Run And Validate Commands`, `TQ-012: Provenance Logging`, `TQ-013: Phase 0 Acceptance Tests`, `TQ-014: Build Log And Manual Structural Review`, `TQ-015: Phase 0 Handoff Package`, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, and `P1-010: Calibration And Outcome Anchoring Prerequisites` are complete. Phase 1 is active.
 
 Completed setup/model work:
 
@@ -313,6 +314,7 @@ Completed setup/model work:
 - Phase 1 planning artifact in `PHASE1_PLAN.md`,
 - Phase 0 baseline/artifact policy in `BASELINE_POLICY.md`,
 - citation/evidence audit handoff in `EVIDENCE_AUDIT_HANDOFF.md`,
+- calibration/outcome anchoring prerequisites handoff in `CALIBRATION_OUTCOME_PREREQUISITES.md`,
 - root synthetic CDE fixtures under `examples/`,
 - generated verification log in `logs/hf_cde_stable.jsonl`.
 
@@ -322,7 +324,7 @@ The package intentionally does not include final recommendation ranking, numeric
 
 No non-deferred Phase 0 implementation task remains in the current task queue, and the Phase 0 handoff package is complete.
 
-`P1-010: Calibration And Outcome Anchoring Prerequisites` is the next queued Phase 1 task but remains deferred. No unblocked implementation task follows `P1-009` in the current queue.
+`P1-010: Calibration And Outcome Anchoring Prerequisites` is complete. No unblocked implementation task follows `P1-010` in the current queue.
 
 ## Risks And Blockers
 
