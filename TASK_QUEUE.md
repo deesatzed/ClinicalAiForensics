@@ -583,7 +583,7 @@ Verification:
 
 ### P1-003: Canonical Synthetic Variant Fixtures
 
-Status: pending
+Status: done
 
 Scope:
 
@@ -597,6 +597,24 @@ Acceptance:
 - Expected status changes are covered through public pipeline or CLI tests.
 - Tests no longer rely only on hidden in-test mutations for core scenario coverage.
 - No new clinical thresholds or unsupported assumptions are introduced.
+
+Verification:
+
+- Root `examples/` now contains stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing-labs/missing-oxygen CDE fixtures.
+- Every new fixture is labeled synthetic/non-PHI in `local_context` and records derivation from the v0.3 stable fixture.
+- Phase 0 variant acceptance uses fixture files through `run_evaluation_pipeline(...)` instead of hidden in-test mutations.
+- CLI validation tests cover every root example fixture against the canonical HF domain pack.
+- `examples/README.md`, `README.md`, `DEMO.md`, and repo-control docs list or describe the scenario fixtures.
+- No runtime behavior, CLI behavior, clinical thresholds, utilities, formulas, final recommendations, PHI use, or AI/LLM judgment was added.
+- `python -m pytest` passed, 103 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL and contained 468 records after the final verification append.
 
 ### P1-004: Normalized Status Ledger
 
@@ -706,7 +724,7 @@ Acceptance:
 
 ## Queue State
 
-Phase 1 is active. `P1-001` and `P1-002` are complete. The next unblocked task is `P1-003: Canonical Synthetic Variant Fixtures`.
+Phase 1 is active. `P1-001`, `P1-002`, and `P1-003` are complete. The next unblocked task is `P1-004: Normalized Status Ledger`.
 
 ## Deferred
 

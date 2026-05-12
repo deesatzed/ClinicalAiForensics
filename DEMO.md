@@ -18,6 +18,18 @@ Canonical domain pack:
 pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml
 ```
 
+Root synthetic scenario fixtures:
+
+```text
+examples/hf_cde_stable.json
+examples/hf_cde_low_egfr.json
+examples/hf_cde_high_k.json
+examples/hf_cde_low_sbp.json
+examples/hf_cde_no_followup.json
+examples/hf_cde_prior_dka.json
+examples/hf_cde_missing_labs.json
+```
+
 Optional environment setup:
 
 ```bash
@@ -171,11 +183,29 @@ python -m pytest
 
 What to look for:
 
-- `96 passed`
+- `103 passed`
 
 Safe explanation:
 
 > The test suite checks deterministic behavior, validation failures, missingness, hard gates, provenance, CLI behavior, and report guardrails. Passing tests do not imply clinical validity.
+
+## Optional Scenario Fixture Check
+
+Run:
+
+```bash
+python -m pdde validate --cde examples/hf_cde_high_k.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml
+python -m pdde report --cde examples/hf_cde_missing_labs.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17
+```
+
+What to look for:
+
+- the high-potassium fixture validates as a synthetic CDE.
+- the missing-labs fixture keeps eGFR, potassium, and oxygen-requirement gaps visible.
+
+Safe explanation:
+
+> These are synthetic non-PHI scenario fixtures for reviewing gate and missingness behavior. They do not add clinical thresholds or recommendations.
 
 ## Optional Negative-Path Check
 

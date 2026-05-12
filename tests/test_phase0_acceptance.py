@@ -11,8 +11,7 @@ import pytest
 
 from pdde.cde_loader import load_cde
 from pdde.domain_pack_loader import load_domain_pack
-from pdde.evaluation_pipeline import evaluate_cde, run_evaluation_pipeline
-from pdde.models import ClinicalDecisionEpisode
+from pdde.evaluation_pipeline import run_evaluation_pipeline
 from pdde.provenance_logger import create_provenance_records, records_to_jsonl
 from pdde.report_renderer import render_markdown_report
 
@@ -22,6 +21,7 @@ V03_CDE = ROOT / "pdde_v0_3_first_principles_final/examples/hf_cde_stable.json"
 V03_DOMAIN = (
     ROOT / "pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml"
 )
+EXAMPLES = ROOT / "examples"
 TIMESTAMP = "2026-05-11T00:00:00Z"
 
 EXPECTED_REPORT_SECTIONS = [
@@ -78,21 +78,6 @@ def _run_pdde(*args: str) -> subprocess.CompletedProcess[str]:
         check=False,
         env=env,
     )
-
-
-def _cde(**patient_state_updates: object) -> ClinicalDecisionEpisode:
-    cde = load_cde(V03_CDE)
-    patient_state = dict(cde.patient_state)
-    patient_state.update(patient_state_updates)
-    return cde.model_copy(update={"patient_state": patient_state})
-
-
-def _cde_without(*variables: str) -> ClinicalDecisionEpisode:
-    cde = load_cde(V03_CDE)
-    patient_state = dict(cde.patient_state)
-    for variable in variables:
-        patient_state.pop(variable, None)
-    return cde.model_copy(update={"patient_state": patient_state})
 
 
 def _parse_jsonl(path: Path) -> list[dict[str, object]]:
@@ -235,28 +220,36 @@ def test_phase0_python_api_acceptance_without_network_or_credentials(monkeypatch
 
 
 @pytest.mark.parametrize(
-    ("name", "cde", "expected_report_text"),
+    ("name", "fixture_path", "expected_report_text"),
     [
         (
             "stable",
-            _cde(),
+            EXAMPLES / "hf_cde_stable.json",
             [
                 "No option ranking or final recommendation is computed",
                 "claim_type gate 'sotalol_as_hf_beta_blocker' requires mapped claim types",
                 "monitoring/rescue category is explicit",
             ],
         ),
-        ("low_egfr", _cde(egfr=15), ["egfr=15 meets <20", "egfr=15 meets <30", "blocked"]),
-        ("high_potassium", _cde(potassium=5.7), ["potassium=5.7 meets >=5.5", "blocked"]),
-        ("low_sbp", _cde(sbp=86), ["hypotension", "sbp=86 meets <90", "triggered"]),
+        (
+            "low_egfr",
+            EXAMPLES / "hf_cde_low_egfr.json",
+            ["egfr=15 meets <20", "egfr=15 meets <30", "blocked"],
+        ),
+        (
+            "high_potassium",
+            EXAMPLES / "hf_cde_high_k.json",
+            ["potassium=5.7 meets >=5.5", "blocked"],
+        ),
+        ("low_sbp", EXAMPLES / "hf_cde_low_sbp.json", ["hypotension", "sbp=86 meets <90", "triggered"]),
         (
             "no_followup",
-            _cde(follow_up_available=False),
+            EXAMPLES / "hf_cde_no_followup.json",
             ["no follow-up for required monitoring", "follow_up_available=False meets false"],
         ),
         (
             "prior_dka",
-            _cde(dka_risk="prior_euglycemic_dka"),
+            EXAMPLES / "hf_cde_prior_dka.json",
             [
                 "ketoacidosis risk",
                 "prior_euglycemic_dka",
@@ -265,12 +258,13 @@ def test_phase0_python_api_acceptance_without_network_or_credentials(monkeypatch
         ),
         (
             "missing_labs",
-            _cde_without("egfr", "potassium"),
+            EXAMPLES / "hf_cde_missing_labs.json",
             [
                 "patient_state.egfr is absent",
                 "patient_state.potassium is absent",
                 "Provide CDE patient_state.egfr.",
                 "Provide CDE patient_state.potassium.",
+                "oxygen_requirement is missing",
                 "missing",
             ],
         ),
@@ -278,16 +272,51 @@ def test_phase0_python_api_acceptance_without_network_or_credentials(monkeypatch
 )
 def test_phase0_variant_acceptance_preserves_statuses_in_reports(
     name: str,
-    cde: ClinicalDecisionEpisode,
+    fixture_path: Path,
     expected_report_text: list[str],
 ) -> None:
-    domain_pack = load_domain_pack(V03_DOMAIN)
-
-    result = evaluate_cde(cde, domain_pack, n_iterations=5, random_seed=17)
+    result = run_evaluation_pipeline(
+        cde_path=fixture_path,
+        domain_pack_path=V03_DOMAIN,
+        n_iterations=5,
+        random_seed=17,
+    )
     report = render_markdown_report(result)
 
-    assert result.cde.cde_id == "hf_cde_stable"
+    assert result.cde.cde_id == fixture_path.stem
+    assert result.cde.local_context["fixture_kind"] == "synthetic_non_phi"
+    assert result.cde.local_context["synthetic"] is True
+    assert result.cde.local_context["phi_status"] == "no_phi"
+    assert (
+        result.cde.local_context["derived_from"]
+        == "pdde_v0_3_first_principles_final/examples/hf_cde_stable.json"
+    )
     assert result.domain_pack.domain_pack_id == "hf_ed_discharge_v0_3"
     _assert_phase0_report_guardrails(report)
     for expected in expected_report_text:
         assert expected in report, name
+
+
+@pytest.mark.parametrize(
+    "fixture_path",
+    [
+        EXAMPLES / "hf_cde_stable.json",
+        EXAMPLES / "hf_cde_low_egfr.json",
+        EXAMPLES / "hf_cde_high_k.json",
+        EXAMPLES / "hf_cde_low_sbp.json",
+        EXAMPLES / "hf_cde_no_followup.json",
+        EXAMPLES / "hf_cde_prior_dka.json",
+        EXAMPLES / "hf_cde_missing_labs.json",
+    ],
+)
+def test_phase1_example_fixtures_validate_through_cli(fixture_path: Path) -> None:
+    loaded = load_cde(fixture_path)
+    assert loaded.local_context["fixture_kind"] == "synthetic_non_phi"
+    assert loaded.local_context["phi_status"] == "no_phi"
+
+    validate_result = _run_pdde("validate", "--cde", str(fixture_path), "--domain", str(V03_DOMAIN))
+
+    assert validate_result.returncode == 0
+    assert f"CDE valid: {fixture_path}" in validate_result.stdout
+    assert "Domain pack valid:" in validate_result.stdout
+    assert validate_result.stderr == ""

@@ -22,6 +22,7 @@ Phase 0 is not clinically validated, is not a clinical decision support system, 
 - End-to-end evaluation pipeline through `pdde/evaluation_pipeline.py`.
 - Deterministic advisory Markdown report rendering.
 - CLI validation, report generation to stdout, report generation to file, and optional provenance JSONL logging.
+- Root `examples/` synthetic variant fixtures for stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing-labs/missing-oxygen scenarios.
 - Phase 0 acceptance tests over the CLI, Python API, report guardrails, and log guardrails.
 
 ## How To Run It
@@ -118,7 +119,7 @@ python -m pdde.run_cde --cde <path> --domain <path> --out <report.md>
 
 ## Test Summary
 
-The current test suite contains 96 tests across 13 test files:
+The current test suite contains 103 tests across 13 test files:
 
 - models and serialization
 - loaders and validate CLI behavior
@@ -148,7 +149,7 @@ The JSONL log intentionally records IDs, statuses, paths, counts, source referen
 ## Known Limitations
 
 - Phase 0 is synthetic, advisory-only, and unvalidated.
-- The canonical v0.3 package includes one stable CDE fixture; variant scenarios are generated inside tests from that typed fixture.
+- The controlling v0.3 package includes one stable CDE fixture; root `examples/` now provides derived synthetic variant fixtures for review and tests.
 - The domain pack is draft and uncalibrated.
 - No final recommendation, safe-discharge conclusion, unsafe-discharge conclusion, top option, option ranking, or decision-fitness score is produced.
 - Monte Carlo output is prior-level only; it is not mapped into per-option posteriors.
@@ -169,16 +170,16 @@ The JSONL log intentionally records IDs, statuses, paths, counts, source referen
 
 | Rank | Next Task | Estimated Chance Of Improving Goal | Why | Risk | Requires User Input? |
 |---:|---|---:|---|---|---|
-| 1 | Promote canonical synthetic variant fixtures into `examples/` | 80% | Makes low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missingness cases reusable outside tests. | Low risk if labeled synthetic and derived from current fixture. | No |
-| 2 | Define a normalized status-ledger model | 75% | Gives report rendering and JSONL logging one shared contract for visible unresolved statuses. | Medium abstraction risk if made too broad. | No |
-| 3 | Split centralized model definitions into stable submodules | 70% | Improves maintainability before adding more schema and AI-mapping models. | Medium import/refactor risk; should be test-preserving. | No |
-| 4 | Define local overlay verification metadata requirements before implementing local workflow checks | 60% | Prevents draft operational assumptions from becoming hidden clinical logic. | Low code risk; medium governance dependency. | Yes |
-| 5 | Keep AI answer mapping deferred until direct-CDE fixtures and status contracts are reviewed | 45% | Protects the simulator from reverting to answer grading before its deterministic base is stable. | Medium workflow delay for AI-answer comparison use cases. | Yes |
+| 1 | Define a normalized status-ledger model | 75% | Gives report rendering and JSONL logging one shared contract for visible unresolved statuses. | Medium abstraction risk if made too broad. | No |
+| 2 | Split centralized model definitions into stable submodules | 70% | Improves maintainability before adding more schema and AI-mapping models. | Medium import/refactor risk; should be test-preserving. | No |
+| 3 | Define local overlay verification metadata requirements before implementing local workflow checks | 60% | Prevents draft operational assumptions from becoming hidden clinical logic. | Low code risk; medium governance dependency. | Yes |
+| 4 | Keep AI answer mapping deferred until direct-CDE fixtures and status contracts are reviewed | 45% | Protects the simulator from reverting to answer grading before its deterministic base is stable. | Medium workflow delay for AI-answer comparison use cases. | Yes |
+| 5 | Add a report section registry or schema contract | 65% | Makes advisory language and required sections explicit for external review. | Low to medium framework risk. | No |
 
 ## Stop/Go Recommendation
 
 Go for demoing and using Phase 0 as the tagged baseline `phase0-baseline` for Phase 1 direct-CDE hardening.
 
-Go for `P1-003: Canonical Synthetic Variant Fixtures` as the next engineering task after completed `P1-002` mapping hardening.
+Go for `P1-004: Normalized Status Ledger` as the next engineering task after completed `P1-003` fixture hardening.
 
 Stop for clinical deployment, PHI use, real patient-care use, final recommendation generation, or AI answer mapping until the corresponding deferred tasks are explicitly started and governed.

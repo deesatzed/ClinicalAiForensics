@@ -4,7 +4,7 @@ Last updated: 2026-05-12
 
 ## Recon Summary
 
-This root folder is now a git-backed project-planning and source-material workspace with an initial Python package scaffold for building `ClinAIForensics`. It has a root `pyproject.toml`, a scaffolded `pdde/` package, initial data models, minimal CDE/domain-pack loaders, explicit domain-pack mapping models, a deterministic safety gate engine, a deterministic prior resolver, a seeded Monte Carlo prior sampler, uncertainty-budget and value-of-information item evaluators, a deterministic Decision Profiler assembly layer, a typed end-to-end evaluation pipeline, a deterministic Markdown report renderer, CLI report/run wiring, JSONL provenance logging, Phase 0 acceptance tests, a Phase 0 build log/manual structural review, a Phase 0 handoff package, technical reviewer documentation, a Phase 1 planning artifact, a Phase 0 baseline/artifact policy, a focused `tests/` directory, canonical support directories, and a root remote at `https://github.com/deesatzed/ClinicalAiForensics.git`.
+This root folder is now a git-backed project-planning and source-material workspace with an initial Python package scaffold for building `ClinAIForensics`. It has a root `pyproject.toml`, a scaffolded `pdde/` package, initial data models, minimal CDE/domain-pack loaders, explicit domain-pack mapping models, a deterministic safety gate engine, a deterministic prior resolver, a seeded Monte Carlo prior sampler, uncertainty-budget and value-of-information item evaluators, a deterministic Decision Profiler assembly layer, a typed end-to-end evaluation pipeline, a deterministic Markdown report renderer, CLI report/run wiring, JSONL provenance logging, canonical synthetic example CDE fixtures, Phase 0 acceptance tests, a Phase 0 build log/manual structural review, a Phase 0 handoff package, technical reviewer documentation, a Phase 1 planning artifact, a Phase 0 baseline/artifact policy, a focused `tests/` directory, canonical support directories, and a root remote at `https://github.com/deesatzed/ClinicalAiForensics.git`.
 
 The intended project appears to be a Phase 0 Python CLI for PDDE: a Clinical Decision Episode simulator and governance engine for HF ED discharge decisions. It should load synthetic CDE fixtures and an HF domain pack, run deterministic safety gates before probabilistic simulation, and render advisory-only Markdown Decision Profiles with provenance, uncertainty budget, value-of-information, local overlay status, and calibration status.
 
@@ -35,7 +35,7 @@ The supporting `ClinSafer/` and `Agent_Pidgeon/` workspaces are tracked from the
 | `pdde/` | Phase 0/Phase 1 implementation package. Contains CLI wiring, Pydantic data models, explicit domain-pack mapping models, CDE/domain-pack loaders, deterministic safety gate evaluation, deterministic prior resolution, seeded prior-level Monte Carlo sampling, item-level uncertainty/VOI evaluation, deterministic Decision Profile assembly, a typed evaluation pipeline, deterministic Markdown report rendering, and JSONL provenance logging. |
 | `tests/` | Focused scaffold, model, loader, safety gate, prior resolver, Monte Carlo prior-sampling, uncertainty/VOI, Decision Profiler, evaluation pipeline, report-renderer, CLI report, provenance-logger, and acceptance tests. |
 | `domain_packs/` | Canonical future domain-pack location. |
-| `examples/` | Canonical future synthetic CDE fixture location. |
+| `examples/` | Canonical root synthetic CDE fixture location. Contains stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing-labs/missing-oxygen CDE fixtures derived from the v0.3 stable fixture. |
 | `reports/` | Canonical generated report output location. Contains generated fixture reports from TQ-011 verification. |
 | `logs/` | Canonical generated JSONL audit log location. Contains generated fixture log `logs/hf_cde_stable.jsonl` from TQ-012/TQ-013 verification. |
 | `instruc1.md` | Primary rationale for the v0.3 pivot from AI-answer grading to CDE-first decision simulation. |
@@ -93,6 +93,13 @@ Important files:
 | Path | Use |
 | --- | --- |
 | `pdde_v0_3_first_principles_final/examples/hf_cde_stable.json` | Canonical starting CDE fixture shape for Phase 0. |
+| `examples/hf_cde_stable.json` | Root synthetic non-PHI stable CDE fixture derived from the v0.3 source fixture. |
+| `examples/hf_cde_low_egfr.json` | Root synthetic low-eGFR CDE fixture. |
+| `examples/hf_cde_high_k.json` | Root synthetic high-potassium CDE fixture. |
+| `examples/hf_cde_low_sbp.json` | Root synthetic low-SBP CDE fixture. |
+| `examples/hf_cde_no_followup.json` | Root synthetic no-follow-up CDE fixture. |
+| `examples/hf_cde_prior_dka.json` | Root synthetic prior-DKA CDE fixture. |
+| `examples/hf_cde_missing_labs.json` | Root synthetic missing-labs/missing-oxygen CDE fixture. |
 | `pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` | Canonical starting domain-pack shape for Phase 0. |
 | `pdde-build-package/examples/sample_case_HF-001.json` | Older sample case useful for patient-context fields and regression expectations. |
 | `pdde-build-package/examples/case_egfr_15.json` | Low-eGFR fixture idea. |
@@ -224,7 +231,7 @@ Expected data flow:
 
 ## Current Build Status
 
-`TQ-001: Project Setup And Source Normalization`, `TQ-002: Data Models`, `TQ-003: CDE And Domain-Pack Loaders`, `TQ-004: Deterministic Safety Gate Engine`, `TQ-005: Prior Resolver`, `TQ-006: Monte Carlo Engine`, `TQ-007: Uncertainty Budget And Value Of Information`, `TQ-008: Decision Profiler`, `TQ-009: Evaluation Pipeline`, `TQ-010: Markdown Report Renderer`, `TQ-011: CLI Run And Validate Commands`, `TQ-012: Provenance Logging`, `TQ-013: Phase 0 Acceptance Tests`, `TQ-014: Build Log And Manual Structural Review`, `TQ-015: Phase 0 Handoff Package`, `P1-001: Phase 0 Baseline And Artifact Policy`, and `P1-002: Explicit Domain-Pack Mappings` are complete. Phase 1 is active.
+`TQ-001: Project Setup And Source Normalization`, `TQ-002: Data Models`, `TQ-003: CDE And Domain-Pack Loaders`, `TQ-004: Deterministic Safety Gate Engine`, `TQ-005: Prior Resolver`, `TQ-006: Monte Carlo Engine`, `TQ-007: Uncertainty Budget And Value Of Information`, `TQ-008: Decision Profiler`, `TQ-009: Evaluation Pipeline`, `TQ-010: Markdown Report Renderer`, `TQ-011: CLI Run And Validate Commands`, `TQ-012: Provenance Logging`, `TQ-013: Phase 0 Acceptance Tests`, `TQ-014: Build Log And Manual Structural Review`, `TQ-015: Phase 0 Handoff Package`, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, and `P1-003: Canonical Synthetic Variant Fixtures` are complete. Phase 1 is active.
 
 Completed setup/model work:
 
@@ -279,6 +286,7 @@ Completed setup/model work:
 - five-minute technical reviewer demo guide in `DEMO.md`,
 - Phase 1 planning artifact in `PHASE1_PLAN.md`,
 - Phase 0 baseline/artifact policy in `BASELINE_POLICY.md`,
+- root synthetic CDE fixtures under `examples/`,
 - generated verification log in `logs/hf_cde_stable.jsonl`.
 
 The package intentionally does not include final recommendation ranking, numeric decision-fitness synthesis, database logging, external telemetry, AI/LLM logging, production monitoring, or PHI storage.
@@ -287,7 +295,7 @@ The package intentionally does not include final recommendation ranking, numeric
 
 No non-deferred Phase 0 implementation task remains in the current task queue, and the Phase 0 handoff package is complete.
 
-The next unblocked Phase 1 task is `P1-003: Canonical Synthetic Variant Fixtures`.
+The next unblocked Phase 1 task is `P1-004: Normalized Status Ledger`.
 
 ## Risks And Blockers
 

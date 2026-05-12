@@ -265,3 +265,11 @@ Decision: `P1-002` adds a typed `mappings` section to `DomainPack` with `safety_
 Reason: Phase 1 should remove hidden inference before adding domains or AI answer mapping. Gate routing and prior/profile association are domain facts, not Python heuristics or clinical guesses.
 
 Impact: Malformed mapping targets fail strict domain-pack validation. Missing safety-gate mappings are surfaced as unsupported rather than silently routed. Profiles attach only explicitly mapped priors/simulations, and mapping provenance appears in reports/logs through source references. No thresholds, utilities, profile weights, option rankings, final clinical recommendations, or AI/LLM judgment were added.
+
+## D-034: Canonical Synthetic Variant Fixtures Live Under Root Examples
+
+Decision: `P1-003` promotes the stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing-labs/missing-oxygen scenarios into static root `examples/*.json` CDE fixtures. Each fixture is labeled synthetic/non-PHI in `local_context` and records derivation from the v0.3 stable fixture.
+
+Reason: Phase 1 needs inspectable scenario fixtures that reviewers can validate and run through the public CLI/API, instead of relying only on hidden in-test mutations. Keeping them under root `examples/` matches `IMPLEMENT.md` and leaves the original v0.3 source package intact.
+
+Impact: Tests now exercise core scenario behavior through fixture files and public pipeline/CLI boundaries. No runtime behavior, CLI behavior, domain-pack mappings, clinical thresholds, utilities, scoring formulas, final recommendations, PHI handling, or AI/LLM judgment were added.

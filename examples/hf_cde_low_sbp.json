@@ -1,0 +1,37 @@
+{
+  "cde_id": "hf_cde_low_sbp",
+  "domain": "hf_ed_discharge",
+  "decision_moment": "ED discharge after IV diuresis",
+  "case_text": "Synthetic non-PHI case: Known HFrEF/HFmrEF, improved after IV diuresis, being considered for discharge with low SBP scenario value.",
+  "patient_state": {
+    "ef_category": "HFrEF",
+    "sbp": 86,
+    "egfr": 42,
+    "potassium": 4.5,
+    "volume_status": "improved",
+    "dka_risk": "low",
+    "follow_up_available": true,
+    "medication_access": "confirmed",
+    "patient_preference": "wants discharge if safe"
+  },
+  "candidate_options": [
+    "admit_or_observe",
+    "discharge_loop_continue_gdmt",
+    "discharge_add_sglt2",
+    "discharge_add_mra",
+    "discharge_urgent_followup_no_new_dmt"
+  ],
+  "source_recommendations": [],
+  "local_context": {
+    "overlay_status": "draft",
+    "fixture_kind": "synthetic_non_phi",
+    "synthetic": true,
+    "phi_status": "no_phi",
+    "derived_from": "pdde_v0_3_first_principles_final/examples/hf_cde_stable.json",
+    "variant_focus": "low_sbp"
+  },
+  "outcome_tracking": {
+    "planned": false,
+    "calibration_target": "pending"
+  }
+}

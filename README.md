@@ -11,6 +11,7 @@ Phase 0 is local, CLI-only, synthetic, advisory-only, uncalibrated, and not clin
 ## What It Does
 
 - Loads CDE JSON and domain-pack YAML files through strict typed loaders.
+- Provides inspectable synthetic CDE scenario fixtures under `examples/`.
 - Validates explicit domain-pack mappings for safety-gate targets and prior-to-option links.
 - Evaluates deterministic safety gates before probabilistic sampling.
 - Resolves explicit priors from the domain pack while preserving provenance.
@@ -111,6 +112,18 @@ Canonical domain pack:
 pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml
 ```
 
+Root scenario fixtures:
+
+```text
+examples/hf_cde_stable.json
+examples/hf_cde_low_egfr.json
+examples/hf_cde_high_k.json
+examples/hf_cde_low_sbp.json
+examples/hf_cde_no_followup.json
+examples/hf_cde_prior_dka.json
+examples/hf_cde_missing_labs.json
+```
+
 Common review commands:
 
 ```bash
@@ -118,6 +131,8 @@ python -m pdde --help
 python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml
 python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17
 python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17
+python -m pdde validate --cde examples/hf_cde_high_k.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml
+python -m pdde report --cde examples/hf_cde_missing_labs.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17
 ```
 
 Compatibility command:
@@ -193,7 +208,7 @@ CLI
 
 ## Test Status
 
-Current test status: 96 passing tests across 13 test files.
+Current test status: 103 passing tests across 13 test files.
 
 Run:
 

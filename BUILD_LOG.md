@@ -94,7 +94,7 @@ python -m pdde report \
 
 ## Test And Verification Summary
 
-The test suite currently has 13 test files and 96 collected pytest cases. It covers:
+The test suite currently has 13 test files and 103 collected pytest cases. It covers:
 
 - CLI help.
 - CDE/domain-pack loading and validation errors.
@@ -110,7 +110,7 @@ The test suite currently has 13 test files and 96 collected pytest cases. It cov
 - provenance JSONL serialization and privacy guardrails.
 - Phase 0 acceptance paths across CLI, Python API, and scenario variants.
 
-TQ-013 acceptance tests cover stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing-labs behavior by mutating the canonical typed CDE fixture. This avoids adding unsupported fixture formats while still testing the explicit v0.3 gates.
+Acceptance tests now cover stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing-labs/missing-oxygen behavior through root `examples/*.json` fixtures. The fixtures remain synthetic, non-PHI, and derived from the canonical v0.3 stable CDE shape.
 
 ## Generated Artifacts
 
@@ -141,7 +141,7 @@ Working guardrails:
 
 ## Current Limitations
 
-- Only one canonical v0.3 CDE fixture exists on disk; scenario coverage is currently generated through typed test variants.
+- The controlling v0.3 source package still has one stable CDE fixture, but root `examples/` now provides inspectable synthetic variant fixtures for review and tests.
 - The canonical domain pack is draft, uncalibrated, and has `clinical_owner: pending`.
 - No local overlay rules have verified owners, sources, review cadence, or operational approval.
 - `wrong_indication_blocks` require mapped claim types and are unsupported in direct CDE mode until AI answer mapping exists.
@@ -164,7 +164,7 @@ Structural concerns:
 - P1-002 moved prior-to-option association into explicit domain-pack `mappings.prior_to_options`. The Decision Profiler no longer uses token overlap between option IDs and prior IDs.
 - Report section generation is deterministic and readable, but section names and ordering are encoded directly in Python. A report contract test exists; a report schema or section registry may help later.
 - Generated outputs are append-only/manual artifacts. They are useful for verification, but they are ignored source artifacts by default under `BASELINE_POLICY.md`.
-- The project has placeholder `domain_packs/` and `examples/` directories, but the active canonical inputs still live under `pdde_v0_3_first_principles_final/`. That separation preserves source provenance, but a user may expect runnable fixtures under `examples/`.
+- Root `examples/` now contains runnable synthetic CDE variants derived from the v0.3 source fixture; the active domain pack still lives under `pdde_v0_3_first_principles_final/`.
 
 No serious defect requiring a code change was found in this review.
 
@@ -217,14 +217,14 @@ Weird or overlooked alternatives that might simplify the system:
 
 | Rank | Improvement | Estimated Chance Of Improving Goal | Why | Risk | Recommended Timing |
 |---:|---|---:|---|---|---|
-| 1 | Create canonical synthetic CDE fixture files under `examples/` for stable and variant cases | 80% | Makes CLI demos and acceptance coverage easier for users to inspect | May duplicate v0.3 source fixtures unless provenance is documented | Next Phase 1 task |
-| 2 | Define a normalized status-ledger model consumed by both report rendering and JSONL logging | 70% | Reduces duplication between report/log summaries and clarifies unresolved states | Could over-abstract if done before more examples exist | After canonical variant fixtures exist |
-| 3 | Split `pdde/models.py` into input, component result, pipeline, and legacy/planned model modules | 70% | Improves maintainability as model count grows | Refactor can cause import churn without behavior gain | After one more feature or before Phase 1 |
-| 4 | Add a report section registry or schema contract | 60% | Keeps section ordering and required advisory language explicit | Adds minor framework around a simple renderer | Before report format becomes externally shared |
-| 5 | Add local overlay verification schema and fixture placeholders | 50% | Moves local workflow uncertainty from prose to structured data | Requires external owner/status input to be meaningful | After local review input is available |
-| 6 | Keep AI answer mapping deferred | 45% | Protects the CDE-first architecture from reverting to answer grading | Delays Workflow A compatibility | Continue until direct simulation has reviewed fixtures |
-| 7 | Document generated-artifact and root-git policy | 55% | Avoids confusion about append-only logs, generated reports, and nested repositories | Completed as `BASELINE_POLICY.md` with `phase0-baseline` tag | Completed in P1-001 |
-| 8 | Add explicit prior-to-option and gate-target mappings to the domain-pack schema | 85% | Removed token-overlap and hard-coded gate routing | Completed with mapping provenance in reports/logs | Completed in P1-002 |
+| 1 | Define a normalized status-ledger model consumed by both report rendering and JSONL logging | 70% | Reduces duplication between report/log summaries and clarifies unresolved states | Could over-abstract if done before more examples exist | Next Phase 1 task |
+| 2 | Split `pdde/models.py` into input, component result, pipeline, and legacy/planned model modules | 70% | Improves maintainability as model count grows | Refactor can cause import churn without behavior gain | After status ledger exists or before AI mapping |
+| 3 | Add a report section registry or schema contract | 60% | Keeps section ordering and required advisory language explicit | Adds minor framework around a simple renderer | Before report format becomes externally shared |
+| 4 | Add local overlay verification schema and fixture placeholders | 50% | Moves local workflow uncertainty from prose to structured data | Requires external owner/status input to be meaningful | After local review input is available |
+| 5 | Keep AI answer mapping deferred | 45% | Protects the CDE-first architecture from reverting to answer grading | Delays Workflow A compatibility | Continue until direct simulation has reviewed fixtures |
+| 6 | Document generated-artifact and root-git policy | 55% | Avoids confusion about append-only logs, generated reports, and nested repositories | Completed as `BASELINE_POLICY.md` with `phase0-baseline` tag | Completed in P1-001 |
+| 7 | Add explicit prior-to-option and gate-target mappings to the domain-pack schema | 85% | Removed token-overlap and hard-coded gate routing | Completed with mapping provenance in reports/logs | Completed in P1-002 |
+| 8 | Create canonical synthetic CDE fixture files under `examples/` for stable and variant cases | 80% | Makes CLI demos and acceptance coverage easier for users to inspect | Completed with synthetic/non-PHI provenance labels | Completed in P1-003 |
 
 ## Recommended Next Step
 
@@ -232,7 +232,7 @@ Proceed with direct-CDE hardening before new clinical logic:
 
 1. Keep `BUILD_LOG.md` as the Phase 0 review artifact.
 2. Use `BASELINE_POLICY.md` and tag `phase0-baseline` as the Phase 0 baseline/artifact policy.
-3. Decide whether to create canonical synthetic CDE variant files under `examples/`.
+3. Use root `examples/*.json` fixtures for scenario review and acceptance coverage.
 4. Keep generated reports/logs reproducible and ignored unless an explicit archive/release task says otherwise.
 
-The highest-value next engineering step is canonical synthetic variant fixtures, because they make the existing safety-gate and missingness behavior inspectable outside test-only mutations without adding unsupported clinical claims.
+The highest-value next engineering step is `P1-004: Normalized Status Ledger`, because the project now has explicit mappings and inspectable fixtures, so shared status projection can reduce report/log duplication without adding unsupported clinical claims.
