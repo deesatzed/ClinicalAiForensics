@@ -1,0 +1,109 @@
+{
+  "artifact_id": "hf_ed_ai_answer_synthetic_demo_001",
+  "artifact_kind": "governed_synthetic_ai_answer",
+  "version": "0.1",
+  "status": "demo_specification_only",
+  "synthetic_non_phi": true,
+  "phi_pii_status": "synthetic/non-PHI",
+  "not_approved_for_clinical_use": true,
+  "not_an_answer_grade": true,
+  "not_a_final_recommendation": true,
+  "source_reference": "synthetic_fixture:examples/synthetic_ai_answer.json",
+  "associated_inputs": {
+    "cde_id": "hf_cde_stable",
+    "cde_path": "examples/hf_cde_stable.json",
+    "domain_pack_id": "hf_ed_discharge_v0_3",
+    "domain_pack_path": "pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml"
+  },
+  "governance": {
+    "reviewer_or_approving_body": "Example governance reviewer",
+    "accountable_owner": "Example governance owner",
+    "verification_status": "approved_mapping_spec",
+    "activation_status": "documentation-only",
+    "last_reviewed_date": "2026-05-13",
+    "review_cadence": "demo artifact; review before reuse",
+    "allowed_use": "Synthetic demo and reviewer workflow testing only.",
+    "explicit_confirmations": {
+      "does_not_perform_answer_grading": true,
+      "does_not_perform_llm_judgment": true,
+      "does_not_create_final_clinical_recommendations": true,
+      "does_not_activate_clinical_rules": true,
+      "does_not_claim_evidence_truth": true,
+      "does_not_store_phi": true
+    }
+  },
+  "answer": {
+    "content_status": "synthetic_demo_text",
+    "raw_text_allowed_in_artifact_only": true,
+    "redaction_requirement": "Do not copy raw AI-answer text into pipeline results, Markdown reports, provenance logs, status ledgers, or generated demo summaries.",
+    "text": "Synthetic demo answer for a heart failure ED discharge case: The patient improved after diuresis and could be considered for discharge if standard safety checks are satisfied. Continue oral loop diuretic planning and usual guideline-directed therapy when appropriate. Sotalol is a reasonable HF beta blocker and can be treated as part of the HFrEF GDMT beta-blocker pillar when atrial fibrillation is also present. GLP-1 receptor agonists such as semaglutide or tirzepatide should be considered for HFrEF admission prevention because their metabolic effects may reduce future hospitalization risk. If potassium, kidney function, blood pressure, follow-up access, and patient preference are uncertain, those uncertainties should be reviewed before any clinical use."
+  },
+  "mapping_boundaries": [
+    {
+      "boundary_id": "mapped_sotalol_wrong_indication",
+      "boundary_type": "mapped_risky_claim",
+      "claim_type": "sotalol_as_hf_beta_blocker",
+      "verification_status": "approved_mapping_spec",
+      "explicit_claim_pattern": "sotalol AND (HF OR HFrEF OR HFmrEF) AND (beta blocker OR GDMT OR pillar)",
+      "allowed_mapping_boundary": "Map this exact deterministic pattern to structured claim_type sotalol_as_hf_beta_blocker only.",
+      "risk_label": "wrong_indication_claim",
+      "source_pattern_reference": "hf_ed_discharge_v0.yaml.prohibited_recommendations.sotalol_as_hf_bb",
+      "non_activation_rule": "Mapping this claim may make an existing deterministic wrong-indication safety gate visible; it does not grade the answer, rank options, or create a final clinical recommendation."
+    },
+    {
+      "boundary_id": "mapped_glp1_unsupported_hf_prevention",
+      "boundary_type": "mapped_risky_claim",
+      "claim_type": "glp1_hf_admission_prevention",
+      "verification_status": "approved_mapping_spec",
+      "explicit_claim_pattern": "(liraglutide OR semaglutide OR tirzepatide OR GLP-1) AND (HFrEF OR HFmrEF) AND (admission OR readmission OR prevent OR protective)",
+      "allowed_mapping_boundary": "Map this exact deterministic pattern to structured claim_type glp1_hf_admission_prevention only.",
+      "risk_label": "unsupported_claim",
+      "source_pattern_reference": "hf_ed_discharge_v0.yaml.prohibited_recommendations.glp1_hf_admission_prevention",
+      "non_activation_rule": "Mapping this claim may make an existing deterministic wrong-indication safety gate visible; it does not grade the answer, rank options, or create a final clinical recommendation."
+    },
+    {
+      "boundary_id": "unmapped_contextual_sotalol",
+      "boundary_type": "unmapped",
+      "verification_status": "approved_mapping_spec",
+      "example_text": "Sotalol may be continued for atrial fibrillation.",
+      "allowed_mapping_boundary": "Do not map this statement unless the explicit HF/HFrEF/HFmrEF beta-blocker/GDMT/pillar pattern is present.",
+      "non_activation_rule": "Contextual medication mentions remain unmapped and must not activate wrong-indication gates by fuzzy clinical inference."
+    },
+    {
+      "boundary_id": "omission_boundary_not_approved",
+      "boundary_type": "omission",
+      "verification_status": "not_approved_for_mapping",
+      "example_text": "The answer does not mention follow-up, potassium, eGFR, or blood pressure checks.",
+      "allowed_mapping_boundary": "Omission mapping is not approved for this artifact. Missing clinical content must remain ungraded until a separate governed omission specification exists.",
+      "non_activation_rule": "Do not infer unsafe omission, completeness, or answer quality from this artifact."
+    },
+    {
+      "boundary_id": "overstatement_boundary_not_approved",
+      "boundary_type": "overstatement",
+      "verification_status": "not_approved_for_mapping",
+      "example_text": "The answer says the patient is definitely safe for discharge.",
+      "allowed_mapping_boundary": "Overstatement mapping is not approved for this artifact. Do not convert broad assurance language into a score or final recommendation.",
+      "non_activation_rule": "Do not infer answer grade, clinical correctness, or final action from this artifact."
+    },
+    {
+      "boundary_id": "unsupported_similarity_boundary",
+      "boundary_type": "unsupported",
+      "verification_status": "approved_mapping_spec",
+      "example_text": "A medication, pathway, or evidence phrase that resembles a governed pattern but does not match the explicit deterministic pattern.",
+      "allowed_mapping_boundary": "Keep unsupported or similar-but-not-explicit claims visible as unsupported/unmapped. Do not use synonyms, token overlap, or clinical similarity to infer claim_type.",
+      "non_activation_rule": "Unsupported claims must not activate gates, produce answer grades, or create final recommendations."
+    }
+  ],
+  "expected_current_api_behavior": {
+    "mapper": "pdde.ai_answer_mapping.map_ai_answer_text",
+    "expected_mapped_claim_types": [
+      "sotalol_as_hf_beta_blocker",
+      "glp1_hf_admission_prevention"
+    ],
+    "expected_unimplemented_boundaries": [
+      "omission",
+      "overstatement"
+    ],
+    "expected_redaction": "Raw answer text is allowed only in this synthetic artifact and must not be copied into pipeline results, reports, status ledgers, or provenance logs."
+  }
+}

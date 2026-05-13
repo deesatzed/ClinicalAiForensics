@@ -417,3 +417,11 @@ Decision: `UX_SPEC.md` defines the pre-implementation product UX contract for le
 Reason: Further implementation should preserve the demo, reviewer, and developer workflows around advisory reports, provenance logs, status ledgers, evidence-reference visibility, optional governed AI-answer mapped-claim status, and governance status without drifting into clinical recommendations or automated action.
 
 Impact: The UX specification records required outputs, leadership-demo claim boundaries, reviewer status semantics, developer-safe extension paths, explicit non-goals, and remaining UX gaps. It adds no runtime behavior, CLI behavior, clinical logic, final recommendations, LLM judgment, evidence truth scoring, PHI handling, local rule activation, thresholds, utilities, priors, formulas, or hidden scoring.
+
+## D-053: Synthetic AI Answer Artifact Is Governed And Non-Activating
+
+Decision: `examples/synthetic_ai_answer.json` is the governed synthetic/non-PHI AI-answer artifact for UX demos and reviewer workflow tests. It stores synthetic answer text only inside the source artifact, plus explicit mapping boundaries and governance confirmations.
+
+Reason: UX-002 needs a concrete organization-neutral artifact that can demonstrate mapped risky claims and unresolved boundaries without adding the future `audit-answer` command or broad AI-answer grading behavior.
+
+Impact: Tests can exercise the artifact through the existing API-only deterministic mapper and verify that raw answer text does not enter pipeline results, reports, or provenance logs. Omission and overstatement boundaries remain documented but unimplemented. No runtime behavior, CLI behavior, final recommendations, LLM judgment, answer grading, evidence truth scoring, PHI behavior, thresholds, utilities, priors, formulas, hidden scoring, or local rule activation was added.

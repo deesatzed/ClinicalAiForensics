@@ -1128,16 +1128,20 @@ Acceptance:
 
 ### UX-002: Create Governed Synthetic AI Answer Artifact
 
-Status: blocked
+Status: done
 
 Scope:
 
 - Create an organization-neutral, synthetic/non-PHI AI-answer artifact for demo and reviewer workflow testing.
 - Include governed claim-pattern boundaries for mapped, unmapped, risky, omission, overstatement, and unsupported cases.
 
-Reason Blocked:
+Acceptance:
 
-- Requires organization-neutral governed AI-answer examples, allowed claim types, omission boundaries, overstatement boundaries, unsupported-claim boundaries, approval ownership, and explicit confirmation that the artifact does not enable answer grading, LLM judgment, final recommendations, or clinical action.
+- `examples/synthetic_ai_answer.json` exists.
+- The artifact is organization-neutral, synthetic/non-PHI, documentation-only, and not approved for clinical use.
+- The artifact defines governed boundaries for mapped risky claims, unmapped contextual mentions, omissions, overstatements, and unsupported similar claims.
+- The artifact explicitly confirms it does not enable answer grading, LLM judgment, final recommendations, clinical action, evidence truth scoring, PHI storage, or local rule activation.
+- Tests verify artifact metadata, boundary coverage, compatibility with the existing API-only deterministic mapper, and raw-answer redaction from pipeline/report/provenance outputs.
 
 ### UX-003: Create Leadership-Friendly Demo Report
 
@@ -1149,7 +1153,7 @@ Scope:
 
 Reason Blocked:
 
-- Requires the organization-neutral demo artifact set, including a governed synthetic AI-answer artifact if AI-answer audit is shown.
+- Requires desired leadership report framing, demo-report scope, and approval of which artifact excerpts may be shown.
 
 ### UX-004: Create Simple Demo Command Or Wrapper
 

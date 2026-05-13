@@ -43,7 +43,7 @@ The supporting `ClinSafer/` and `Agent_Pidgeon/` workspaces are tracked from the
 | `pdde/` | Phase 0/Phase 1/Phase 2 implementation package. Contains CLI wiring, focused Pydantic model modules, a compatibility `pdde.models` facade, explicit domain-pack mapping models, optional domain-pack evidence-reference models, API-only evidence-link validation, evidence-source registry models, CDE/domain-pack loaders, deterministic safety gate evaluation, API-only AI-answer claim mapping, deterministic prior resolution, seeded prior-level Monte Carlo sampling, item-level uncertainty/VOI evaluation, local overlay verification, API-only local overlay governance intake validation, deterministic Decision Profile assembly, a typed evaluation pipeline, normalized status-ledger projection including evidence-reference rows, explicit report section contract, deterministic Markdown report rendering including evidence-reference status, and JSONL provenance logging including status-only evidence-link records. |
 | `tests/` | Focused scaffold, model-module, evidence-registry, evidence-linking, evidence-status visibility, model, loader, safety gate, AI-answer mapping, prior resolver, Monte Carlo prior-sampling, uncertainty/VOI, local-overlay, local-overlay-intake, Decision Profiler, evaluation pipeline, status-ledger, report-contract, report-renderer, CLI report, provenance-logger, and acceptance tests. |
 | `domain_packs/` | Canonical future domain-pack location. |
-| `examples/` | Canonical root synthetic CDE fixture location. Contains stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing-labs/missing-oxygen CDE fixtures derived from the v0.3 stable fixture. |
+| `examples/` | Canonical root synthetic fixture location. Contains stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing-labs/missing-oxygen CDE fixtures derived from the v0.3 stable fixture, plus the governed synthetic AI-answer demo artifact. |
 | `reports/` | Canonical generated report output location. Contains generated fixture reports from TQ-011 verification. |
 | `logs/` | Canonical generated JSONL audit log location. Contains generated fixture log `logs/hf_cde_stable.jsonl` from TQ-012/TQ-013 verification. |
 | `instruc1.md` | Primary rationale for the v0.3 pivot from AI-answer grading to CDE-first decision simulation. |
@@ -108,6 +108,7 @@ Important files:
 | `examples/hf_cde_no_followup.json` | Root synthetic no-follow-up CDE fixture. |
 | `examples/hf_cde_prior_dka.json` | Root synthetic prior-DKA CDE fixture. |
 | `examples/hf_cde_missing_labs.json` | Root synthetic missing-labs/missing-oxygen CDE fixture. |
+| `examples/synthetic_ai_answer.json` | Governed organization-neutral synthetic/non-PHI AI-answer artifact for demo and reviewer workflow tests; documents mapped, unmapped, omission, overstatement, and unsupported boundaries without enabling CLI AI-answer audit or answer grading. |
 | `pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` | Canonical starting domain-pack shape for Phase 0. |
 | `pdde-build-package/examples/sample_case_HF-001.json` | Older sample case useful for patient-context fields and regression expectations. |
 | `pdde-build-package/examples/case_egfr_15.json` | Low-eGFR fixture idea. |

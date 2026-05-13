@@ -14,6 +14,12 @@ All fixtures are synthetic, non-PHI, advisory-only development artifacts. They a
 | `hf_cde_prior_dka.json` | prior euglycemic DKA marker | explicit DKA-risk gate blocks the SGLT2 profile |
 | `hf_cde_missing_labs.json` | missing eGFR, potassium, and oxygen requirement | missing inputs stay visible in gates, VOI, uncertainty, and profile status |
 
+## Synthetic AI Answer Artifact
+
+| Fixture | Scenario Focus | Expected Public Behavior |
+| --- | --- | --- |
+| `synthetic_ai_answer.json` | governed synthetic AI-answer artifact | provides non-PHI, documentation-only mapped/unmapped/omission/overstatement/unsupported boundaries for demo and reviewer workflow tests; does not enable CLI AI-answer audit, answer grading, LLM judgment, or final recommendations |
+
 Use the canonical HF domain pack for these fixtures:
 
 ```bash

@@ -305,7 +305,9 @@ Each output should be deterministic, reviewable, and safe for synthetic/non-PHI 
 
 ### Synthetic AI Answer Artifact
 
-The project needs a governed synthetic AI-answer artifact or mapped-claim fixture for demonstrations. It must be non-PHI and should exercise mapped, unmapped, unsupported, omission, and overstatement boundaries without adding LLM judgment or answer grading.
+`examples/synthetic_ai_answer.json` now provides a governed synthetic/non-PHI AI-answer artifact for demonstrations and reviewer workflow tests. It exercises mapped, unmapped, unsupported, omission, and overstatement boundaries without adding LLM judgment or answer grading.
+
+Remaining gap: the artifact is not wired into a CLI command. `audit-answer` remains deferred and non-existent until a later governed implementation task explicitly authorizes command behavior.
 
 ### Simple Demo Command
 
@@ -331,8 +333,8 @@ A final demo package should include:
 ## UX Milestones
 
 - `UX-001: Define end-user demo flow`: complete in this specification.
-- `UX-002: Create governed synthetic AI answer artifact`: blocked until organization-neutral governed AI-answer examples and mapping boundaries are supplied.
-- `UX-003: Create leadership-friendly demo report`: blocked until the synthetic AI-answer artifact and desired leadership report framing are approved.
+- `UX-002: Create governed synthetic AI answer artifact`: complete with `examples/synthetic_ai_answer.json`.
+- `UX-003: Create leadership-friendly demo report`: blocked until the desired leadership report framing and demo-report scope are approved.
 - `UX-004: Create simple demo command or wrapper`: blocked until the demo artifact set is stable and the command semantics are approved.
 - `UX-005: Create final demo package`: blocked until the demo report, provenance excerpt, one-pager, talk track, and governance disclaimers are ready.
 
