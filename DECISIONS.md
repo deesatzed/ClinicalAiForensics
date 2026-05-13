@@ -385,3 +385,11 @@ Decision: `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md` is a documentation-only intake te
 Reason: `P2-004` is blocked on governed local overlay input. A template can clarify the required metadata and activation boundary without changing runtime behavior or weakening the existing local overlay non-activation guardrail.
 
 Impact: The template defines required fields, allowed governance-intake statuses, activation prerequisites, a synthetic metadata-only example, and open governance questions. No runtime behavior, CLI behavior, local overlay activation, clinical logic, final recommendations, LLM judgment, evidence truth scoring, calibration metrics, outcome linkage, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or raw operational text handling was added.
+
+## D-049: P2-004 Validates Intake Metadata Without Activation
+
+Decision: `P2-004` adds API-only local overlay governance intake validation in `pdde/local_overlay_intake.py`. It parses the provided `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md` entry, treats it as draft metadata-only governance input, and can project it into redacted non-activating local overlay visibility.
+
+Reason: The intake entry supplies enough metadata to validate draft local overlay governance visibility while still containing `TBD` and not-reviewed fields. The safe implementation boundary is to recognize and surface that status, not to activate local workflow rules or alter clinical evaluation.
+
+Impact: Local overlay governance intake can now be validated as complete enough for metadata-only draft visibility. Activation remains blocked, and raw owner/source/review values are not copied into the redacted local overlay projection. No CLI behavior, report behavior, provenance logging, safety gates, priors, decision profiles, recommendations, clinical logic, LLM judgment, evidence truth scoring, calibration metrics, outcome linkage, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or local rule activation was added.

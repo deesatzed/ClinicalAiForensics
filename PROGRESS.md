@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, the Phase 1 completion review, Phase 2 activation, `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, `P2-002B: Domain-Pack Evidence Link Scaffold`, and `P2-003: Evidence Status Report And Provenance Visibility` are complete.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, the Phase 1 completion review, Phase 2 activation, `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, `P2-002B: Domain-Pack Evidence Link Scaffold`, `P2-003: Evidence Status Report And Provenance Visibility`, and `P2-004: Governed Local Overlay Metadata Completion Path` metadata-only validation are complete.
 
 Created the root project-control files:
 
@@ -584,9 +584,9 @@ Verification:
 
 Reviewed `P2-004: Governed Local Overlay Metadata Completion Path` after committing P2-003.
 
-Current blocker:
+Current blocker at that review point:
 
-- `P2-004` is blocked on local operational governance input.
+- `P2-004` was blocked on local operational governance input before the intake entry was supplied.
 - The current implementation already records local overlay metadata as non-activating status visibility.
 - No local workflow rule should become active solely because metadata exists.
 
@@ -627,7 +627,34 @@ The template documents:
 Guardrails preserved:
 
 - no runtime behavior, CLI behavior, local overlay activation, clinical logic, final recommendations, LLM judgment, evidence truth scoring, calibration metrics, outcome linkage, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or raw operational text handling was added.
-- `P2-004` remains blocked until governed local overlay input is supplied.
+- `P2-004` implementation had not yet started at the time the template was created.
+
+## P2-004 Metadata-Only Validation Completed
+
+Completed `P2-004: Governed Local Overlay Metadata Completion Path` as metadata-only intake validation.
+
+Implemented:
+
+- `pdde/local_overlay_intake.py` for API-only parsing and validation of `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md`.
+- typed local overlay governance intake models in `pdde/component_models.py`.
+- backwards-compatible `pdde.models` facade exports for the new intake models.
+- redacted non-activating projection into existing `LocalOverlayVerificationItem` visibility.
+- `tests/test_local_overlay_intake.py` covering complete-enough metadata-only validation, draft/TBD/not-reviewed fields, activation blocking, and missing-section failure.
+
+Guardrails preserved:
+
+- the intake entry is treated as draft and metadata-only.
+- local rule activation remains blocked.
+- draft, `TBD`, and not-reviewed fields remain visible as deferred governance fields.
+- raw owner/source/review values are not copied into the redacted local overlay projection.
+- no CLI behavior, report behavior, provenance logging, safety gates, priors, decision profiles, recommendations, clinical logic, final recommendations, LLM judgment, evidence truth scoring, calibration metrics, outcome linkage, thresholds, utilities, formulas, hidden scoring, PHI storage, or local clinical rule activation was added.
+
+Verification:
+
+- focused tests passed: `python -m pytest tests/test_local_overlay_intake.py tests/test_local_overlay.py tests/test_model_modules.py`, 13 tests.
+- `python -m pytest` passed, 150 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
 
 Created the initial implementation scaffold:
 

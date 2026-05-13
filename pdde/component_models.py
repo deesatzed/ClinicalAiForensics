@@ -360,6 +360,82 @@ class LocalOverlayVerificationSet(StrictModel):
         return [item for item in self.items if item.status != "verified" or item.missing_fields]
 
 
+LocalOverlayGovernanceIntakeStatus = Literal[
+    "draft",
+    "pending_review",
+    "verified_metadata_only",
+    "rejected",
+    "expired",
+    "superseded",
+]
+LocalOverlayGovernanceIntakeMode = Literal["metadata-only", "activation-seeking"]
+LocalOverlayGovernanceValidationStatus = Literal["draft", "deferred", "missing", "unsupported"]
+
+
+class LocalOverlayGovernanceIntakeItem(StrictModel):
+    overlay_id: NonEmptyString
+    title: NonEmptyString
+    domain_site_applicability: NonEmptyString
+    accountable_owner: NonEmptyString
+    owner_role: NonEmptyString
+    source_reference: NonEmptyString
+    source_type: NonEmptyString
+    verification_status: LocalOverlayGovernanceIntakeStatus
+    reviewer_or_review_body: NonEmptyString
+    review_cadence: NonEmptyString
+    last_reviewed_date: NonEmptyString
+    next_review_due_date: NonEmptyString
+    version: NonEmptyString
+    effective_date: NonEmptyString
+    expiration_date: str | None = None
+    change_history_reference: NonEmptyString
+    request_mode: LocalOverlayGovernanceIntakeMode
+    non_activation_confirmed: bool
+    activation_criteria: NonEmptyString | None = None
+    safety_privacy_notes: NonEmptyString
+    phi_pii_handling_statement: NonEmptyString
+    source: NonEmptyString
+
+    @model_validator(mode="after")
+    def require_non_activation_for_metadata_only(self) -> Self:
+        if self.request_mode == "metadata-only" and not self.non_activation_confirmed:
+            raise ValueError("metadata-only local overlay intake requires non-activation confirmation")
+        return self
+
+
+class LocalOverlayGovernanceIntakeValidation(StrictModel):
+    status: LocalOverlayGovernanceValidationStatus
+    reason: NonEmptyString
+    source: NonEmptyString
+    item: LocalOverlayGovernanceIntakeItem | None = None
+    missing_fields: list[NonEmptyString] = Field(default_factory=list)
+    deferred_fields: list[NonEmptyString] = Field(default_factory=list)
+    metadata_only_complete: bool = False
+    activation_blocked: bool = True
+    active: bool = False
+
+    @model_validator(mode="after")
+    def keep_intake_non_activating(self) -> Self:
+        if self.active:
+            raise ValueError("local overlay governance intake validation cannot activate local rules")
+        if not self.activation_blocked:
+            raise ValueError("local overlay governance intake validation must keep activation blocked")
+        if self.metadata_only_complete and self.item is None:
+            raise ValueError("complete local overlay governance intake validation requires an item")
+        return self
+
+
+class LocalOverlayGovernanceIntakeValidationSet(StrictModel):
+    source: NonEmptyString
+    items: list[LocalOverlayGovernanceIntakeValidation] = Field(default_factory=list)
+
+    def metadata_only_items(self) -> list[LocalOverlayGovernanceIntakeValidation]:
+        return [item for item in self.items if item.metadata_only_complete]
+
+    def active_items(self) -> list[LocalOverlayGovernanceIntakeValidation]:
+        return [item for item in self.items if item.active]
+
+
 DecisionProfileEvaluationStatus = Literal[
     "eligible",
     "blocked",

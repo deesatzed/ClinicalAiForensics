@@ -115,3 +115,31 @@ This example is synthetic and non-PHI. It does not describe a real hospital poli
 - If activation is ever requested, what explicit activation criteria, tests, safety review, rollback plan, and audit trail are required?
 - What safety/privacy notes must be preserved?
 - Can governance confirm that no PHI/PII or raw operational text should be stored in PDDE reports, logs, fixtures, or source control?
+
+---
+
+## My First Local Overlay Entry
+
+| Field | Provided Value |
+|---|---|
+| Local overlay/workflow item ID | TUH-HF-ED-FOLLOWUP-001 |
+| Local overlay title/name | Heart Failure ED Discharge Follow-up Visibility Item |
+| Domain/site applicability | Temple University Hospital ED; adult heart failure ED discharge workflow |
+| Accountable owner | Wayne Satz, MD |
+| Owner role | Physician informaticist |
+| Authoritative source reference | Draft local workflow notes; not formally approved |
+| Source type | Draft local workflow metadata |
+| Verification status | draft |
+| Reviewer or review body | Not yet reviewed |
+| Review cadence | TBD |
+| Last-reviewed date | Not yet reviewed |
+| Next-review due date | TBD |
+| Version | 0.1-draft |
+| Effective date | Not active |
+| Expiration date if applicable | Not applicable |
+| Change history reference | Initial metadata-only draft entry |
+| Metadata-only or activation-seeking? | metadata-only |
+| Explicit confirmation that metadata remains non-activating | Yes. This entry must not activate clinical rules. |
+| Explicit activation criteria if future activation is ever requested | Requires formal governance approval, reviewed source document, test cases, safety review, rollback plan, audit trail, and DECISIONS.md update. |
+| Safety/privacy notes | Synthetic/non-PHI metadata only. |
+| PHI/PII handling statement | Do not include patient names, MRNs, dates of birth, addresses, phone numbers, raw clinical notes, or other PHI/PII. |

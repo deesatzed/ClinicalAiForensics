@@ -28,6 +28,10 @@ def test_models_facade_reexports_focused_model_classes() -> None:
     assert models.AIAnswerMappingResult is component_models.AIAnswerMappingResult
     assert models.SafetyGateEvaluation is component_models.SafetyGateEvaluation
     assert models.LocalOverlayVerificationSet is component_models.LocalOverlayVerificationSet
+    assert (
+        models.LocalOverlayGovernanceIntakeValidationSet
+        is component_models.LocalOverlayGovernanceIntakeValidationSet
+    )
     assert models.StatusLedger is component_models.StatusLedger
     assert models.EvaluationPipelineResult is pipeline_models.EvaluationPipelineResult
     assert models.DecisionProfile is legacy_models.DecisionProfile

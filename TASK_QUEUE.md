@@ -851,7 +851,7 @@ Verification:
 
 ## Queue State
 
-Phase 2 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, `P1-009`, and `P1-010` are complete. Phase 1 completion review is complete, and `phase1-baseline` exists locally. `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, `P2-002B: Domain-Pack Evidence Link Scaffold`, and `P2-003: Evidence Status Report And Provenance Visibility` are complete. The next Phase 2 task is `P2-004: Governed Local Overlay Metadata Completion Path`, currently blocked on local governance input.
+Phase 2 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, `P1-009`, and `P1-010` are complete. Phase 1 completion review is complete, and `phase1-baseline` exists locally. `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, `P2-002B: Domain-Pack Evidence Link Scaffold`, `P2-003: Evidence Status Report And Provenance Visibility`, and `P2-004: Governed Local Overlay Metadata Completion Path` metadata-only validation are complete. The next Phase 2 task is `P2-005: Broader AI Answer Mapping Specification`, currently blocked on governed AI-answer examples and explicit scope approval.
 
 ## Phase 2 Tasks
 
@@ -996,41 +996,57 @@ Verification:
 
 ### P2-004: Governed Local Overlay Metadata Completion Path
 
-Status: blocked
+Status: done
 
 Scope:
 
 - Define or load explicit local overlay owner/source/review metadata if governance input exists.
 - Keep local clinical rules non-activating unless safe activation criteria are separately approved.
 
-Reason Blocked:
+Acceptance:
 
-- Requires local operational owner/source/review-cadence governance input.
+- `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md` is used as the source.
+- provided local overlay governance intake entry is parsed and validated.
+- entry is treated as draft and metadata-only.
+- draft, `TBD`, and not-reviewed governance fields stay visible.
+- redacted local overlay projection does not copy raw owner/source/review free text.
+- activation remains blocked.
+- no local clinical rules are activated.
+- no safety gates, priors, decision profiles, recommendations, clinical logic, CLI behavior, report behavior, provenance logging, final recommendations, LLM judgment, evidence truth scoring, calibration metrics, outcome linkage, thresholds, utilities, priors, formulas, hidden scoring, or PHI storage are added.
 
-Required Governance Input:
+Metadata Input Used:
 
-- explicit local overlay or local workflow item IDs to be represented, if any.
-- accountable local operational or clinical owner for each overlay item.
-- authoritative local source reference for each overlay item, such as a policy, workflow document, committee decision, or governance record; raw operational text should not be logged.
-- verification status for each overlay item using the current allowed statuses: `verified`, `draft`, or `deferred`.
-- review cadence for each overlay item.
-- last-reviewed date or equivalent governance timestamp for each overlay item.
-- site/domain applicability boundaries for the metadata.
-- confirmation that metadata visibility remains non-activating and does not create local clinical rules.
-- separate explicit activation criteria if any future task should ever activate local workflow rules.
+- explicit local overlay/workflow item ID.
+- accountable local operational/clinical owner metadata.
+- source-reference metadata marked as draft and not formally approved.
+- verification status of `draft`.
+- review cadence, last-reviewed date, and next-review due date marked as `TBD` or not reviewed.
+- site/domain applicability boundaries.
+- explicit confirmation that metadata visibility remains non-activating and does not create local clinical rules.
+- activation criteria listed only as future prerequisites.
 
 Current Determination:
 
-- No safe implementation step is unblocked for `P2-004` because the required governance inputs are absent.
-- `P2-005`, `P2-006`, and `P2-007` also remain blocked on user/governance inputs.
-- The smallest safe preparation step has been completed as documentation-only: `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md` defines a governance intake checklist/template for the required fields above, without changing runtime behavior.
+- `P2-004` metadata-only validation is complete.
+- Local clinical rule activation remains blocked.
+- `P2-005`, `P2-006`, and `P2-007` remain blocked on user/governance inputs.
+- Future activation would require separate explicit governance approval, reviewed source documentation, test cases, safety review, rollback plan, audit trail, and project-control decision entry.
 
 Documentation Prep Completed:
 
 - `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md` exists.
 - The template defines required local overlay metadata, non-activation boundary, allowed governance-intake statuses, activation prerequisites, a synthetic/non-PHI example, and open governance questions.
-- `P2-004` remains blocked until governed input is supplied.
 - No runtime behavior, CLI behavior, local overlay activation, clinical logic, final recommendations, LLM judgment, evidence truth scoring, calibration metrics, outcome linkage, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or raw operational text handling was added.
+
+Verification:
+
+- `pdde/local_overlay_intake.py` parses and validates the provided `My First Local Overlay Entry` Markdown table.
+- typed intake result models were added to `pdde/component_models.py` and exported through `pdde.models`.
+- `tests/test_local_overlay_intake.py` proves the entry is complete enough for metadata-only validation, draft/TBD/not-reviewed fields do not activate rules, activation remains blocked, and missing intake sections fail clearly.
+- focused tests passed: `python -m pytest tests/test_local_overlay_intake.py tests/test_local_overlay.py tests/test_model_modules.py`, 13 tests.
+- `python -m pytest` passed, 150 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
 
 ### P2-005: Broader AI Answer Mapping Specification
 
