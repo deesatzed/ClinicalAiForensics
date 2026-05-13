@@ -9,7 +9,7 @@ venv/
 # Generated Phase 0 outputs
 logs/*.jsonl
 reports/*.md
+outputs/
 
 # Local machine files
 .DS_Store
-
