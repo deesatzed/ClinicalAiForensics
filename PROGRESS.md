@@ -580,6 +580,36 @@ Verification:
 - all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/pdde_p2_003_reports/...`.
 - `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the verification append it contained 1383 JSONL records, including `evidence_link_validation` records from P2-003 report runs.
 
+## P2-004 Blocker Review
+
+Reviewed `P2-004: Governed Local Overlay Metadata Completion Path` after committing P2-003.
+
+Current blocker:
+
+- `P2-004` is blocked on local operational governance input.
+- The current implementation already records local overlay metadata as non-activating status visibility.
+- No local workflow rule should become active solely because metadata exists.
+
+Governance input required before implementation:
+
+- explicit local overlay or workflow item IDs to represent.
+- accountable local operational or clinical owner for each item.
+- authoritative source reference for each item, without adding raw operational text to reports or logs.
+- verification status for each item using `verified`, `draft`, or `deferred`.
+- review cadence for each item.
+- last-reviewed date or governance timestamp for each item.
+- site/domain applicability boundaries.
+- confirmation that metadata visibility remains non-activating.
+- separate explicit activation criteria if a future task should ever activate local workflow rules.
+
+Next unblocked Phase 2 task assessment:
+
+- No later Phase 2 implementation task is currently unblocked.
+- `P2-005` requires governed AI-answer examples and mapping boundaries.
+- `P2-006` requires clinical, privacy, statistical, data-owner, label, and outcome governance.
+- `P2-007` requires selected synthetic source material and confirmation that no thresholds, weights, utilities, priors, or formulas are invented.
+- The smallest safe preparation step is documentation-only: create a local overlay governance intake checklist/template for the required metadata, without changing runtime behavior.
+
 Created the initial implementation scaffold:
 
 - `pyproject.toml`

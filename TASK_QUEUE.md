@@ -1007,6 +1007,24 @@ Reason Blocked:
 
 - Requires local operational owner/source/review-cadence governance input.
 
+Required Governance Input:
+
+- explicit local overlay or local workflow item IDs to be represented, if any.
+- accountable local operational or clinical owner for each overlay item.
+- authoritative local source reference for each overlay item, such as a policy, workflow document, committee decision, or governance record; raw operational text should not be logged.
+- verification status for each overlay item using the current allowed statuses: `verified`, `draft`, or `deferred`.
+- review cadence for each overlay item.
+- last-reviewed date or equivalent governance timestamp for each overlay item.
+- site/domain applicability boundaries for the metadata.
+- confirmation that metadata visibility remains non-activating and does not create local clinical rules.
+- separate explicit activation criteria if any future task should ever activate local workflow rules.
+
+Current Determination:
+
+- No safe implementation step is unblocked for `P2-004` because the required governance inputs are absent.
+- `P2-005`, `P2-006`, and `P2-007` also remain blocked on user/governance inputs.
+- The smallest safe preparation step is documentation-only: create a local overlay governance intake checklist/template for the required fields above, without changing runtime behavior.
+
 ### P2-005: Broader AI Answer Mapping Specification
 
 Status: blocked
