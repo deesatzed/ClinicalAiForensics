@@ -656,6 +656,30 @@ Verification:
 - `python -m py_compile pdde/*.py` passed.
 - `python -m pdde --help` passed.
 
+## AI Answer Mapping Governance Intake Template
+
+Created `AI_ANSWER_MAPPING_GOVERNANCE_INTAKE.md` as documentation-only preparation for the blocked `P2-005: Broader AI Answer Mapping Specification`.
+
+The template documents:
+
+- the purpose of AI-answer mapping governance intake.
+- the non-activation rule for AI answer grading, LLM judgment, and clinical recommendations.
+- required metadata fields for governed AI-answer examples and deterministic mapping boundaries.
+- verification statuses: `draft`, `pending_review`, `approved_mapping_spec`, `rejected`, and `superseded`.
+- one synthetic/non-PHI draft HF ED discharge example.
+- exact questions blocking P2-005.
+
+Guardrails preserved:
+
+- no runtime behavior, CLI behavior, LLM judgment, answer grading, final recommendations, evidence truth scoring, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or AI-answer mapping implementation was added.
+- `P2-005` remains blocked until governed examples, mapping boundaries, and explicit scope approval are supplied.
+
+Verification:
+
+- `python -m pytest` passed, 150 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+
 Created the initial implementation scaffold:
 
 - `pyproject.toml`

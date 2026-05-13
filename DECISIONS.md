@@ -393,3 +393,11 @@ Decision: `P2-004` adds API-only local overlay governance intake validation in `
 Reason: The intake entry supplies enough metadata to validate draft local overlay governance visibility while still containing `TBD` and not-reviewed fields. The safe implementation boundary is to recognize and surface that status, not to activate local workflow rules or alter clinical evaluation.
 
 Impact: Local overlay governance intake can now be validated as complete enough for metadata-only draft visibility. Activation remains blocked, and raw owner/source/review values are not copied into the redacted local overlay projection. No CLI behavior, report behavior, provenance logging, safety gates, priors, decision profiles, recommendations, clinical logic, LLM judgment, evidence truth scoring, calibration metrics, outcome linkage, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or local rule activation was added.
+
+## D-050: AI Answer Mapping Intake Template Is Non-Activating
+
+Decision: `AI_ANSWER_MAPPING_GOVERNANCE_INTAKE.md` is a documentation-only intake template for collecting governed examples and mapping boundaries before `P2-005` implementation. Completing the template does not activate AI answer grading, LLM judgment, or clinical recommendations.
+
+Reason: `P2-005` is blocked on governed AI-answer examples, omission/overstatement boundaries, allowed claim types, approval ownership, and explicit scope approval. A template clarifies those inputs without expanding runtime behavior.
+
+Impact: The template defines required AI-answer mapping governance fields, allowed verification statuses, a synthetic/non-PHI draft example, and open governance questions. No runtime behavior, CLI behavior, LLM judgment, answer grading, final recommendations, evidence truth scoring, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or AI-answer mapping implementation was added.
