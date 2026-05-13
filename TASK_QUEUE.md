@@ -1177,15 +1177,21 @@ Acceptance:
 
 ### UX-005: Create Final Demo Package
 
-Status: blocked
+Status: done
 
 Scope:
 
 - Assemble a final demo package with synthetic case, domain pack, optional governed synthetic AI-answer artifact, generated advisory Markdown report, provenance JSONL excerpt, leadership one-pager, short talk track, and explicit not-approved-for-clinical-use disclaimer.
 
-Reason Blocked:
+Acceptance:
 
-- Requires approval of final packaging scope, generated artifact policy, provenance excerpt shape, and governance language.
+- `FINAL_DEMO_PACKAGE.md` exists and explains the package entry points, artifact manifest, run command, generated artifact policy, claim boundaries, and current limitations.
+- `LEADERSHIP_ONE_PAGER.md` exists as a concise leadership handout.
+- `DEMO_TALK_TRACK.md` exists as a five-minute presenter script with safe language.
+- `DEMO_PROVENANCE_EXCERPT.md` exists as a normalized status-only excerpt of `python -m pdde demo` provenance shape.
+- The package uses organization-neutral synthetic/non-PHI framing and points generated artifacts to ignored `reports/demo_report.md` and `logs/demo_run.jsonl`.
+- `audit-answer` remains deferred and non-existent.
+- No answer grading, LLM judgment, final recommendations, clinical logic, evidence truth scoring, outcome calibration, PHI handling, local rule activation, thresholds, utilities, priors, formulas, hidden scoring, production deployment, or generated artifact commit policy change was added.
 
 ## Deferred
 

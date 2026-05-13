@@ -330,15 +330,19 @@ It preserves current report/provenance behavior, prints a synthetic/non-PHI advi
 
 ### Final Demo Package
 
-A final demo package should include:
+The final organization-neutral demo package now includes:
 
+- `FINAL_DEMO_PACKAGE.md`
+- `LEADERSHIP_ONE_PAGER.md`
+- `DEMO_TALK_TRACK.md`
+- `DEMO_PROVENANCE_EXCERPT.md`
+- `LEADERSHIP_DEMO_REPORT.md`
+- `DEMO.md`
 - synthetic case fixture.
 - domain pack.
 - optional governed mapped-claim artifact.
-- generated Markdown report.
-- provenance JSONL excerpt.
-- leadership one-pager.
-- short talk track.
+- regenerated Markdown report path.
+- regenerated provenance JSONL path.
 - explicit "not approved for clinical use" disclaimer.
 
 ## UX Milestones
@@ -347,7 +351,7 @@ A final demo package should include:
 - `UX-002: Create governed synthetic AI answer artifact`: complete with `examples/synthetic_ai_answer.json`.
 - `UX-003: Create leadership-friendly demo report`: complete with `LEADERSHIP_DEMO_REPORT.md`.
 - `UX-004: Create simple demo command or wrapper`: complete with `python -m pdde demo`.
-- `UX-005: Create final demo package`: blocked until the demo report, provenance excerpt, one-pager, talk track, and governance disclaimers are ready.
+- `UX-005: Create final demo package`: complete with tracked package index, leadership one-pager, talk track, and normalized provenance excerpt.
 
 ## UX Guardrails
 

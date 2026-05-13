@@ -441,3 +441,11 @@ Decision: `python -m pdde demo` is the UX-004 simple demo wrapper. It runs the e
 Reason: Leadership and reviewer demos need a short, memorable command that exercises the working audit pipeline without forcing users to paste the full canonical report command. Keeping the wrapper on the CDE/domain-pack path preserves the existing architecture and avoids prematurely implementing `audit-answer`.
 
 Impact: The CLI help now lists `demo`. The wrapper uses deterministic fast-demo defaults and prints a synthetic/non-PHI advisory-only completion message. It does not accept AI-answer input, implement `audit-answer`, grade answers, add LLM judgment, activate local rules, add final recommendations, change clinical logic, validate evidence truth, add PHI handling, or introduce thresholds, utilities, priors, formulas, or hidden scoring.
+
+## D-056: Final Demo Package Tracks Instructions, Not Generated Outputs
+
+Decision: UX-005 creates a tracked Markdown demo package (`FINAL_DEMO_PACKAGE.md`, `LEADERSHIP_ONE_PAGER.md`, `DEMO_TALK_TRACK.md`, and `DEMO_PROVENANCE_EXCERPT.md`) while keeping generated `reports/demo_report.md` and `logs/demo_run.jsonl` ignored.
+
+Reason: The package needs stable reviewer-facing artifacts, but generated reports and append-only JSONL logs contain run-specific timestamps and repeated records. The source of truth should be the package instructions, safe excerpts, and reproducible command, not a committed generated run.
+
+Impact: Reviewers can run `python -m pdde demo`, inspect generated report/log outputs, and use the tracked one-pager/talk-track/provenance excerpt for leadership review. No runtime behavior, CLI behavior, `audit-answer` command, answer grading, LLM judgment, clinical logic, final recommendations, evidence truth scoring, outcome calibration, PHI handling, local rule activation, thresholds, utilities, priors, formulas, hidden scoring, production deployment, or generated artifact commit policy change was added.

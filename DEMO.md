@@ -4,6 +4,8 @@ This is a 5-minute technical demo script for a reviewer. It exercises the curren
 
 Phase 0 is advisory-only, uncalibrated, synthetic, and not clinically validated.
 
+For the final organization-neutral demo package, start with `FINAL_DEMO_PACKAGE.md`, then use this file for the command-by-command walkthrough.
+
 ## Demo Setup
 
 Canonical CDE:
