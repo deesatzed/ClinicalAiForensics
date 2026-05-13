@@ -1023,7 +1023,14 @@ Current Determination:
 
 - No safe implementation step is unblocked for `P2-004` because the required governance inputs are absent.
 - `P2-005`, `P2-006`, and `P2-007` also remain blocked on user/governance inputs.
-- The smallest safe preparation step is documentation-only: create a local overlay governance intake checklist/template for the required fields above, without changing runtime behavior.
+- The smallest safe preparation step has been completed as documentation-only: `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md` defines a governance intake checklist/template for the required fields above, without changing runtime behavior.
+
+Documentation Prep Completed:
+
+- `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md` exists.
+- The template defines required local overlay metadata, non-activation boundary, allowed governance-intake statuses, activation prerequisites, a synthetic/non-PHI example, and open governance questions.
+- `P2-004` remains blocked until governed input is supplied.
+- No runtime behavior, CLI behavior, local overlay activation, clinical logic, final recommendations, LLM judgment, evidence truth scoring, calibration metrics, outcome linkage, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or raw operational text handling was added.
 
 ### P2-005: Broader AI Answer Mapping Specification
 

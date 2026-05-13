@@ -377,3 +377,11 @@ Decision: `P2-003` wires domain-pack evidence-link validation into `EvaluationPi
 Reason: Phase 2 needs evidence support state to be inspectable without making source truth, citation quality, or clinical correctness claims. The existing evidence architecture treats evidence objects as receipts and support assessments as contextual/versioned, so report and provenance visibility must preserve those distinctions.
 
 Impact: Reports now include an `Evidence Reference Status` section and logs include `evidence_link_validation` records. No CLI argument behavior, persistence, source fetching, automated evidence truth validation, citation scoring, LLM judgment, clinical logic, final recommendations, thresholds, utilities, priors, formulas, PHI storage, raw evidence text logging, or local clinical rule activation was added.
+
+## D-048: Local Overlay Intake Template Is Non-Activating
+
+Decision: `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md` is a documentation-only intake template for collecting local overlay owner/source/review metadata before `P2-004` implementation. Completing the template does not activate local clinical rules.
+
+Reason: `P2-004` is blocked on governed local overlay input. A template can clarify the required metadata and activation boundary without changing runtime behavior or weakening the existing local overlay non-activation guardrail.
+
+Impact: The template defines required fields, allowed governance-intake statuses, activation prerequisites, a synthetic metadata-only example, and open governance questions. No runtime behavior, CLI behavior, local overlay activation, clinical logic, final recommendations, LLM judgment, evidence truth scoring, calibration metrics, outcome linkage, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or raw operational text handling was added.

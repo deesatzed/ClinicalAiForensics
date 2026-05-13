@@ -610,6 +610,25 @@ Next unblocked Phase 2 task assessment:
 - `P2-007` requires selected synthetic source material and confirmation that no thresholds, weights, utilities, priors, or formulas are invented.
 - The smallest safe preparation step is documentation-only: create a local overlay governance intake checklist/template for the required metadata, without changing runtime behavior.
 
+## Local Overlay Governance Intake Template
+
+Created `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md` as the documentation-only preparation step for the blocked `P2-004` task.
+
+The template documents:
+
+- the purpose of local overlay governance intake.
+- the non-activation rule.
+- required metadata fields for local overlay/workflow items.
+- governance-intake verification statuses: `draft`, `pending_review`, `verified_metadata_only`, `rejected`, `expired`, and `superseded`.
+- activation prerequisites that would be required before any local rule could become active.
+- one synthetic/non-PHI metadata-only example.
+- exact questions needing user/governance input.
+
+Guardrails preserved:
+
+- no runtime behavior, CLI behavior, local overlay activation, clinical logic, final recommendations, LLM judgment, evidence truth scoring, calibration metrics, outcome linkage, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or raw operational text handling was added.
+- `P2-004` remains blocked until governed local overlay input is supplied.
+
 Created the initial implementation scaffold:
 
 - `pyproject.toml`
