@@ -10,6 +10,8 @@ Phase 0 is local, CLI-only, synthetic, advisory-only, uncalibrated, and not clin
 
 For the organization-neutral reviewer demo package, start with `FINAL_DEMO_PACKAGE.md`.
 
+For a role-based documentation reading order, see `SUPPORTING_DOCUMENTATION.md`.
+
 ## What It Does
 
 - Loads CDE JSON and domain-pack YAML files through strict typed loaders.

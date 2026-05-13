@@ -24,7 +24,8 @@ The supporting `ClinSafer/` and `Agent_Pidgeon/` workspaces are tracked from the
 | `TASK_QUEUE.md` | Ordered task queue for future implementation. |
 | `REPO_MAP.md` | This recon artifact. |
 | `.gitmodules` | Submodule declarations for `Agent_Pidgeon/` and `ClinSafer/`. |
-| `README.md` | Technical reviewer overview for `PDDE Phase 0`, including plain-language scope, quickstart, exact commands, output files, architecture, guardrails, tests, and Phase 1 pointer. |
+| `README.md` | Technical reviewer overview for `PDDE Phase 0`, including plain-language scope, quickstart, exact commands, output files, architecture, guardrails, tests, and supporting-documentation pointer. |
+| `SUPPORTING_DOCUMENTATION.md` | Role-based documentation index for leadership, technical, safety/governance, evidence/provenance, and developer readers. |
 | `DEMO.md` | Five-minute technical reviewer demo script for the short synthetic demo command, CLI validation, report generation, provenance JSONL inspection, test verification, and safe explanation language. |
 | `BUILD_LOG.md` | Phase 0 build log, manual structural review, first-principles review, alien-goggles review, and ranked improvement opportunities. |
 | `PHASE0_HANDOFF.md` | Concise operator-facing Phase 0 handoff package with commands, limitations, deferred items, next tasks, and stop/go recommendation. |

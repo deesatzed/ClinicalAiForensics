@@ -1193,6 +1193,21 @@ Acceptance:
 - `audit-answer` remains deferred and non-existent.
 - No answer grading, LLM judgment, final recommendations, clinical logic, evidence truth scoring, outcome calibration, PHI handling, local rule activation, thresholds, utilities, priors, formulas, hidden scoring, production deployment, or generated artifact commit policy change was added.
 
+### UX-006: Create Supporting Documentation Index
+
+Status: done
+
+Scope:
+
+- Create a role-based navigation index for leadership, technical reviewers, safety/governance reviewers, evidence/provenance reviewers, and developers.
+
+Acceptance:
+
+- `SUPPORTING_DOCUMENTATION.md` exists.
+- The index includes start-here guidance, role-specific document lists, generated-output policy, claim boundaries, current demo command, and verification commands.
+- `README.md` links to the supporting documentation index.
+- No runtime behavior, CLI behavior, `audit-answer` command, answer grading, LLM judgment, final recommendations, clinical logic, evidence truth scoring, outcome calibration, PHI handling, local rule activation, thresholds, utilities, priors, formulas, hidden scoring, production deployment, or generated artifact commit policy change was added.
+
 ## Deferred
 
 ### TQ-D001: AI Answer Mapping

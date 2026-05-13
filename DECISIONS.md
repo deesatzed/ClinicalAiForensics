@@ -449,3 +449,11 @@ Decision: UX-005 creates a tracked Markdown demo package (`FINAL_DEMO_PACKAGE.md
 Reason: The package needs stable reviewer-facing artifacts, but generated reports and append-only JSONL logs contain run-specific timestamps and repeated records. The source of truth should be the package instructions, safe excerpts, and reproducible command, not a committed generated run.
 
 Impact: Reviewers can run `python -m pdde demo`, inspect generated report/log outputs, and use the tracked one-pager/talk-track/provenance excerpt for leadership review. No runtime behavior, CLI behavior, `audit-answer` command, answer grading, LLM judgment, clinical logic, final recommendations, evidence truth scoring, outcome calibration, PHI handling, local rule activation, thresholds, utilities, priors, formulas, hidden scoring, production deployment, or generated artifact commit policy change was added.
+
+## D-057: Supporting Documentation Index Is Role-Based Navigation
+
+Decision: `SUPPORTING_DOCUMENTATION.md` is the reviewer-facing documentation index. It organizes existing project documentation by audience rather than by build chronology.
+
+Reason: The repo now has enough handoff, governance, UX, evidence, provenance, and demo documents that first-time reviewers need an explicit route through the material.
+
+Impact: Leadership, technical, safety/governance, evidence/provenance, and developer readers get a short recommended reading order. No runtime behavior, CLI behavior, `audit-answer` command, answer grading, LLM judgment, clinical logic, final recommendations, evidence truth scoring, outcome calibration, PHI handling, local rule activation, thresholds, utilities, priors, formulas, hidden scoring, production deployment, or generated artifact commit policy change was added.
