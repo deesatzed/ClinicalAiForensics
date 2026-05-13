@@ -369,3 +369,11 @@ Decision: `P2-002B` uses optional `DomainPack.evidence_references` records as do
 Reason: P2-002A separates immutable evidence receipts from mutable/versioned links and assessments. Keeping source receipt IDs in a separate registry while allowing domain packs to point at those IDs preserves backwards compatibility and avoids embedding review judgments or raw source content in domain-pack clinical configuration.
 
 Impact: Existing canonical fixtures remain valid without evidence references. Missing references are reported as `deferred`, explicit references without a registry or without a matching support link remain `pending_review`, and unknown source IDs fail clearly only through the explicit validation API. No CLI behavior, report output, provenance output, persistence, source truth validation, citation scoring, LLM judgment, calibration metrics, outcome linkage, final recommendations, PHI handling, thresholds, utilities, priors, formulas, or local rule activation were added.
+
+## D-047: Evidence Status Visibility Is Status-Only
+
+Decision: `P2-003` wires domain-pack evidence-link validation into `EvaluationPipelineResult`, the shared status ledger, Markdown report output, and JSONL provenance records as IDs, statuses, counts, and provenance references only.
+
+Reason: Phase 2 needs evidence support state to be inspectable without making source truth, citation quality, or clinical correctness claims. The existing evidence architecture treats evidence objects as receipts and support assessments as contextual/versioned, so report and provenance visibility must preserve those distinctions.
+
+Impact: Reports now include an `Evidence Reference Status` section and logs include `evidence_link_validation` records. No CLI argument behavior, persistence, source fetching, automated evidence truth validation, citation scoring, LLM judgment, clinical logic, final recommendations, thresholds, utilities, priors, formulas, PHI storage, raw evidence text logging, or local clinical rule activation was added.

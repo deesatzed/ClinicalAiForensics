@@ -84,6 +84,22 @@ def create_provenance_records(
             },
         )
 
+    for item in result.evidence_links.items:
+        append(
+            "evidence_link_validation",
+            {
+                "supported_entity_type": item.supported_entity_type,
+                "supported_entity_id": item.supported_entity_id,
+                "evidence_source_id": item.evidence_source_id,
+                "link_status": item.status,
+                "support_status": item.support_status,
+                "source": item.source,
+                "evidence_source_present": item.evidence_source_id is not None,
+                "support_link_present": item.support_status is not None,
+                "provenance_references": item.provenance_references,
+            },
+        )
+
     for evaluation in result.safety_gates.evaluations:
         append(
             "safety_gate_result",
@@ -256,6 +272,7 @@ def write_provenance_log(
 def _component_counts(result: EvaluationPipelineResult) -> dict[str, int]:
     return {
         "ai_answer_claims": len(result.ai_answer_mapping.claims),
+        "evidence_link_items": len(result.evidence_links.items),
         "safety_gates": len(result.safety_gates.evaluations),
         "prior_resolutions": len(result.prior_resolutions.resolutions),
         "monte_carlo_priors": len(result.simulation.prior_simulations),
@@ -269,6 +286,10 @@ def _component_counts(result: EvaluationPipelineResult) -> dict[str, int]:
 def _component_status_summary(result: EvaluationPipelineResult) -> dict[str, Any]:
     return {
         "ai_answer_mapping": _status_counts(claim.status for claim in result.ai_answer_mapping.claims),
+        "evidence_links": _status_counts(item.status for item in result.evidence_links.items),
+        "evidence_link_support": _status_counts(
+            item.support_status for item in result.evidence_links.items if item.support_status is not None
+        ),
         "safety_gates": _status_counts(evaluation.status for evaluation in result.safety_gates.evaluations),
         "prior_resolutions": _status_counts(resolution.status for resolution in result.prior_resolutions.resolutions),
         "monte_carlo_priors": _status_counts(simulation.status for simulation in result.simulation.prior_simulations),
@@ -290,6 +311,12 @@ def _provenance_references(result: EvaluationPipelineResult) -> list[str]:
             result.cde_source,
             result.domain_pack_source,
             *[claim.source for claim in result.ai_answer_mapping.claims],
+            *[item.source for item in result.evidence_links.items],
+            *[
+                reference
+                for item in result.evidence_links.items
+                for reference in item.provenance_references
+            ],
             *[evaluation.source for evaluation in result.safety_gates.evaluations],
             *[evaluation.mapping_source for evaluation in result.safety_gates.evaluations],
             *[resolution.source for resolution in result.prior_resolutions.resolutions],

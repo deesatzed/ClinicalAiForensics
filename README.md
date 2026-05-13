@@ -13,6 +13,7 @@ Phase 0 is local, CLI-only, synthetic, advisory-only, uncalibrated, and not clin
 - Loads CDE JSON and domain-pack YAML files through strict typed loaders.
 - Provides inspectable synthetic CDE scenario fixtures under `examples/`.
 - Validates explicit domain-pack mappings for safety-gate targets and prior-to-option links.
+- Surfaces explicit evidence-reference link status without validating source truth.
 - Evaluates deterministic safety gates before probabilistic sampling.
 - Provides an API-only deterministic AI-answer claim mapping boundary for explicit source-backed prohibited-claim patterns.
 - Resolves explicit priors from the domain pack while preserving provenance.
@@ -37,6 +38,7 @@ Phase 0 is local, CLI-only, synthetic, advisory-only, uncalibrated, and not clin
 - No free-text answer content directly modifying priors, thresholds, gates, or recommendations.
 - No active local operational overlay rules without explicit owner/source/review metadata.
 - No validated risk, outcome claim, or calibration claim.
+- No automated evidence truth validation, citation correctness scoring, or source-quality scoring.
 
 ## Quickstart
 
@@ -152,6 +154,7 @@ python -m pdde run-cde --cde pdde_v0_3_first_principles_final/examples/hf_cde_st
 - Generated advisory Markdown report.
 - Ignored by git by default; regenerate it from the canonical fixtures when needed.
 - Shows case/domain identifiers, safety gate results, Decision Profile statuses, VOI items, uncertainty-budget items, prior provenance, Monte Carlo prior summaries, unresolved items, calibration status, provenance references, and limitations.
+- Shows evidence-reference link status as IDs and statuses only; it does not claim cited sources are true or clinically correct.
 - Displays synthetic case text and patient-state values because the report is a human-facing synthetic artifact.
 - Displays local overlay verification state, but does not print raw local workflow text.
 - Does not provide a final recommendation or top option.
@@ -161,7 +164,7 @@ python -m pdde run-cde --cde pdde_v0_3_first_principles_final/examples/hf_cde_st
 - Appendable provenance log.
 - Ignored by git by default; repeated local runs append records and should not be treated as a stable source fixture.
 - Each line is JSON.
-- Records run metadata, component status summaries, safety gate statuses, prior-resolution statuses, Monte Carlo prior statuses, uncertainty-budget statuses, VOI statuses, Decision Profile statuses, source references, command name, package version, seed, iteration count, and report path.
+- Records run metadata, component status summaries, evidence-reference link statuses, safety gate statuses, prior-resolution statuses, Monte Carlo prior statuses, uncertainty-budget statuses, VOI statuses, Decision Profile statuses, source references, command name, package version, seed, iteration count, and report path.
 - Intentionally avoids full raw case text, full patient-state payloads, PHI, gate evidence strings, raw simulation sample arrays, and raw local overlay owner/source/review values.
 
 ## Architecture Overview
@@ -179,6 +182,7 @@ CLI
   -> uncertainty-budget evaluator
   -> local overlay verification evaluator
   -> Decision Profiler assembler
+  -> evidence-reference link status projection
   -> status ledger projection
   -> report section contract
   -> Markdown renderer
@@ -193,6 +197,7 @@ CLI
 | `pdde/model_base.py`, `pdde/input_models.py`, `pdde/component_models.py`, `pdde/pipeline_models.py`, `pdde/legacy_models.py` | Focused Pydantic data contracts for inputs, explicit domain-pack mappings, component results, pipeline results, and legacy report/log models. |
 | `pdde/models.py` | Backwards-compatible re-export facade for model imports. |
 | `pdde/ai_answer_mapping.py` | API-only deterministic mapper for explicit source-backed AI-answer prohibited-claim patterns; stores structured claim metadata, not raw answers. |
+| `pdde/evidence_linking.py` | API-only validator for explicit domain-pack evidence-reference IDs against an optional evidence registry; reports link/support status without source truth validation. |
 | `pdde/safety_gate_engine.py` | Evaluates explicit deterministic safety gates using domain-pack gate-target mappings. |
 | `pdde/prior_resolver.py` | Resolves explicit allowed priors and blocks unsupported prior classes. |
 | `pdde/monte_carlo_engine.py` | Samples explicit resolved beta priors with deterministic seeds. |
@@ -219,13 +224,14 @@ CLI
 - LLM-unverified priors are blocked from active direct simulation.
 - Monte Carlo is prior-level only and does not produce option rankings.
 - Local overlay rules remain draft, deferred, missing, or unsupported unless explicit verification metadata is complete; even verified metadata does not create local clinical logic.
+- Evidence-reference status is link/support visibility only, not citation scoring or evidence truth validation.
 - Provenance logs use IDs, statuses, counts, paths, and source references rather than raw clinical payloads.
 - Provenance logs redact raw local overlay owner, source, review-cadence, and last-reviewed values.
 - Tests remove common API-key environment variables and block network access in acceptance coverage.
 
 ## Test Status
 
-Current test status: 131 passing tests across 18 test files.
+Current test status: 146 passing tests across 21 test files.
 
 Run:
 
@@ -235,8 +241,8 @@ python -m pytest
 
 The suite covers model validation, loaders, deterministic safety gates, explicit AI-answer claim mapping, prior resolution, Monte Carlo reproducibility, uncertainty/VOI evaluation, local overlay verification, Decision Profiler assembly, evaluation pipeline, status-ledger projection, report-contract guardrails, report rendering, CLI behavior, provenance logging, and Phase 0 acceptance workflows.
 
-## Phase 1
+## Phase 2
 
-Phase 1 is active for direct-CDE hardening. The Phase 0 stable baseline is tagged as `phase0-baseline`.
+Phase 2 is active for governance-contract hardening. The Phase 0 stable baseline is tagged as `phase0-baseline`, and the Phase 1 stable baseline is tagged as `phase1-baseline`.
 
-See `PHASE1_PLAN.md` for the roadmap and `BASELINE_POLICY.md` for the Phase 0 baseline, submodule, and generated-artifact policy. Runtime clinical behavior remains Phase 0 advisory-only until a later task explicitly changes it.
+See `PHASE2_PLAN.md` for the current roadmap, `PHASE1_COMPLETION_REVIEW.md` for the Phase 1 baseline review, and `BASELINE_POLICY.md` for the baseline, submodule, and generated-artifact policy. Runtime clinical behavior remains advisory-only until a later governed task explicitly changes it.

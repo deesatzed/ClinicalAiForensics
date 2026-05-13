@@ -851,7 +851,7 @@ Verification:
 
 ## Queue State
 
-Phase 2 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, `P1-009`, and `P1-010` are complete. Phase 1 completion review is complete, and `phase1-baseline` exists locally. `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, and `P2-002B: Domain-Pack Evidence Link Scaffold` are complete. The next unstarted Phase 2 task is `P2-003: Evidence Status Report And Provenance Visibility`.
+Phase 2 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, `P1-009`, and `P1-010` are complete. Phase 1 completion review is complete, and `phase1-baseline` exists locally. `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, `P2-002B: Domain-Pack Evidence Link Scaffold`, and `P2-003: Evidence Status Report And Provenance Visibility` are complete. The next Phase 2 task is `P2-004: Governed Local Overlay Metadata Completion Path`, currently blocked on local governance input.
 
 ## Phase 2 Tasks
 
@@ -961,16 +961,38 @@ Verification:
 
 ### P2-003: Evidence Status Report And Provenance Visibility
 
-Status: pending
+Status: done
 
 Scope:
 
 - Surface evidence registry/support statuses in reports and status-only provenance records.
 - Preserve report-contract advisory language.
 
-Reason Pending:
+Acceptance:
 
-- `P2-001` evidence registry models and `P2-002B` source-to-entity link scaffold are complete. This task was not started.
+- `EvaluationPipelineResult` preserves typed evidence-link validation output.
+- shared status ledger includes evidence-reference status rows.
+- Markdown report includes an `Evidence Reference Status` section with ID/status visibility only.
+- JSONL provenance includes status-only evidence-link validation records.
+- missing, malformed, unsupported, and deferred evidence references remain visible.
+- no evidence truth validation, citation scoring, source-quality scoring, LLM judgment, persistence, clinical logic, final recommendations, PHI storage, hidden scoring, thresholds, utilities, priors, or formulas are added.
+
+Verification:
+
+- `pdde/evaluation_pipeline.py` accepts an optional API-only evidence registry and validates explicit domain-pack evidence references.
+- `pdde/report_renderer.py` renders evidence-reference link/support status without raw evidence text or source truth claims.
+- `pdde/provenance_logger.py` emits evidence-link status records without raw source titles, raw evidence text, gate evidence strings, patient-state values, or simulation samples.
+- `tests/test_evidence_status_visibility.py` covers typed pipeline output, status-ledger projection, report visibility, provenance visibility, deferred references, and no source truth/scoring fields.
+- focused integration tests passed: `python -m pytest tests/test_evidence_status_visibility.py tests/test_evaluation_pipeline.py tests/test_status_ledger.py tests/test_report_renderer.py tests/test_provenance_logger.py tests/test_phase0_acceptance.py tests/test_cli_report.py`, 52 tests.
+- `python -m pytest` passed, 146 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL and contained 1383 records after the final verification append.
 
 ### P2-004: Governed Local Overlay Metadata Completion Path
 

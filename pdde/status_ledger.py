@@ -30,6 +30,7 @@ def build_status_ledger(result: EvaluationPipelineResult) -> StatusLedger:
     rows: list[StatusLedgerRow] = []
     rows.extend(_input_summary_rows(result))
     rows.extend(_ai_answer_mapping_rows(result))
+    rows.extend(_evidence_link_rows(result))
     rows.extend(_safety_gate_rows(result))
     rows.extend(_prior_resolution_rows(result))
     rows.extend(_monte_carlo_rows(result))
@@ -74,6 +75,31 @@ def _ai_answer_mapping_rows(result: EvaluationPipelineResult) -> list[StatusLedg
         )
         for claim in result.ai_answer_mapping.claims
     ]
+
+
+def _evidence_link_rows(result: EvaluationPipelineResult) -> list[StatusLedgerRow]:
+    rows: list[StatusLedgerRow] = []
+    for item in result.evidence_links.items:
+        effective_status = item.support_status or item.status
+        evidence_source = item.evidence_source_id or "no_evidence_source"
+        rows.append(
+            StatusLedgerRow(
+                component="evidence_link",
+                identifier=(
+                    f"{item.supported_entity_type}:{item.supported_entity_id}:"
+                    f"{evidence_source}"
+                ),
+                status=effective_status,
+                reason=(
+                    f"link_status={item.status}; "
+                    f"support_status={item.support_status or 'n/a'}; {item.reason}"
+                ),
+                source=item.source,
+                provenance_references=item.provenance_references,
+                related_entity_ids=_evidence_related_entities(item),
+            )
+        )
+    return rows
 
 
 def _safety_gate_rows(result: EvaluationPipelineResult) -> list[StatusLedgerRow]:
@@ -232,6 +258,7 @@ def _related_entities(
     uncertainty_items: Iterable[str | None] = (),
     value_of_information_items: Iterable[str | None] = (),
     local_overlay_ids: Iterable[str | None] = (),
+    evidence_source_ids: Iterable[str | None] = (),
 ) -> dict[str, list[str]]:
     related = {
         "option_ids": _unique(option_ids),
@@ -242,8 +269,30 @@ def _related_entities(
         "uncertainty_items": _unique(uncertainty_items),
         "value_of_information_items": _unique(value_of_information_items),
         "local_overlay_ids": _unique(local_overlay_ids),
+        "evidence_source_ids": _unique(evidence_source_ids),
     }
     return {key: values for key, values in related.items() if values}
+
+
+def _evidence_related_entities(item) -> dict[str, list[str]]:
+    kwargs: dict[str, list[str | None]] = {
+        "evidence_source_ids": [item.evidence_source_id],
+    }
+    if item.supported_entity_type == "decision_option":
+        kwargs["option_ids"] = [item.supported_entity_id]
+    elif item.supported_entity_type == "prior":
+        kwargs["prior_ids"] = [item.supported_entity_id]
+    elif item.supported_entity_type == "safety_gate":
+        kwargs["gate_groups"] = [item.supported_entity_id]
+    elif item.supported_entity_type == "mapped_claim_type":
+        kwargs["claim_types"] = [item.supported_entity_id]
+    elif item.supported_entity_type == "uncertainty_category":
+        kwargs["uncertainty_items"] = [item.supported_entity_id]
+    elif item.supported_entity_type == "voi_variable":
+        kwargs["value_of_information_items"] = [item.supported_entity_id]
+    elif item.supported_entity_type == "local_overlay":
+        kwargs["local_overlay_ids"] = [item.supported_entity_id]
+    return _related_entities(**kwargs)
 
 
 def _unique(values: Iterable[str | None]) -> list[str]:

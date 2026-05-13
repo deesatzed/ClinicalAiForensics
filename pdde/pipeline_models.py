@@ -16,6 +16,7 @@ from .component_models import (
     UncertaintyBudgetEvaluationSet,
     ValueOfInformationEvaluationSet,
 )
+from .evidence_models import DomainPackEvidenceLinkValidationSet
 from .input_models import ClinicalDecisionEpisode, DomainPack
 from .model_base import NonEmptyString, StrictModel
 
@@ -29,6 +30,7 @@ class EvaluationPipelineResult(StrictModel):
     cde: ClinicalDecisionEpisode
     domain_pack: DomainPack
     ai_answer_mapping: AIAnswerMappingResult
+    evidence_links: DomainPackEvidenceLinkValidationSet
     safety_gates: SafetyGateEvaluationSet
     prior_resolutions: PriorResolutionSet
     simulation: MonteCarloSimulationResult
@@ -60,6 +62,8 @@ class EvaluationPipelineResult(StrictModel):
                 raise ValueError(f"{name} cde_id does not match cde.cde_id")
             if component_domain_pack_id != domain_pack_id:
                 raise ValueError(f"{name} domain_pack_id does not match domain_pack.domain_pack_id")
+        if self.evidence_links.domain_pack_id != domain_pack_id:
+            raise ValueError("evidence_links domain_pack_id does not match domain_pack.domain_pack_id")
         if self.simulation.n_iterations != self.n_iterations:
             raise ValueError("simulation n_iterations does not match pipeline n_iterations")
         if self.simulation.random_seed != self.random_seed:

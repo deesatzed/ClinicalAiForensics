@@ -68,6 +68,11 @@ REPORT_SECTIONS: tuple[ReportSection, ...] = (
         obligation="Display prior status, source, provenance, confidence, and calibration.",
     ),
     ReportSection(
+        section_id="evidence_reference_status",
+        heading="## Evidence Reference Status",
+        obligation="Display evidence-link validation status without source truth claims.",
+    ),
+    ReportSection(
         section_id="monte_carlo_summaries",
         heading="## Monte Carlo Prior Summaries",
         obligation="Display prior-level simulation summaries without option ranking.",

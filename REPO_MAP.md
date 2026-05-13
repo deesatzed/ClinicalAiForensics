@@ -1,12 +1,12 @@
 # Repository Map
 
-Last updated: 2026-05-12
+Last updated: 2026-05-13
 
 ## Recon Summary
 
-This root folder is now a git-backed project-planning and source-material workspace with an initial Python package scaffold for building `ClinAIForensics`. It has a root `pyproject.toml`, a scaffolded `pdde/` package, focused Pydantic model modules with a backwards-compatible `pdde.models` facade, minimal CDE/domain-pack loaders, explicit domain-pack mapping models, optional domain-pack evidence-reference models, an API-only evidence-link validator, a deterministic safety gate engine, an API-only deterministic AI-answer claim mapping boundary, deterministic evidence registry models, a deterministic prior resolver, a seeded Monte Carlo prior sampler, uncertainty-budget and value-of-information item evaluators, a local overlay verification contract layer, a deterministic Decision Profiler assembly layer, a typed end-to-end evaluation pipeline, a normalized status-ledger projection layer, an explicit report section contract, a deterministic Markdown report renderer, CLI report/run wiring, JSONL provenance logging, canonical synthetic example CDE fixtures, Phase 0 acceptance tests, a Phase 0 build log/manual structural review, a Phase 0 handoff package, technical reviewer documentation, Phase 1 and Phase 2 planning artifacts, baseline/artifact policy, Phase 1 evidence/calibration handoffs, a Phase 1 completion review, a focused `tests/` directory, canonical support directories, and a root remote at `https://github.com/deesatzed/ClinicalAiForensics.git`.
+This root folder is now a git-backed project-planning and source-material workspace with an initial Python package scaffold for building `ClinAIForensics`. It has a root `pyproject.toml`, a scaffolded `pdde/` package, focused Pydantic model modules with a backwards-compatible `pdde.models` facade, minimal CDE/domain-pack loaders, explicit domain-pack mapping models, optional domain-pack evidence-reference models, an API-only evidence-link validator, typed evidence-link status visibility in pipeline/report/provenance outputs, a deterministic safety gate engine, an API-only deterministic AI-answer claim mapping boundary, deterministic evidence registry models, a deterministic prior resolver, a seeded Monte Carlo prior sampler, uncertainty-budget and value-of-information item evaluators, a local overlay verification contract layer, a deterministic Decision Profiler assembly layer, a typed end-to-end evaluation pipeline, a normalized status-ledger projection layer, an explicit report section contract, a deterministic Markdown report renderer, CLI report/run wiring, JSONL provenance logging, canonical synthetic example CDE fixtures, Phase 0 acceptance tests, a Phase 0 build log/manual structural review, a Phase 0 handoff package, technical reviewer documentation, Phase 1 and Phase 2 planning artifacts, baseline/artifact policy, Phase 1 evidence/calibration handoffs, a Phase 1 completion review, a focused `tests/` directory, canonical support directories, and a root remote at `https://github.com/deesatzed/ClinicalAiForensics.git`.
 
-The intended project appears to be a Phase 0/Phase 1/Phase 2 Python CLI/API for PDDE: a Clinical Decision Episode simulator and governance engine for HF ED discharge decisions. It should load synthetic CDE fixtures and an HF domain pack, run deterministic safety gates before probabilistic simulation, keep local overlay verification metadata visible without activating draft local rules, preserve evidence-source registry metadata and optional domain-pack evidence references without source truth validation, and render advisory-only Markdown Decision Profiles with provenance, uncertainty budget, value-of-information, local overlay status, and calibration status.
+The intended project appears to be a Phase 0/Phase 1/Phase 2 Python CLI/API for PDDE: a Clinical Decision Episode simulator and governance engine for HF ED discharge decisions. It should load synthetic CDE fixtures and an HF domain pack, run deterministic safety gates before probabilistic simulation, keep local overlay verification metadata visible without activating draft local rules, preserve evidence-source registry metadata and optional domain-pack evidence references without source truth validation, and render advisory-only Markdown Decision Profiles with provenance, evidence-reference status, uncertainty budget, value-of-information, local overlay status, and calibration status.
 
 No `AGENTS.md` file is present in the repository tree. The effective operating instructions are the conversation-provided AGENTS instructions plus the root control files.
 
@@ -37,8 +37,8 @@ The supporting `ClinSafer/` and `Agent_Pidgeon/` workspaces are tracked from the
 | `pyproject.toml` | Initial Python package metadata and dependency groups. |
 | `.gitignore` | Local/generated-file ignore rules, including ignored generated `reports/*.md` and `logs/*.jsonl`. |
 | `docs/architecture/` | Phase 2 architecture decision documents for evidence registry identity, immutability, lineage, storage options, and persistence/linking open questions. |
-| `pdde/` | Phase 0/Phase 1/Phase 2 implementation package. Contains CLI wiring, focused Pydantic model modules, a compatibility `pdde.models` facade, explicit domain-pack mapping models, optional domain-pack evidence-reference models, API-only evidence-link validation, evidence-source registry models, CDE/domain-pack loaders, deterministic safety gate evaluation, API-only AI-answer claim mapping, deterministic prior resolution, seeded prior-level Monte Carlo sampling, item-level uncertainty/VOI evaluation, local overlay verification, deterministic Decision Profile assembly, a typed evaluation pipeline, normalized status-ledger projection, explicit report section contract, deterministic Markdown report rendering, and JSONL provenance logging. |
-| `tests/` | Focused scaffold, model-module, evidence-registry, evidence-linking, model, loader, safety gate, AI-answer mapping, prior resolver, Monte Carlo prior-sampling, uncertainty/VOI, local-overlay, Decision Profiler, evaluation pipeline, status-ledger, report-contract, report-renderer, CLI report, provenance-logger, and acceptance tests. |
+| `pdde/` | Phase 0/Phase 1/Phase 2 implementation package. Contains CLI wiring, focused Pydantic model modules, a compatibility `pdde.models` facade, explicit domain-pack mapping models, optional domain-pack evidence-reference models, API-only evidence-link validation, evidence-source registry models, CDE/domain-pack loaders, deterministic safety gate evaluation, API-only AI-answer claim mapping, deterministic prior resolution, seeded prior-level Monte Carlo sampling, item-level uncertainty/VOI evaluation, local overlay verification, deterministic Decision Profile assembly, a typed evaluation pipeline, normalized status-ledger projection including evidence-reference rows, explicit report section contract, deterministic Markdown report rendering including evidence-reference status, and JSONL provenance logging including status-only evidence-link records. |
+| `tests/` | Focused scaffold, model-module, evidence-registry, evidence-linking, evidence-status visibility, model, loader, safety gate, AI-answer mapping, prior resolver, Monte Carlo prior-sampling, uncertainty/VOI, local-overlay, Decision Profiler, evaluation pipeline, status-ledger, report-contract, report-renderer, CLI report, provenance-logger, and acceptance tests. |
 | `domain_packs/` | Canonical future domain-pack location. |
 | `examples/` | Canonical root synthetic CDE fixture location. Contains stable, low eGFR, high potassium, low SBP, no follow-up, prior DKA, and missing-labs/missing-oxygen CDE fixtures derived from the v0.3 stable fixture. |
 | `reports/` | Canonical generated report output location. Contains generated fixture reports from TQ-011 verification. |
@@ -249,7 +249,7 @@ Expected data flow:
 
 ## Current Build Status
 
-`TQ-001: Project Setup And Source Normalization`, `TQ-002: Data Models`, `TQ-003: CDE And Domain-Pack Loaders`, `TQ-004: Deterministic Safety Gate Engine`, `TQ-005: Prior Resolver`, `TQ-006: Monte Carlo Engine`, `TQ-007: Uncertainty Budget And Value Of Information`, `TQ-008: Decision Profiler`, `TQ-009: Evaluation Pipeline`, `TQ-010: Markdown Report Renderer`, `TQ-011: CLI Run And Validate Commands`, `TQ-012: Provenance Logging`, `TQ-013: Phase 0 Acceptance Tests`, `TQ-014: Build Log And Manual Structural Review`, `TQ-015: Phase 0 Handoff Package`, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, and `P2-002B: Domain-Pack Evidence Link Scaffold` are complete. Phase 2 is active, and `P2-003: Evidence Status Report And Provenance Visibility` is the next unstarted task.
+`TQ-001: Project Setup And Source Normalization`, `TQ-002: Data Models`, `TQ-003: CDE And Domain-Pack Loaders`, `TQ-004: Deterministic Safety Gate Engine`, `TQ-005: Prior Resolver`, `TQ-006: Monte Carlo Engine`, `TQ-007: Uncertainty Budget And Value Of Information`, `TQ-008: Decision Profiler`, `TQ-009: Evaluation Pipeline`, `TQ-010: Markdown Report Renderer`, `TQ-011: CLI Run And Validate Commands`, `TQ-012: Provenance Logging`, `TQ-013: Phase 0 Acceptance Tests`, `TQ-014: Build Log And Manual Structural Review`, `TQ-015: Phase 0 Handoff Package`, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, `P2-002B: Domain-Pack Evidence Link Scaffold`, and `P2-003: Evidence Status Report And Provenance Visibility` are complete. The next Phase 2 task is `P2-004: Governed Local Overlay Metadata Completion Path`, currently blocked on local governance input.
 
 Completed setup/model work:
 
@@ -266,12 +266,17 @@ Completed setup/model work:
 - evidence-source registry contracts in `pdde/evidence_models.py`,
 - optional domain-pack evidence-reference contracts in `pdde/input_models.py`,
 - API-only domain-pack evidence reference validation in `pdde/evidence_linking.py`,
+- typed evidence-link visibility in `pdde/pipeline_models.py`,
+- evidence-reference status rows in `pdde/status_ledger.py`,
+- evidence-reference status reporting in `pdde/report_renderer.py`,
+- status-only evidence-link provenance records in `pdde/provenance_logger.py`,
 - evidence registry architecture docs under `docs/architecture/`,
 - explicit domain-pack mapping models in `pdde/input_models.py`,
 - safety gate result models in `pdde/component_models.py`,
 - model-module compatibility tests in `tests/test_model_modules.py`,
 - model validation and serialization tests in `tests/test_models.py`,
 - domain-pack evidence-linking tests in `tests/test_evidence_linking.py`,
+- evidence-status visibility tests in `tests/test_evidence_status_visibility.py`,
 - CDE JSON loader in `pdde/cde_loader.py`,
 - domain-pack YAML loader in `pdde/domain_pack_loader.py`,
 - shared loader error formatting in `pdde/loader_errors.py`,
@@ -334,7 +339,7 @@ The package intentionally does not include final recommendation ranking, numeric
 
 No non-deferred Phase 0 implementation task remains in the current task queue, and the Phase 0 handoff package is complete.
 
-`P2-002B: Domain-Pack Evidence Link Scaffold` is complete. The next unstarted Phase 2 task is `P2-003: Evidence Status Report And Provenance Visibility`.
+`P2-003: Evidence Status Report And Provenance Visibility` is complete. The next Phase 2 task is `P2-004: Governed Local Overlay Metadata Completion Path`, currently blocked on local governance input.
 
 ## Risks And Blockers
 

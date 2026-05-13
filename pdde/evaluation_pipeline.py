@@ -14,6 +14,8 @@ from .cde_loader import load_cde
 from .component_models import AIAnswerMappingResult
 from .decision_profiler import assemble_decision_profiles
 from .domain_pack_loader import load_domain_pack
+from .evidence_linking import validate_domain_pack_evidence_links
+from .evidence_models import EvidenceRegistry
 from .input_models import ClinicalDecisionEpisode, DomainPack
 from .local_overlay import evaluate_local_overlay
 from .monte_carlo_engine import DEFAULT_ITERATIONS, simulate_resolved_priors
@@ -30,6 +32,7 @@ def run_evaluation_pipeline(
     domain_pack_path: str | Path,
     n_iterations: int = DEFAULT_ITERATIONS,
     random_seed: int | None = None,
+    evidence_registry: EvidenceRegistry | None = None,
 ) -> EvaluationPipelineResult:
     """Load CDE/domain-pack files and run the deterministic evaluation pipeline."""
 
@@ -42,6 +45,7 @@ def run_evaluation_pipeline(
         random_seed=random_seed,
         cde_source=str(cde_path),
         domain_pack_source=str(domain_pack_path),
+        evidence_registry=evidence_registry,
     )
 
 
@@ -54,10 +58,12 @@ def evaluate_cde(
     cde_source: str | None = None,
     domain_pack_source: str | None = None,
     ai_answer_mapping: AIAnswerMappingResult | None = None,
+    evidence_registry: EvidenceRegistry | None = None,
 ) -> EvaluationPipelineResult:
     """Run already-built deterministic components over typed inputs."""
 
     mapped_answer = ai_answer_mapping or empty_ai_answer_mapping(cde, domain_pack)
+    evidence_links = validate_domain_pack_evidence_links(domain_pack, evidence_registry)
     safety_gates = evaluate_safety_gates(cde, domain_pack, ai_answer_mapping=mapped_answer)
     prior_resolutions = resolve_priors(domain_pack, cde=cde)
     simulation = simulate_resolved_priors(
@@ -97,6 +103,7 @@ def evaluate_cde(
         cde=cde,
         domain_pack=domain_pack,
         ai_answer_mapping=mapped_answer,
+        evidence_links=evidence_links,
         safety_gates=safety_gates,
         prior_resolutions=prior_resolutions,
         simulation=simulation,

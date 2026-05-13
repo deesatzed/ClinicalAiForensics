@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, the Phase 1 completion review, Phase 2 activation, `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, and `P2-002B: Domain-Pack Evidence Link Scaffold` are complete.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, the Phase 1 completion review, Phase 2 activation, `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, `P2-002B: Domain-Pack Evidence Link Scaffold`, and `P2-003: Evidence Status Report And Provenance Visibility` are complete.
 
 Created the root project-control files:
 
@@ -546,6 +546,39 @@ Verification:
 - all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
 - all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/pdde_p2_002b_reports/...`.
 - `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the verification append it contained 1261 JSONL records.
+
+## P2-003 Completed
+
+Completed `P2-003: Evidence Status Report And Provenance Visibility`.
+
+Implemented:
+
+- optional API-only `EvidenceRegistry` input for the evaluation pipeline.
+- typed `EvaluationPipelineResult.evidence_links` preservation of explicit domain-pack evidence-reference validation.
+- evidence-link status rows in the shared status ledger.
+- an `Evidence Reference Status` report section governed by the report contract.
+- status-only `evidence_link_validation` JSONL provenance records.
+- report/provenance source-reference aggregation for evidence-link validation records.
+- tests for typed output, deferred evidence references, status-ledger projection, report visibility, provenance visibility, serialization, and no source truth/scoring fields.
+
+Guardrails preserved:
+
+- evidence references validate explicit source-ID links only; they do not validate source truth, score citations, fetch sources, or make clinical correctness claims.
+- report and provenance visibility use IDs, statuses, counts, source strings, and provenance references rather than raw evidence text, raw source titles, raw clinical text, raw patient-state values, gate evidence strings, local overlay raw owner/source/review values, raw AI-answer text, or simulation samples.
+- no CLI argument behavior, persistence, automated evidence validation, LLM judgment, calibration metrics, outcome linkage, clinical logic, final recommendations, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or local clinical rule activation was added.
+
+Verification:
+
+- focused integration tests passed: `python -m pytest tests/test_evidence_status_visibility.py tests/test_evaluation_pipeline.py tests/test_status_ledger.py tests/test_report_renderer.py tests/test_provenance_logger.py tests/test_phase0_acceptance.py tests/test_cli_report.py`, 52 tests.
+- `python -m pytest` passed, 146 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
+- all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/pdde_p2_003_reports/...`.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the verification append it contained 1383 JSONL records, including `evidence_link_validation` records from P2-003 report runs.
 
 Created the initial implementation scaffold:
 

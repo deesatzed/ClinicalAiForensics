@@ -335,6 +335,50 @@ def _prior_provenance(result: EvaluationPipelineResult) -> str:
     )
 
 
+def _evidence_reference_status(result: EvaluationPipelineResult) -> str:
+    rows = [
+        (
+            item.supported_entity_type,
+            item.supported_entity_id,
+            item.evidence_source_id or "none",
+            item.status,
+            item.support_status or "n/a",
+            item.source,
+            item.reason,
+        )
+        for item in result.evidence_links.items
+    ]
+    if not rows:
+        rows = [
+            (
+                "domain_pack",
+                result.domain_pack.domain_pack_id,
+                "none",
+                "deferred",
+                "n/a",
+                f"domain_pack:{result.domain_pack.domain_pack_id}.evidence_references",
+                "No evidence-link validation items were returned.",
+            )
+        ]
+    return (
+        "## Evidence Reference Status\n\n"
+        "Evidence references show source-ID linkage and support-review status only. "
+        "They do not validate source truth, score citations, or establish clinical correctness.\n\n"
+        + _table(
+            [
+                "Entity type",
+                "Entity ID",
+                "Evidence source ID",
+                "Link status",
+                "Support status",
+                "Source",
+                "Reason",
+            ],
+            rows,
+        )
+    )
+
+
 def _monte_carlo_summaries(result: EvaluationPipelineResult) -> str:
     rows = [
         (
@@ -424,6 +468,12 @@ def _provenance_references(result: EvaluationPipelineResult) -> str:
             *[item.source for item in result.value_of_information.items],
             *[item.source for item in result.uncertainty_budget.items],
             *[item.source for item in result.local_overlay.items],
+            *[item.source for item in result.evidence_links.items],
+            *[
+                reference
+                for item in result.evidence_links.items
+                for reference in item.provenance_references
+            ],
             *[item.source for item in result.decision_profiles.input_summaries],
             *[
                 reference
@@ -461,6 +511,7 @@ _SECTION_RENDERERS: dict[str, Callable[[EvaluationPipelineResult], str]] = {
     "local_execution_checklist": _local_execution_checklist,
     "patient_feasibility_preference_gaps": _patient_feasibility_preference_gaps,
     "prior_provenance": _prior_provenance,
+    "evidence_reference_status": _evidence_reference_status,
     "monte_carlo_summaries": _monte_carlo_summaries,
     "items_requiring_attention": _items_requiring_attention,
     "calibration_status": _calibration_status,
