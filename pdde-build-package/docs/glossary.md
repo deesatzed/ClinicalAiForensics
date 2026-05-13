@@ -151,7 +151,7 @@ Clinical, statistical, and engineering terms used across PDDE.
 
 **Phase 2** — Generalization to second clinical case (e.g., chest pain).
 
-**Phase 3** — IRB approval + internal Temple pilot.
+**Phase 3** — IRB approval + internal Example Health System pilot.
 
 **Phase 4** — Calibration data collection + outcome linkage.
 

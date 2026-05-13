@@ -1117,7 +1117,7 @@ Status: deferred
 
 Scope:
 
-- Replace draft Temple local overlay placeholders with owner/status/source/review-cadence verified rules.
+- Replace draft Example Health System local overlay placeholders with owner/status/source/review-cadence verified rules.
 
 Reason Deferred:
 

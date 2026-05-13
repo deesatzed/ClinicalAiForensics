@@ -133,7 +133,7 @@ def test_malformed_or_unsupported_overlay_definitions_fail_clearly() -> None:
             {
                 "local_overlay_rules": [
                     {
-                        "id": "temple_formulary",
+                        "id": "example_formulary",
                         "status": "approved_by_label_only",
                         "owner": "pharmacy",
                     }

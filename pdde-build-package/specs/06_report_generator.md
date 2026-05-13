@@ -118,7 +118,7 @@ Show all gates evaluated, including missing ones (mark as "missing" in Value col
 ```markdown
 ## Local Overlay Status ({institution})
 
-⚠️ All Temple-specific rules below are status: draft. They have not been verified by local owners.
+⚠️ All Example Health System synthetic demo rules below are status: draft. They have not been verified by Example governance reviewers. They are metadata-only, non-activating, and not approved for clinical use.
 
 | Item | Draft Value | Verification Status |
 |------|-------------|---------------------|

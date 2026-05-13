@@ -5,7 +5,7 @@
   "domain": "emergency_medicine_heart_failure",
   "network_id": "hf_ed_discharge_v0",
 
-  "case_description": "62-year-old with known HFrEF (LVEF 32%) presented with progressive dyspnea over 5 days, mild lower extremity edema, weight gain 6 lbs. Received IV furosemide 80mg in ED. Now improved subjectively, ambulating without distress, satting 96% on RA. Has access to outpatient pharmacy and reliable transportation. Established HF clinic at Temple, can be seen within 5 days.",
+  "case_description": "62-year-old with known HFrEF (LVEF 32%) presented with progressive dyspnea over 5 days, mild lower extremity edema, weight gain 6 lbs. Received IV furosemide 80mg in an Example ED. Now improved subjectively, ambulating without distress, satting 96% on RA. Has access to outpatient pharmacy and reliable transportation. Established Example Health System HF clinic follow-up can be seen within 5 days.",
 
   "patient_context": {
     "age": 62,

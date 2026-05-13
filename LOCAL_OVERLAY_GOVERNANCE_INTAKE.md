@@ -18,13 +18,13 @@ Local overlay metadata remains non-activating unless a later governed task expli
 |---|---|---|---|---|
 | local overlay/workflow item ID | Yes | Stable identifier for the local metadata item. | `hf_ed_followup_workflow` |  |
 | local overlay title/name | Yes | Human-readable name for the local metadata item. | HF ED follow-up scheduling workflow |  |
-| domain/site applicability | Yes | Domain, site, unit, service, or workflow context where the metadata applies. | Synthetic HF ED discharge demo site |  |
-| accountable owner | Yes | Accountable person, role, committee, or operational group. | ED-HF workflow governance committee |  |
-| owner role | Yes | Role of the accountable owner. | Local clinical operations owner |  |
+| domain/site applicability | Yes | Domain, site, unit, service, or workflow context where the metadata applies. | Example ED synthetic HF discharge demo site |  |
+| accountable owner | Yes | Accountable person, role, committee, or operational group. | Example governance reviewer |  |
+| owner role | Yes | Role of the accountable owner. | Example Health System governance owner |  |
 | authoritative source reference | Yes | Non-PHI pointer to the source that governs the metadata. Avoid copying raw operational text. | `local_policy:HF-ED-FU-v0-demo` |  |
 | source type | Yes | Type of source that supports the metadata. | policy, workflow document, committee decision, protocol, memo |  |
 | verification status | Yes | Current governance status using the allowed values below. | `verified_metadata_only` |  |
-| reviewer or review body | Yes | Person, role, committee, or review body that verified the metadata. | HF ED governance review group |  |
+| reviewer or review body | Yes | Person, role, committee, or review body that verified the metadata. | Example governance reviewer |  |
 | review cadence | Yes | Expected review frequency. | quarterly |  |
 | last-reviewed date | Yes | Date the metadata was last reviewed. | 2026-05-13 |  |
 | next-review due date | Yes | Date by which the metadata should be reviewed again. | 2026-08-13 |  |
@@ -72,13 +72,13 @@ This example is synthetic and non-PHI. It does not describe a real hospital poli
 |---|---|---|---|---|
 | local overlay/workflow item ID | Yes | Stable identifier for the local metadata item. | `hf_ed_followup_workflow` | `demo_hf_ed_followup_metadata` |
 | local overlay title/name | Yes | Human-readable name for the local metadata item. | HF ED follow-up scheduling workflow | Synthetic HF ED follow-up metadata |
-| domain/site applicability | Yes | Domain, site, unit, service, or workflow context where the metadata applies. | Synthetic HF ED discharge demo site | Synthetic HF ED discharge demo only |
-| accountable owner | Yes | Accountable person, role, committee, or operational group. | ED-HF workflow governance committee | Synthetic workflow review group |
-| owner role | Yes | Role of the accountable owner. | Local clinical operations owner | Demo governance owner |
+| domain/site applicability | Yes | Domain, site, unit, service, or workflow context where the metadata applies. | Example ED synthetic HF discharge demo site | Example ED synthetic demo workflow only |
+| accountable owner | Yes | Accountable person, role, committee, or operational group. | Example governance reviewer | Example governance reviewer |
+| owner role | Yes | Role of the accountable owner. | Example Health System governance owner | Example governance owner |
 | authoritative source reference | Yes | Non-PHI pointer to the source that governs the metadata. | `local_policy:HF-ED-FU-v0-demo` | `demo_source:HF-ED-FU-v0` |
 | source type | Yes | Type of source that supports the metadata. | policy, workflow document, committee decision, protocol, memo | synthetic workflow memo |
 | verification status | Yes | Current governance status using the allowed values below. | `verified_metadata_only` | `verified_metadata_only` |
-| reviewer or review body | Yes | Person, role, committee, or review body that verified the metadata. | HF ED governance review group | Synthetic governance reviewer |
+| reviewer or review body | Yes | Person, role, committee, or review body that verified the metadata. | Example governance reviewer | Example governance reviewer |
 | review cadence | Yes | Expected review frequency. | quarterly | quarterly |
 | last-reviewed date | Yes | Date the metadata was last reviewed. | 2026-05-13 | 2026-05-13 |
 | next-review due date | Yes | Date by which the metadata should be reviewed again. | 2026-08-13 | 2026-08-13 |
@@ -122,24 +122,24 @@ This example is synthetic and non-PHI. It does not describe a real hospital poli
 
 | Field | Provided Value |
 |---|---|
-| Local overlay/workflow item ID | TUH-HF-ED-FOLLOWUP-001 |
+| Local overlay/workflow item ID | EXAMPLE-HF-ED-FOLLOWUP-001 |
 | Local overlay title/name | Heart Failure ED Discharge Follow-up Visibility Item |
-| Domain/site applicability | Temple University Hospital ED; adult heart failure ED discharge workflow |
-| Accountable owner | Wayne Satz, MD |
-| Owner role | Physician informaticist |
-| Authoritative source reference | Draft local workflow notes; not formally approved |
-| Source type | Draft local workflow metadata |
+| Domain/site applicability | Example Health System Example ED; synthetic demo workflow for adult heart failure ED discharge |
+| Accountable owner | Example governance reviewer |
+| Owner role | Example Health System governance owner |
+| Authoritative source reference | Synthetic demo workflow notes; not formally approved |
+| Source type | Synthetic/non-PHI metadata |
 | Verification status | draft |
 | Reviewer or review body | Not yet reviewed |
 | Review cadence | TBD |
 | Last-reviewed date | Not yet reviewed |
 | Next-review due date | TBD |
 | Version | 0.1-draft |
-| Effective date | Not active |
+| Effective date | TBD |
 | Expiration date if applicable | Not applicable |
 | Change history reference | Initial metadata-only draft entry |
 | Metadata-only or activation-seeking? | metadata-only |
 | Explicit confirmation that metadata remains non-activating | Yes. This entry must not activate clinical rules. |
 | Explicit activation criteria if future activation is ever requested | Requires formal governance approval, reviewed source document, test cases, safety review, rollback plan, audit trail, and DECISIONS.md update. |
-| Safety/privacy notes | Synthetic/non-PHI metadata only. |
+| Safety/privacy notes | Synthetic/non-PHI metadata only; metadata-only; non-activating; not approved for clinical use. |
 | PHI/PII handling statement | Do not include patient names, MRNs, dates of birth, addresses, phone numbers, raw clinical notes, or other PHI/PII. |

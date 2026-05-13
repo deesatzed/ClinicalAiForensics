@@ -396,7 +396,7 @@ Mitigation: keep submodule URLs current and follow `BASELINE_POLICY.md` before r
 ### Clinical Content Governance
 
 - Domain thresholds, priors, and local overlay rules are draft.
-- Local Temple workflow rules require owner/status/source/review cadence before clinical advisory use.
+- Local Example Health System workflow placeholders require owner/status/source/review cadence before clinical advisory use.
 
 Mitigation: keep Phase 0 synthetic and advisory-only; use local overlay as draft data.
 

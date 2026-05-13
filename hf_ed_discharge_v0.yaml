@@ -18,9 +18,9 @@ schema_version: pdde-belief-network-0.1
 # CLINICAL CONTENT GOVERNANCE
 # -----------------------------------------------------------------------------
 clinical_governance:
-  clinical_owner: "Wayne A. Satz, MD (interim; transfer to ED/Cardiology committee)"
-  evidence_owner: "TBD (proposed: Temple Clinical Informatics + Cardiology)"
-  local_workflow_owner: "TBD (proposed: ED leadership + HF clinic liaison + Pharmacy)"
+  clinical_owner: "Example governance reviewer (synthetic demo; not approved for clinical use)"
+  evidence_owner: "TBD (proposed: Example Health System governance reviewer)"
+  local_workflow_owner: "TBD (proposed: Example ED workflow governance reviewer)"
   review_cadence_days: 90
   next_review_due: 2026-08-11
   change_control: "All YAML changes via PR with rationale; minor=patch, node-change=minor, structure-change=major"
@@ -373,10 +373,10 @@ classification:
     label: "Unsafe or wrong indication"
 
 # -----------------------------------------------------------------------------
-# LOCAL OVERLAY (Temple-specific; ALL fields draft until verified)
+# LOCAL OVERLAY (Example Health System synthetic demo; ALL fields draft until verified)
 # -----------------------------------------------------------------------------
 local_overlay:
-  institution: "Temple"
+  institution: "Example Health System"
   domain: "ED_HF_discharge"
   schema_status: draft
   verified_by: null

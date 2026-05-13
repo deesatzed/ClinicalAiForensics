@@ -6,6 +6,26 @@ Initialized: 2026-05-11
 
 Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, the Phase 1 completion review, Phase 2 activation, `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, `P2-002B: Domain-Pack Evidence Link Scaffold`, `P2-003: Evidence Status Report And Provenance Visibility`, and `P2-004: Governed Local Overlay Metadata Completion Path` metadata-only validation are complete.
 
+## Public Demo Organization Neutralization
+
+Replaced organization-specific demo/governance references with neutral terms for public or leadership review.
+
+Updated:
+
+- `LOCAL_OVERLAY_GOVERNANCE_INTAKE.md`
+- `AI_ANSWER_MAPPING_GOVERNANCE_INTAKE.md`
+- `hf_ed_discharge_v0.yaml`
+- `sample_case_HF-001.json`
+- `sample_report_HF-001.md`
+- tracked `pdde-build-package/` reference files containing old organization-specific demo wording
+- `tests/test_local_overlay_intake.py`
+- `tests/test_local_overlay.py`
+- `DECISIONS.md`
+- `TASK_QUEUE.md`
+- `REPO_MAP.md`
+
+The replacement language uses Example Health System, Example ED, Example governance reviewer, synthetic demo workflow, synthetic/non-PHI metadata, metadata-only, non-activating, and not approved for clinical use. No runtime behavior, CLI behavior, clinical logic, final recommendations, LLM judgment, PHI handling, local rule activation, thresholds, utilities, priors, formulas, or hidden scoring was added.
+
 Created the root project-control files:
 
 - `GOAL.md`

@@ -241,7 +241,7 @@ Do not skip tasks. Do not work on tasks before their dependencies are satisfied.
   - Adversarial test failures with hypotheses for why
   - Recommendations for Phase 1 redesign
 
-**Acceptance:** Wayne reads it and the next phase of work is clearly informed.
+**Acceptance:** An Example governance reviewer reads it and the next phase of work is clearly informed.
 
 ---
 
@@ -251,7 +251,7 @@ Do not skip tasks. Do not work on tasks before their dependencies are satisfied.
 
 ## What "done" looks like
 
-When Phase 0 is done, Wayne can run:
+When Phase 0 is done, an Example governance reviewer can run:
 
 ```bash
 python -m pdde run \

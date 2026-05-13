@@ -176,7 +176,7 @@ Then wait for user direction. Do **not** automatically proceed to Task 0.1 unles
 
 ## Why stop here?
 
-This is the first checkpoint. The user (Wayne) wants visibility into early progress before you build the data models. The skeleton is independently verifiable, and any tooling issues (Python version, venv, click installed correctly, pytest discovered) will surface here, not 10 tasks deeper.
+This is the first checkpoint. The project reviewer wants visibility into early progress before you build the data models. The skeleton is independently verifiable, and any tooling issues (Python version, venv, click installed correctly, pytest discovered) will surface here, not 10 tasks deeper.
 
 If anything fails in steps 1-8, surface it immediately rather than working around it.
 

@@ -92,7 +92,7 @@ This is Phase 0 of a multi-phase effort. The full strategic plan, including Phas
 
 ## Author
 
-Wayne A. Satz, MD · Temple University Health System · Clinical Informatics
+Wayne A. Satz, MD · Clinical Informatics
 
 ## License
 

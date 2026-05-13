@@ -401,3 +401,11 @@ Decision: `AI_ANSWER_MAPPING_GOVERNANCE_INTAKE.md` is a documentation-only intak
 Reason: `P2-005` is blocked on governed AI-answer examples, omission/overstatement boundaries, allowed claim types, approval ownership, and explicit scope approval. A template clarifies those inputs without expanding runtime behavior.
 
 Impact: The template defines required AI-answer mapping governance fields, allowed verification statuses, a synthetic/non-PHI draft example, and open governance questions. No runtime behavior, CLI behavior, LLM judgment, answer grading, final recommendations, evidence truth scoring, thresholds, utilities, priors, formulas, hidden scoring, PHI storage, or AI-answer mapping implementation was added.
+
+## D-051: Public Demo Metadata Uses Neutral Example Organization Terms
+
+Decision: Organization-specific demo/governance references in root project materials and tracked support-package reference artifacts are replaced with neutral Example Health System, Example ED, and Example governance reviewer language. The local overlay and AI-answer governance examples remain synthetic/non-PHI, metadata-only, non-activating, and not approved for clinical use.
+
+Reason: The project is intended to be safe for public or leadership review without implying that a real hospital workflow, local owner, or accountable governance body has approved clinical use.
+
+Impact: The change updates documentation, sample/reference artifacts, and tests that asserted the old synthetic local-overlay ID. It does not change runtime behavior, CLI behavior, clinical logic, final recommendations, LLM judgment, PHI handling, local rule activation, thresholds, utilities, priors, formulas, or hidden scoring. Author metadata and external repository identifiers remain unchanged where they are normal project metadata rather than governance/accountable-owner language.

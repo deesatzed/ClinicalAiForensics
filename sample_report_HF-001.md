@@ -51,16 +51,16 @@ For Option 2 (Discharge + initiate SGLT2i):
 | Variable | Variance Contribution | Status |
 |----------|----------------------:|--------|
 | Follow-up reliability | 24% | reported available, but local clinic capacity placeholder |
-| Local formulary status | 21% | **draft** — Temple SGLT2 preferred agent not verified |
-| BMP follow-up pathway | 17% | **draft** — Temple lab pathway not verified |
+| Local formulary status | 21% | **draft** — Example Health System SGLT2 preferred agent not verified |
+| BMP follow-up pathway | 17% | **draft** — Example Health System lab pathway not verified |
 | eGFR | 12% | verified at 45; within action-ready range |
 | DKA risk | 8% | verified low |
 | Affordability | 6% | medication access reported verified |
 | Other | 12% | — |
 
 **Best next data to collect:**
-1. Verify Temple HF clinic appointment for ≤7 days
-2. Verify Temple-preferred SGLT2 formulary agent
+1. Verify Example Health System HF clinic appointment for ≤7 days
+2. Verify Example Health System-preferred SGLT2 formulary agent
 3. Confirm BMP follow-up at 72h pathway
 
 ---
@@ -95,9 +95,9 @@ For Option 2 (Discharge + initiate SGLT2i):
 
 ---
 
-## Local Overlay Status (Temple)
+## Local Overlay Status (Example Health System)
 
-⚠️ **All Temple-specific rules below are status: draft. They have not been verified by local owners.**
+⚠️ **All Example Health System synthetic demo rules below are status: draft. They have not been verified by Example governance reviewers. They are metadata-only, non-activating, and not approved for clinical use.**
 
 | Item | Draft Value | Verification Status |
 |------|-------------|---------------------|
@@ -137,7 +137,7 @@ The system scanned for known unsafe/unsupported patterns:
 
 For this patient, **continuing existing GDMT plus a robust oral loop plan and early HF follow-up is the highest-fitness defensible decision** (median 0.81, narrow interval).
 
-**SGLT2 initiation is conditionally defensible (median 0.71, wide interval [0.48–0.86]).** The width is driven by unverified local pathway variables, not by the patient's clinical profile (which supports SGLT2). Before this option becomes action-ready, Temple should verify: (a) HF clinic appointment availability, (b) preferred SGLT2 formulary agent, (c) BMP follow-up pathway.
+**SGLT2 initiation is conditionally defensible (median 0.71, wide interval [0.48–0.86]).** The width is driven by unverified local pathway variables, not by the patient's clinical profile (which supports SGLT2). Before this option becomes action-ready, Example Health System governance should verify: (a) HF clinic appointment availability, (b) preferred SGLT2 formulary agent, (c) BMP follow-up pathway.
 
 **MRA initiation is not recommended in the ED for this case** despite favorable labs, because the credible interval is wide (0.12–0.71) and depends heavily on unverified monitoring infrastructure. Defer to HF clinic.
 

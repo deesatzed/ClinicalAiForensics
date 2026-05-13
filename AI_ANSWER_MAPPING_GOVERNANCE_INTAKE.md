@@ -26,9 +26,9 @@ This intake only records governance metadata. P2-005 implementation remains bloc
 | omission boundary | Yes | Explicit omission pattern or statement of no omission mapping. | Omission mapping not approved for this entry. |  |
 | overstatement boundary | Yes | Explicit overstatement pattern or statement of no overstatement mapping. | Overstatement mapping not approved for this entry. |  |
 | unsupported claim boundary | Yes | Claims that must remain unsupported rather than inferred. | Any beta-blocker claim not matching the approved pattern. |  |
-| reviewer or approving body | Yes | Person, role, committee, or review body approving the mapping boundary. | Synthetic PDDE governance reviewer |  |
+| reviewer or approving body | Yes | Person, role, committee, or review body approving the mapping boundary. | Example governance reviewer |  |
 | verification status | Yes | Current governance status using the allowed values below. | `draft` |  |
-| accountable owner | Yes | Owner accountable for the mapping specification. | PDDE governance owner |  |
+| accountable owner | Yes | Owner accountable for the mapping specification. | Example governance owner |  |
 | last-reviewed date | Yes | Date the mapping specification was last reviewed. | 2026-05-13 |  |
 | review cadence | Yes | Expected review frequency. | quarterly |  |
 | activation status | Yes | Whether the mapping is documentation-only, approved for implementation, or inactive. | documentation-only |  |
@@ -60,9 +60,9 @@ This example is synthetic and non-PHI. It is metadata/specification-only and doe
 | omission boundary | Yes | Explicit omission pattern or statement of no omission mapping. | Omission mapping not approved for this entry. | Omission mapping not approved in this draft entry. |
 | overstatement boundary | Yes | Explicit overstatement pattern or statement of no overstatement mapping. | Overstatement mapping not approved for this entry. | Overstatement mapping not approved in this draft entry. |
 | unsupported claim boundary | Yes | Claims that must remain unsupported rather than inferred. | Any beta-blocker claim not matching the approved pattern. | Do not infer mapping from general beta-blocker wording, synonyms, or clinical similarity. |
-| reviewer or approving body | Yes | Person, role, committee, or review body approving the mapping boundary. | Synthetic PDDE governance reviewer | Not yet reviewed |
+| reviewer or approving body | Yes | Person, role, committee, or review body approving the mapping boundary. | Example governance reviewer | Not yet reviewed |
 | verification status | Yes | Current governance status using the allowed values below. | `draft` | `draft` |
-| accountable owner | Yes | Owner accountable for the mapping specification. | PDDE governance owner | Draft PDDE mapping owner |
+| accountable owner | Yes | Owner accountable for the mapping specification. | Example governance owner | Example governance owner (draft) |
 | last-reviewed date | Yes | Date the mapping specification was last reviewed. | 2026-05-13 | Not yet reviewed |
 | review cadence | Yes | Expected review frequency. | quarterly | TBD |
 | activation status | Yes | Whether the mapping is documentation-only, approved for implementation, or inactive. | documentation-only | documentation-only |

@@ -29,7 +29,7 @@ A probability without these fields is not allowed to enter the Monte Carlo engin
 
 ## 3. No local rule without owner and status
 
-Every Temple-specific rule in the local overlay YAML has:
+Every Example Health System synthetic demo rule in the local overlay YAML has:
 
 - `status`: one of `draft`, `verified`, `deprecated`, `retired`
 - `owner`: named clinical or operational role (may be `pending`)

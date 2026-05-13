@@ -130,7 +130,7 @@ def test_low_sbp_raises_admit_observe():
 
 ## Test 6: Output is clinically reasonable without UI cosmetics
 
-This is a *manual* test, executed by Wayne or another clinician.
+This is a *manual* test, executed by an Example governance reviewer or another clinician reviewer.
 
 **Procedure:**
 1. Run the system in Workflow B on `examples/sample_case_HF-001.json`
@@ -142,7 +142,7 @@ This is a *manual* test, executed by Wayne or another clinician.
    - Reasonable sensitivity drivers?
    - A defensible conclusion statement?
 
-**Pass criteria:** Wayne reads the report and says "yes, this is structurally what a clinician would want to see — content needs work but the form is right."
+**Pass criteria:** An Example governance reviewer reads the report and says "yes, this is structurally what a clinician would want to see — content needs work but the form is right."
 
 This is the only subjective test in the suite, by design. The point of Phase 0 is to surface structural problems for Phase 1 to fix; ontology issues cannot all be caught by automated tests.
 
@@ -159,7 +159,7 @@ Phase 0 is complete when:
 - [ ] Test 5a passes (eGFR drop lowers SGLT2 fitness)
 - [ ] Test 5b passes (high K makes MRA unsafe)
 - [ ] Test 5c passes (low SBP raises admit_or_observe)
-- [ ] Test 6 passes (Wayne approves the structural form)
+- [ ] Test 6 passes (an Example governance reviewer approves the structural form)
 
 If any of 1-5 fail, fix before declaring Phase 0 done.
-If Test 6 fails, document what's structurally wrong in `BUILD_LOG.md` and discuss with Wayne before proceeding to Phase 1.
+If Test 6 fails, document what's structurally wrong in `BUILD_LOG.md` and discuss with an Example governance reviewer before proceeding to Phase 1.

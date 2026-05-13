@@ -12,7 +12,7 @@ PDDE is an AI-enhanced probabilistic expert system that evaluates AI-generated c
 
 **v0 domain:** ED discharge medication decisions for HFrEF/HFmrEF after IV diuresis. Six decision options scored across nine input axes with three computed summary axes.
 
-**v0 deliverable:** Clinician pastes any AI clinical answer; system returns a Decision Fitness Report with ranked decision options, credible intervals, sensitivity drivers, provenance dossier, and Temple-specific local overlay.
+**v0 deliverable:** Clinician pastes any AI clinical answer; system returns a Decision Fitness Report with ranked decision options, credible intervals, sensitivity drivers, provenance dossier, and Example Health System synthetic local overlay.
 
 **Strategic position:** Vendor-agnostic governance-grade layer that sits *above* OpenEvidence / UpToDate Expert AI / Doximity Ask / ChatGPT for Clinicians. Not a competitor; an oversight engine.
 
@@ -31,7 +31,7 @@ PDDE is an AI-enhanced probabilistic expert system that evaluates AI-generated c
 | Markdown Decision Fitness Report | No PDF yet, no UI |
 | Documented ontology problems | The actual deliverable |
 
-**Success:** Wayne face-validates output on the HF case we've already worked through. Ontology gaps identified.
+**Success:** An Example governance reviewer face-validates output on the HF case we've already worked through. Ontology gaps identified.
 
 **Effort:** ~37h solo
 
@@ -46,7 +46,7 @@ PDDE is an AI-enhanced probabilistic expert system that evaluates AI-generated c
 | Provenance manager + SQLite | Every distribution carries source dossier |
 | Citation auditor (programmatic) | Crossref + NCBI + Retraction Watch + claim-paper alignment |
 | Sensitivity analyzer | Tornado plot data + viz |
-| Temple HF local overlay | Formulary, pathway, follow-up, escalation thresholds |
+| Example Health System HF local overlay | Formulary, pathway, follow-up, escalation thresholds |
 | NPPES NPI auth | Light, free, official |
 | Adversarial test suite | 10 categories × 5 cases = 50 |
 | Calibration logging | Predictions stored for future scoring |
@@ -77,7 +77,7 @@ PDDE is an AI-enhanced probabilistic expert system that evaluates AI-generated c
 |---|---|
 | IRB exempt determination | Synthetic cases, no PHI in v0 |
 | OSF pre-registration | Public protocol commitment |
-| 3–5 Temple clinician beta testers | Advisory-only mode |
+| 3–5 Example Health System clinician beta testers | Advisory-only mode |
 | Pilot feedback + iteration | UI and ontology refinement |
 
 ---
@@ -87,7 +87,7 @@ PDDE is an AI-enhanced probabilistic expert system that evaluates AI-generated c
 |---|---|
 | Silent prospective collection | System generates outputs not shown |
 | 200–500 logged cases with metadata | Volume target for power |
-| Retrospective outcome linkage (IRB-approved) | Temple data warehouse pull |
+| Retrospective outcome linkage (IRB-approved) | Example Health System governed data pull |
 | Calibration metrics | Brier, ECE, reliability diagrams |
 
 **Decision point:** if ECE >0.10, return to prior elicitation methodology.
@@ -105,7 +105,7 @@ PDDE is an AI-enhanced probabilistic expert system that evaluates AI-generated c
 ---
 
 ### Phase 6 — Federation (Year 2)
-Multi-site adoption (Penn, Jefferson, Geisinger). Temple as methodological hub. Consortium paper.
+Multi-site adoption through governed partner health systems. Example Health System as synthetic demo hub. Consortium paper.
 
 ---
 
@@ -176,7 +176,7 @@ Multi-site adoption (Penn, Jefferson, Geisinger). Temple as methodological hub. 
   provenance:
     - "2022 AHA/ACC/HFSA HF Guideline, Class I HFrEF, LOE A"
     - "EMPULSE 2022 (inpatient stabilization)"
-    - "Local Temple expert panel May 2026, n=3 cardiology + 2 EM"
+    - "Example Health System synthetic expert panel May 2026, n=3 cardiology + 2 EM"
   confidence_class: moderate
   review_cadence: quarterly
   last_reviewed: 2026-05-11
@@ -191,7 +191,7 @@ Multi-site adoption (Penn, Jefferson, Geisinger). Temple as methodological hub. 
 - Outputs: per-node posterior, per-decision-option score distributions, sensitivity rankings
 
 **Local Overlay Engine**
-- YAML-driven Temple rules
+- YAML-driven Example Health System synthetic demo rules
 - Formulary defaults (e.g., dapagliflozin as SGLT2i)
 - Order set triggers (Epic order set IDs)
 - Follow-up clinic capacity
@@ -206,7 +206,7 @@ Multi-site adoption (Penn, Jefferson, Geisinger). Temple as methodological hub. 
 
 **Calibration Tracker**
 - Logs every prediction with full metadata
-- Outcome linkage (Phase 4+) via case UUID + Temple EHR query
+- Outcome linkage (Phase 4+) via governed case UUID + Example Health System data query
 - Computes: Brier score, ECE, reliability diagrams
 - Flags drift over time (alert if quarterly ECE shifts by >0.05)
 
@@ -225,7 +225,7 @@ Multi-site adoption (Penn, Jefferson, Geisinger). Temple as methodological hub. 
 5. Monte Carlo Engine propagates uncertainty (10K iterations)
 6. Decision options scored → ranked with credible intervals
 7. Sensitivity Analyzer → tornado plot data
-8. Local Overlay Engine → Temple-specific additions
+8. Local Overlay Engine → Example Health System synthetic demo additions
 9. Citation Auditor → verify all cited sources in the input answer
 10. Report Generator → markdown + PDF
 11. Calibration Tracker → log full prediction
@@ -235,11 +235,11 @@ Multi-site adoption (Penn, Jefferson, Geisinger). Temple as methodological hub. 
 
 | Layer | Choice | Rationale |
 |---|---|---|
-| Backend | Python 3.12, FastAPI | Wayne's expertise, async, mature |
+| Backend | Python 3.12, FastAPI | Team expertise, async, mature |
 | Inference | NumPy v0 → NumPyro v1+ | M4-optimized, JAX-fast |
 | LLM | Anthropic Claude Opus 4.7 | Best structured extraction, prompt caching |
 | Database | SQLite v0 → Postgres v1+ | Simple → scalable |
-| Frontend | React + Tailwind + Recharts | Wayne's expertise |
+| Frontend | React + Tailwind + Recharts | Team expertise |
 | PDF | WeasyPrint | Pure Python, no Chrome deps |
 | Auth | NPPES NPI API | Free, official |
 | Citations | Crossref + NCBI E-utils + Retraction Watch | Standard, free |
@@ -288,7 +288,7 @@ Multi-site adoption (Penn, Jefferson, Geisinger). Temple as methodological hub. 
 | 1.3 | Citation auditor (Crossref + PubMed + Retraction Watch) | 8h |
 | 1.4 | Abstract-claim alignment (sentence-transformers) | 6h |
 | 1.5 | Sensitivity analyzer (tornado data) | 4h |
-| 1.6 | Local overlay engine + Temple HF YAML | 8h |
+| 1.6 | Local overlay engine + Example Health System HF YAML | 8h |
 | 1.7 | React frontend scaffold | 6h |
 | 1.8 | Report display (decision-option table + tornado) | 8h |
 | 1.9 | PDF export (WeasyPrint) | 4h |
@@ -411,7 +411,7 @@ Pre-committed points where direction can pivot:
 - **End of Phase 1:** Does CMIO demo land? If not, refocus messaging or scope.
 - **End of Phase 2:** Does generalization work? If not, scope back to single-case product.
 - **Mid Phase 4:** Calibration ECE acceptable (<0.10)? If not, return to prior elicitation.
-- **End of Phase 4:** Outcome linkage feasible at Temple? If not, federate earlier.
+- **End of Phase 4:** Outcome linkage feasible at Example Health System? If not, federate earlier.
 
 ---
 
@@ -420,14 +420,14 @@ Pre-committed points where direction can pivot:
 ### Phase-Level
 - Phase 0: end-to-end pipeline runs on 1 case; ontology problems documented
 - Phase 1: ≥80% adversarial test pass; clinician inter-rater κ ≥0.6 on output usefulness
-- Phase 2: new case added in <1 day by someone other than Wayne
+- Phase 2: new case added in <1 day by someone other than the original project author
 - Phase 3: IRB exempt determination obtained; OSF pre-registration filed
 - Phase 4: ECE <0.10 on calibration cohort; outcome data linked for ≥200 cases
 - Phase 5: paper submitted to NEJM AI / JAMIA
 
 ### Project-Level
 - Methodological novelty (cited as foundational in 12 months)
-- Institutional adoption (≥3 Temple departments in 18 months)
+- Institutional adoption (≥3 Example Health System departments in 18 months)
 - Federation (≥3 partner AMCs in 24 months)
 - Career positioning (CMIO/advisory transition by 24 months)
 
@@ -437,10 +437,10 @@ Pre-committed points where direction can pivot:
 
 | Paper | Venue | Timing | Position |
 |---|---|---|---|
-| Viewpoint: "Against the Myth of the Gold Standard Answer" | JAMA / Health Affairs | Month 6–9 | Epistemological argument; positions Wayne |
+| Viewpoint: "Against the Myth of the Gold Standard Answer" | JAMA / Health Affairs | Month 6–9 | Epistemological argument; positions the project |
 | Methods: "Probabilistic Expert Systems for Clinical AI Governance" | NEJM AI / JAMIA | Month 10–15 | Operationalizes the framework |
 | Empirical: "Outcome-Anchored Evaluation of AI-Augmented Clinical Decisions" | Annals EM / Circulation: HF | Year 2 | Real-world calibration + outcome data |
-| Consortium: Multi-site federation paper | JAMA Network Open | Year 2–3 | Establishes Temple as methodological hub |
+| Consortium: Multi-site federation paper | JAMA Network Open | Year 2–3 | Establishes Example Health System as methodological hub |
 
 ---
 
@@ -460,7 +460,7 @@ Pre-committed points where direction can pivot:
 - **B.** HF Belief Network YAML structure
 - **C.** Provenance schema (full SQL DDL)
 - **D.** Adversarial test case library
-- **E.** Local Temple Overlay YAML
+- **E.** Local Example Health System Overlay YAML
 
 ---
 
