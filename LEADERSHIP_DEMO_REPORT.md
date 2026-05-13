@@ -41,6 +41,14 @@ python -m pdde report \
   --log logs/demo_run.jsonl
 ```
 
+Short demo wrapper:
+
+```bash
+python -m pdde demo
+```
+
+The demo wrapper runs the same synthetic CDE/domain-pack audit path, writes `reports/demo_report.md` and `logs/demo_run.jsonl`, and prints a synthetic/non-PHI advisory-only completion message.
+
 Important limitation: the current CLI report path audits the CDE and domain pack. It does not yet accept `examples/synthetic_ai_answer.json`. AI-answer mapped-claim behavior currently exists through the API-only deterministic mapper and tests.
 
 Deferred future command shape:

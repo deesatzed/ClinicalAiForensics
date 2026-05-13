@@ -110,6 +110,53 @@ def test_report_command_writes_provenance_log_with_output_file(tmp_path: Path, c
     assert any(record["log_type"] == "decision_profile" for record in records)
 
 
+def test_demo_command_writes_synthetic_report_and_log(tmp_path: Path, capsys) -> None:
+    output_path = tmp_path / "demo_report.md"
+    log_path = tmp_path / "demo_run.jsonl"
+
+    assert (
+        main(
+            [
+                "demo",
+                "--output",
+                str(output_path),
+                "--log",
+                str(log_path),
+            ]
+        )
+        == 0
+    )
+    captured = capsys.readouterr()
+
+    assert f"Report written: {output_path}" in captured.out
+    assert "Demo complete: synthetic/non-PHI advisory output only" in captured.out
+    assert f"Log written: {log_path}" in captured.err
+    assert output_path.exists()
+    assert log_path.exists()
+
+    report = output_path.read_text(encoding="utf-8")
+    assert "# PDDE Decision Profile Report" in report
+    assert "No final clinical recommendation" in report
+
+    records = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
+    assert records[0]["payload"]["command_name"] == "demo"
+    assert records[0]["payload"]["cde_source"] == "examples/hf_cde_stable.json"
+    assert (
+        records[0]["payload"]["domain_pack_source"]
+        == "pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml"
+    )
+    assert records[0]["payload"]["report_path"] == str(output_path)
+    assert records[0]["payload"]["random_seed"] == 17
+    assert records[0]["payload"]["n_iterations"] == 5
+
+
+def test_demo_command_does_not_accept_ai_answer_artifact(capsys) -> None:
+    assert main(["demo", "--ai-answer", "examples/synthetic_ai_answer.json"]) == 2
+    captured = capsys.readouterr()
+
+    assert "unrecognized arguments: --ai-answer" in captured.err
+
+
 def test_run_cde_alias_writes_markdown_to_out_file(tmp_path: Path, capsys) -> None:
     output_path = tmp_path / "run_cde_report.md"
 

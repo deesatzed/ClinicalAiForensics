@@ -80,6 +80,12 @@ Run help:
 python -m pdde --help
 ```
 
+Run the organization-neutral synthetic demo:
+
+```bash
+python -m pdde demo
+```
+
 Validate canonical fixtures:
 
 ```bash
@@ -134,6 +140,7 @@ Common review commands:
 
 ```bash
 python -m pdde --help
+python -m pdde demo
 python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml
 python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17
 python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17
@@ -191,7 +198,7 @@ CLI
 
 | Module | Responsibility |
 | --- | --- |
-| `pdde/run_cde.py` | CLI parser and handlers for `validate`, `report`, and `run-cde`. |
+| `pdde/run_cde.py` | CLI parser and handlers for `validate`, `report`, `demo`, and `run-cde`. |
 | `pdde/cde_loader.py` | Reads and validates CDE JSON. |
 | `pdde/domain_pack_loader.py` | Reads and validates domain-pack YAML. |
 | `pdde/model_base.py`, `pdde/input_models.py`, `pdde/component_models.py`, `pdde/pipeline_models.py`, `pdde/legacy_models.py` | Focused Pydantic data contracts for inputs, explicit domain-pack mappings, component results, pipeline results, and legacy report/log models. |

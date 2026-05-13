@@ -433,3 +433,11 @@ Decision: `LEADERSHIP_DEMO_REPORT.md` is a curated leadership-facing Markdown de
 Reason: UX-003 needs a concise artifact that leadership can read without interpreting raw CLI output, while preserving the project boundary that current CLI report generation does not consume AI-answer artifacts and `audit-answer` remains deferred.
 
 Impact: The report explains the synthetic demo inputs, current CLI path, deferred future command shape, visible safety/evidence/uncertainty/governance statuses, unresolved items, and claim boundaries. It adds no runtime behavior, CLI behavior, `audit-answer` command, final recommendations, LLM judgment, answer grading, evidence truth scoring, PHI behavior, thresholds, utilities, priors, formulas, hidden scoring, or local rule activation.
+
+## D-055: Demo CLI Wrapper Uses Synthetic CDE Audit Only
+
+Decision: `python -m pdde demo` is the UX-004 simple demo wrapper. It runs the existing report pipeline against the organization-neutral synthetic stable CDE and canonical HF ED discharge domain pack, then writes `reports/demo_report.md` and `logs/demo_run.jsonl` by default.
+
+Reason: Leadership and reviewer demos need a short, memorable command that exercises the working audit pipeline without forcing users to paste the full canonical report command. Keeping the wrapper on the CDE/domain-pack path preserves the existing architecture and avoids prematurely implementing `audit-answer`.
+
+Impact: The CLI help now lists `demo`. The wrapper uses deterministic fast-demo defaults and prints a synthetic/non-PHI advisory-only completion message. It does not accept AI-answer input, implement `audit-answer`, grade answers, add LLM judgment, activate local rules, add final recommendations, change clinical logic, validate evidence truth, add PHI handling, or introduce thresholds, utilities, priors, formulas, or hidden scoring.

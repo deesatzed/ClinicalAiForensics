@@ -1161,15 +1161,19 @@ Acceptance:
 
 ### UX-004: Create Simple Demo Command Or Wrapper
 
-Status: blocked
+Status: done
 
 Scope:
 
 - Create a short demo command, wrapper, or documented command alias for a stable organization-neutral demo package.
 
-Reason Blocked:
+Acceptance:
 
-- Requires explicit approval of command semantics. The future `audit-answer` command remains deferred until governed AI-answer examples and mapping boundaries are approved for implementation.
+- `python -m pdde demo` runs the organization-neutral synthetic CDE/domain-pack audit path.
+- The command writes `reports/demo_report.md` and `logs/demo_run.jsonl` by default.
+- The command uses deterministic fast-demo defaults and prints a synthetic/non-PHI advisory-only completion message.
+- Tests cover CLI help, demo output/log creation, provenance command metadata, and rejection of `--ai-answer`.
+- The command does not implement `audit-answer`, consume the synthetic AI-answer artifact, grade answers, add LLM judgment, activate local rules, add final recommendations, change clinical logic, validate evidence truth, add PHI handling, or introduce thresholds, utilities, priors, formulas, or hidden scoring.
 
 ### UX-005: Create Final Demo Package
 
@@ -1181,7 +1185,7 @@ Scope:
 
 Reason Blocked:
 
-- Requires completion of `UX-004`, plus approval of final packaging scope and governance language.
+- Requires approval of final packaging scope, generated artifact policy, provenance excerpt shape, and governance language.
 
 ## Deferred
 

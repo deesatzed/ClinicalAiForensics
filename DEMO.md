@@ -50,14 +50,32 @@ python -m pdde --help
 
 What to look for:
 
-- commands: `validate`, `report`, and `run-cde`
+- commands: `validate`, `report`, `demo`, and `run-cde`
 - no server, UI, auth, EHR, or deployment command
 
 Safe explanation:
 
 > This is a local Phase 0 CLI. It validates inputs, runs a deterministic evidence-preserving pipeline, and renders an advisory report.
 
-### 2. Validate The Canonical Inputs
+### 2. Run The Short Synthetic Demo
+
+Run:
+
+```bash
+python -m pdde demo
+```
+
+What to look for:
+
+- `Report written: reports/demo_report.md`
+- `Log written: logs/demo_run.jsonl`
+- `Demo complete: synthetic/non-PHI advisory output only; not approved for clinical use.`
+
+Safe explanation:
+
+> This is the short organization-neutral demo wrapper. It uses the synthetic stable CDE and canonical HF ED discharge domain pack, writes an advisory Markdown report, and writes a status-only provenance log. It does not consume the synthetic AI-answer artifact or perform answer grading.
+
+### 3. Validate The Canonical Inputs
 
 Run:
 
@@ -75,7 +93,7 @@ Safe explanation:
 
 > The pipeline starts from structured synthetic inputs. It does not parse a real chart or use PHI.
 
-### 3. Generate The Report To Stdout
+### 4. Generate The Report To Stdout
 
 Run:
 
@@ -112,7 +130,7 @@ Safe explanation:
 
 > The report preserves explicit evidence, missing data, unsupported gates, deferred items, draft priors, and calibration status. It does not make a clinical recommendation. AI-answer claim mapping is available only as a typed API boundary, not as CLI free-text judgment.
 
-### 4. Generate The Report File
+### 5. Generate The Report File
 
 Run:
 
@@ -134,7 +152,7 @@ Safe explanation:
 
 > The Markdown artifact is deterministic for a fixed input, seed, and iteration count. It is intended for review of the decision-profile structure, not patient care.
 
-### 5. Generate Provenance JSONL
+### 6. Generate Provenance JSONL
 
 Run:
 
@@ -176,7 +194,7 @@ Safe explanation:
 
 > The log records statuses, IDs, paths, counts, seed, command metadata, and source references. It intentionally avoids raw clinical payloads, raw simulation samples, and raw local overlay owner/source/review values.
 
-### 6. Run The Test Suite
+### 7. Run The Test Suite
 
 Run:
 

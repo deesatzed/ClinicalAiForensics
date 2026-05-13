@@ -19,6 +19,14 @@ from .report_renderer import render_markdown_report
 
 DEFAULT_DOMAIN_PATH = Path("domain_packs/hf_ed_discharge/domain_pack.yaml")
 DEFAULT_REPORT_PATH = Path("reports/hf_cde_stable_report.md")
+DEMO_CDE_PATH = Path("examples/hf_cde_stable.json")
+DEMO_DOMAIN_PATH = Path(
+    "pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml"
+)
+DEMO_REPORT_PATH = Path("reports/demo_report.md")
+DEMO_LOG_PATH = Path("logs/demo_run.jsonl")
+DEMO_ITERATIONS = 5
+DEMO_SEED = 17
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -78,6 +86,48 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("--log", type=Path, help="Write JSONL provenance log to this path.")
     report.set_defaults(handler=_report_command)
 
+    demo = subcommands.add_parser(
+        "demo",
+        help="Run the organization-neutral synthetic demo report.",
+    )
+    demo.add_argument(
+        "--cde",
+        type=Path,
+        default=DEMO_CDE_PATH,
+        help=f"Synthetic demo CDE JSON. Default: {DEMO_CDE_PATH}",
+    )
+    demo.add_argument(
+        "--domain",
+        type=Path,
+        default=DEMO_DOMAIN_PATH,
+        help=f"Synthetic demo domain pack YAML. Default: {DEMO_DOMAIN_PATH}",
+    )
+    demo.add_argument(
+        "--output",
+        type=Path,
+        default=DEMO_REPORT_PATH,
+        help=f"Markdown report output path. Default: {DEMO_REPORT_PATH}",
+    )
+    demo.add_argument(
+        "--log",
+        type=Path,
+        default=DEMO_LOG_PATH,
+        help=f"JSONL provenance log output path. Default: {DEMO_LOG_PATH}",
+    )
+    demo.add_argument(
+        "--iterations",
+        type=int,
+        default=DEMO_ITERATIONS,
+        help=f"Monte Carlo iterations for the fast synthetic demo. Default: {DEMO_ITERATIONS}",
+    )
+    demo.add_argument(
+        "--seed",
+        type=int,
+        default=DEMO_SEED,
+        help=f"Deterministic Monte Carlo seed for the synthetic demo. Default: {DEMO_SEED}",
+    )
+    demo.set_defaults(handler=_demo_command)
+
     validate = subcommands.add_parser(
         "validate",
         help="Validate a CDE or domain pack.",
@@ -104,7 +154,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 def _normalize_argv(argv: Sequence[str] | None) -> list[str]:
     args = list(sys.argv[1:] if argv is None else argv)
-    subcommands = {"run-cde", "report", "validate"}
+    subcommands = {"run-cde", "report", "demo", "validate"}
     if args and args[0] not in subcommands and "--cde" in args:
         return ["run-cde", *args]
     return args
@@ -166,6 +216,13 @@ def _report_command(args: argparse.Namespace) -> int:
 
     print(f"Report written: {output_path}")
     return 0
+
+
+def _demo_command(args: argparse.Namespace) -> int:
+    exit_code = _report_command(args)
+    if exit_code == 0:
+        print("Demo complete: synthetic/non-PHI advisory output only; not approved for clinical use.")
+    return exit_code
 
 
 def _write_log(

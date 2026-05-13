@@ -311,7 +311,18 @@ Remaining gap: the artifact is not wired into a CLI command. `audit-answer` rema
 
 ### Simple Demo Command
 
-The current CLI is usable, and the real demo command is documented above. A shorter demo command or wrapper would reduce leadership-demo friction. Any new command should preserve current report/provenance behavior and avoid hidden defaults that imply clinical approval.
+The current CLI now includes a short synthetic demo wrapper:
+
+```bash
+python -m pdde demo
+```
+
+The wrapper uses the organization-neutral synthetic stable CDE, canonical HF ED discharge domain pack, deterministic fast-demo sampling defaults, and writes:
+
+- `reports/demo_report.md`
+- `logs/demo_run.jsonl`
+
+It preserves current report/provenance behavior, prints a synthetic/non-PHI advisory-only completion message, and does not consume `examples/synthetic_ai_answer.json`. `audit-answer` remains deferred and non-existent until governed AI-answer command semantics are explicitly approved.
 
 ### Leadership One-Pager
 
@@ -335,7 +346,7 @@ A final demo package should include:
 - `UX-001: Define end-user demo flow`: complete in this specification.
 - `UX-002: Create governed synthetic AI answer artifact`: complete with `examples/synthetic_ai_answer.json`.
 - `UX-003: Create leadership-friendly demo report`: complete with `LEADERSHIP_DEMO_REPORT.md`.
-- `UX-004: Create simple demo command or wrapper`: blocked until the demo artifact set is stable and the command semantics are approved.
+- `UX-004: Create simple demo command or wrapper`: complete with `python -m pdde demo`.
 - `UX-005: Create final demo package`: blocked until the demo report, provenance excerpt, one-pager, talk track, and governance disclaimers are ready.
 
 ## UX Guardrails
