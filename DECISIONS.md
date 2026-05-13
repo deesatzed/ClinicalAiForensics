@@ -425,3 +425,11 @@ Decision: `examples/synthetic_ai_answer.json` is the governed synthetic/non-PHI 
 Reason: UX-002 needs a concrete organization-neutral artifact that can demonstrate mapped risky claims and unresolved boundaries without adding the future `audit-answer` command or broad AI-answer grading behavior.
 
 Impact: Tests can exercise the artifact through the existing API-only deterministic mapper and verify that raw answer text does not enter pipeline results, reports, or provenance logs. Omission and overstatement boundaries remain documented but unimplemented. No runtime behavior, CLI behavior, final recommendations, LLM judgment, answer grading, evidence truth scoring, PHI behavior, thresholds, utilities, priors, formulas, hidden scoring, or local rule activation was added.
+
+## D-054: Leadership Demo Report Is Advisory And Non-Generated
+
+Decision: `LEADERSHIP_DEMO_REPORT.md` is a curated leadership-facing Markdown demo report/excerpt, not a generated clinical report and not a new runtime output.
+
+Reason: UX-003 needs a concise artifact that leadership can read without interpreting raw CLI output, while preserving the project boundary that current CLI report generation does not consume AI-answer artifacts and `audit-answer` remains deferred.
+
+Impact: The report explains the synthetic demo inputs, current CLI path, deferred future command shape, visible safety/evidence/uncertainty/governance statuses, unresolved items, and claim boundaries. It adds no runtime behavior, CLI behavior, `audit-answer` command, final recommendations, LLM judgment, answer grading, evidence truth scoring, PHI behavior, thresholds, utilities, priors, formulas, hidden scoring, or local rule activation.

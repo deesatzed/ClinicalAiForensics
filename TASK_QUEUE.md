@@ -1145,15 +1145,19 @@ Acceptance:
 
 ### UX-003: Create Leadership-Friendly Demo Report
 
-Status: blocked
+Status: done
 
 Scope:
 
 - Create a leadership-facing demo report or report excerpt that explains advisory status, safety gates, evidence-reference status, AI mapped-claim status when available, uncertainty/VOI, governance status, unresolved items, and provenance references.
 
-Reason Blocked:
+Acceptance:
 
-- Requires desired leadership report framing, demo-report scope, and approval of which artifact excerpts may be shown.
+- `LEADERSHIP_DEMO_REPORT.md` exists.
+- The report uses organization-neutral synthetic demo framing.
+- The report explains advisory status, demo inputs, current CLI command, deferred future `audit-answer` command shape, safety gates, mapped AI-claim status, evidence-reference status, uncertainty/VOI status, governance status, unresolved items, provenance references, and leadership claim boundaries.
+- The report does not claim clinical approval, evidence truth, outcome calibration, answer grading, final recommendations, or production deployment.
+- No runtime behavior or CLI behavior is added.
 
 ### UX-004: Create Simple Demo Command Or Wrapper
 
@@ -1165,7 +1169,7 @@ Scope:
 
 Reason Blocked:
 
-- Requires a stable demo artifact set and explicit approval of command semantics. The future `audit-answer` command remains deferred until governed AI-answer examples and mapping boundaries exist.
+- Requires explicit approval of command semantics. The future `audit-answer` command remains deferred until governed AI-answer examples and mapping boundaries are approved for implementation.
 
 ### UX-005: Create Final Demo Package
 
@@ -1177,7 +1181,7 @@ Scope:
 
 Reason Blocked:
 
-- Requires completion of `UX-002`, `UX-003`, and `UX-004`, plus approval of organization-neutral demo artifacts and governance language.
+- Requires completion of `UX-004`, plus approval of final packaging scope and governance language.
 
 ## Deferred
 

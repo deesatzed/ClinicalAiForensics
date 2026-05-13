@@ -31,6 +31,7 @@ The supporting `ClinSafer/` and `Agent_Pidgeon/` workspaces are tracked from the
 | `PHASE1_PLAN.md` | Planning-only Phase 1 roadmap with ranked tasks, acceptance criteria, verification expectations, user-input needs, and stop conditions. |
 | `PHASE2_PLAN.md` | Phase 2 roadmap for governance-contract hardening, beginning with evidence source registry models and preserving Phase 0/1 guardrails. |
 | `UX_SPEC.md` | Pre-implementation UX contract for leadership/buyer, clinical AI safety reviewer, and developer/informaticist workflows; frames the product as a clinical AI safety/audit workbench rather than a clinical decision engine. |
+| `LEADERSHIP_DEMO_REPORT.md` | Curated organization-neutral leadership demo report/excerpt for the synthetic clinical AI safety audit workflow; advisory-only and not a generated runtime report. |
 | `BASELINE_POLICY.md` | Phase 0 baseline tag, root git strategy, submodule policy, generated report/log artifact policy, and Phase 1 boundary guardrails. |
 | `EVIDENCE_AUDIT_HANDOFF.md` | P1-009 documentation-only handoff for future citation/evidence audit fields, report/provenance gaps, governance inputs, and out-of-scope boundaries. |
 | `CALIBRATION_OUTCOME_PREREQUISITES.md` | P1-010 documentation-only handoff for future calibration/outcome labels, governance approvals, data constraints, metric prerequisites, log suitability, and out-of-scope boundaries. |

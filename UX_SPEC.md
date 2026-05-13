@@ -315,7 +315,7 @@ The current CLI is usable, and the real demo command is documented above. A shor
 
 ### Leadership One-Pager
 
-A one-page PDF or Markdown summary would help leadership audiences understand the problem, workbench concept, novelty, safeguards, current limits, and governance asks without reading the full build history.
+`LEADERSHIP_DEMO_REPORT.md` now provides a leadership-friendly Markdown report/excerpt for the synthetic demo. A shorter one-page summary may still be useful for a final demo package, but the core leadership report artifact exists.
 
 ### Final Demo Package
 
@@ -334,7 +334,7 @@ A final demo package should include:
 
 - `UX-001: Define end-user demo flow`: complete in this specification.
 - `UX-002: Create governed synthetic AI answer artifact`: complete with `examples/synthetic_ai_answer.json`.
-- `UX-003: Create leadership-friendly demo report`: blocked until the desired leadership report framing and demo-report scope are approved.
+- `UX-003: Create leadership-friendly demo report`: complete with `LEADERSHIP_DEMO_REPORT.md`.
 - `UX-004: Create simple demo command or wrapper`: blocked until the demo artifact set is stable and the command semantics are approved.
 - `UX-005: Create final demo package`: blocked until the demo report, provenance excerpt, one-pager, talk track, and governance disclaimers are ready.
 
