@@ -1094,6 +1094,87 @@ Reason Blocked:
 
 - Requires a selected domain or scenario source and confirmation that no new clinical thresholds, weights, utilities, priors, or formulas are being invented.
 
+### P2-DOC-001: UX Specification Before Further Implementation
+
+Status: done
+
+Scope:
+
+- Create a pre-implementation UX specification for leadership/buyer, clinical AI safety reviewer, and developer/informaticist audiences.
+- Define the product as a clinical AI safety/audit workbench, not a clinical decision engine.
+- Define the core synthetic demo workflow, leadership demo flow, reviewer workflow, developer workflow, required outputs, explicit non-goals, and remaining UX gaps.
+
+Acceptance:
+
+- `UX_SPEC.md` exists.
+- The spec covers the requested users, product definition, demo workflows, review/developer workflows, required outputs, non-goals, and UX gaps.
+- No runtime behavior, CLI behavior, clinical logic, final recommendations, LLM judgment, evidence truth scoring, PHI handling, local rule activation, thresholds, utilities, priors, formulas, or hidden scoring is added.
+
+### UX-001: Define End-User Demo Flow
+
+Status: done
+
+Scope:
+
+- Define the intended end-user demo flow before further implementation.
+- Document the current real `python -m pdde report` demo command.
+- Document the future `python -m pdde audit-answer` command shape as deferred and non-existent.
+
+Acceptance:
+
+- `UX_SPEC.md` states who uses the product, what they provide, what they get back, what decision the workbench supports, and what it must never claim.
+- `UX_SPEC.md` includes the current real report command and the deferred future `audit-answer` command shape.
+- No runtime behavior or CLI behavior is added.
+
+### UX-002: Create Governed Synthetic AI Answer Artifact
+
+Status: blocked
+
+Scope:
+
+- Create an organization-neutral, synthetic/non-PHI AI-answer artifact for demo and reviewer workflow testing.
+- Include governed claim-pattern boundaries for mapped, unmapped, risky, omission, overstatement, and unsupported cases.
+
+Reason Blocked:
+
+- Requires organization-neutral governed AI-answer examples, allowed claim types, omission boundaries, overstatement boundaries, unsupported-claim boundaries, approval ownership, and explicit confirmation that the artifact does not enable answer grading, LLM judgment, final recommendations, or clinical action.
+
+### UX-003: Create Leadership-Friendly Demo Report
+
+Status: blocked
+
+Scope:
+
+- Create a leadership-facing demo report or report excerpt that explains advisory status, safety gates, evidence-reference status, AI mapped-claim status when available, uncertainty/VOI, governance status, unresolved items, and provenance references.
+
+Reason Blocked:
+
+- Requires the organization-neutral demo artifact set, including a governed synthetic AI-answer artifact if AI-answer audit is shown.
+
+### UX-004: Create Simple Demo Command Or Wrapper
+
+Status: blocked
+
+Scope:
+
+- Create a short demo command, wrapper, or documented command alias for a stable organization-neutral demo package.
+
+Reason Blocked:
+
+- Requires a stable demo artifact set and explicit approval of command semantics. The future `audit-answer` command remains deferred until governed AI-answer examples and mapping boundaries exist.
+
+### UX-005: Create Final Demo Package
+
+Status: blocked
+
+Scope:
+
+- Assemble a final demo package with synthetic case, domain pack, optional governed synthetic AI-answer artifact, generated advisory Markdown report, provenance JSONL excerpt, leadership one-pager, short talk track, and explicit not-approved-for-clinical-use disclaimer.
+
+Reason Blocked:
+
+- Requires completion of `UX-002`, `UX-003`, and `UX-004`, plus approval of organization-neutral demo artifacts and governance language.
+
 ## Deferred
 
 ### TQ-D001: AI Answer Mapping

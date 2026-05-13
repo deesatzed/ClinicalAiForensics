@@ -409,3 +409,11 @@ Decision: Organization-specific demo/governance references in root project mater
 Reason: The project is intended to be safe for public or leadership review without implying that a real hospital workflow, local owner, or accountable governance body has approved clinical use.
 
 Impact: The change updates documentation, sample/reference artifacts, and tests that asserted the old synthetic local-overlay ID. It does not change runtime behavior, CLI behavior, clinical logic, final recommendations, LLM judgment, PHI handling, local rule activation, thresholds, utilities, priors, formulas, or hidden scoring. Author metadata and external repository identifiers remain unchanged where they are normal project metadata rather than governance/accountable-owner language.
+
+## D-052: UX Contract Frames ClinAIForensics As Safety/Audit Workbench
+
+Decision: `UX_SPEC.md` defines the pre-implementation product UX contract for leadership, clinical AI safety reviewer, and developer/informaticist audiences. The product is framed as a clinical AI safety/audit workbench for synthetic CDE review, not a clinical decision engine.
+
+Reason: Further implementation should preserve the demo, reviewer, and developer workflows around advisory reports, provenance logs, status ledgers, evidence-reference visibility, optional governed AI-answer mapped-claim status, and governance status without drifting into clinical recommendations or automated action.
+
+Impact: The UX specification records required outputs, leadership-demo claim boundaries, reviewer status semantics, developer-safe extension paths, explicit non-goals, and remaining UX gaps. It adds no runtime behavior, CLI behavior, clinical logic, final recommendations, LLM judgment, evidence truth scoring, PHI handling, local rule activation, thresholds, utilities, priors, formulas, or hidden scoring.

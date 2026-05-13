@@ -4,7 +4,23 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, the Phase 1 completion review, Phase 2 activation, `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, `P2-002B: Domain-Pack Evidence Link Scaffold`, `P2-003: Evidence Status Report And Provenance Visibility`, and `P2-004: Governed Local Overlay Metadata Completion Path` metadata-only validation are complete.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, the Phase 1 completion review, Phase 2 activation, `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, `P2-002B: Domain-Pack Evidence Link Scaffold`, `P2-003: Evidence Status Report And Provenance Visibility`, `P2-004: Governed Local Overlay Metadata Completion Path` metadata-only validation, and the pre-implementation UX specification are complete.
+
+## UX Specification Completed
+
+Created `UX_SPEC.md` as a documentation-only product and review contract before further implementation.
+
+The spec defines:
+
+- user audiences: leadership/buyer, clinical AI safety reviewer, and developer/informaticist.
+- product framing as a clinical AI safety/audit workbench, not a clinical decision engine.
+- core synthetic demo workflow with case input, domain pack input, optional governed synthetic AI-answer mapping, audit run, Markdown report, provenance log, and status review.
+- leadership demo script and claim boundaries.
+- reviewer and developer workflows.
+- required outputs: advisory Markdown report, JSONL provenance log, status ledger, evidence-reference status, optional AI-answer mapped-claim status, and governance status.
+- explicit non-goals and remaining UX gaps.
+
+No runtime behavior, CLI behavior, clinical logic, final recommendations, LLM judgment, evidence truth scoring, PHI handling, local rule activation, thresholds, utilities, priors, formulas, or hidden scoring was added.
 
 ## Public Demo Organization Neutralization
 
