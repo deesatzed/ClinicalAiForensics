@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, and the Phase 1 completion review are complete. No unblocked Phase 1 implementation task follows `P1-010` in the current queue, and Phase 2 has not been started.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, the Phase 1 completion review, Phase 2 activation, and `P2-001: Evidence Source Registry Models` are complete.
 
 Created the root project-control files:
 
@@ -15,6 +15,27 @@ Created the root project-control files:
 - `PROGRESS.md`
 - `TASK_QUEUE.md`
 - `REPO_MAP.md`
+
+## Phase 2 Activation
+
+Phase 1 is complete and reviewed. The local annotated tag `phase1-baseline` exists at `06c5d3e docs: complete phase 1 review`.
+
+Phase 2 is now active by explicit user instruction. The first selected Phase 2 task is `P2-001: Evidence Source Registry Models`, from the newly created `PHASE2_PLAN.md`.
+
+Assumptions being used:
+
+- `phase1-baseline` is the local stable baseline for Phase 2 work.
+- Phase 2 should begin with governance-contract hardening rather than clinical behavior expansion.
+- Evidence audit and calibration remain prerequisite-driven; source truth validation and calibration metrics are not authorized.
+- Generated Markdown reports and JSONL logs remain ignored reproducible artifacts under `BASELINE_POLICY.md`.
+
+Safety constraints being preserved:
+
+- No final clinical recommendations, safe/unsafe discharge conclusions, option rankings, hidden scores, validated-risk language, or calibrated-risk claims.
+- No LLM/AI clinical judgment, LLM extraction, answer grading, or CLI free-text AI-answer mapping.
+- No automated evidence truth validation, citation scoring, source-quality scoring, web lookups, retraction checks, or DOI/PMID validation.
+- No PHI storage, production deployment, calibration metrics, outcome linkage, expert label collection, prior updating, or drift detection.
+- No invented clinical thresholds, utilities, weights, priors, formulas, or local clinical rule activation.
 
 ## Phase 1 Activation
 
@@ -418,6 +439,81 @@ Verification:
 - all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
 - all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/pdde_phase1_completion_reports/...`.
 - `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the verification append it contained 1101 JSONL records.
+
+## P2-001 Completed
+
+Completed `P2-001: Evidence Source Registry Models`.
+
+Created:
+
+- `PHASE2_PLAN.md`
+- `pdde/evidence_models.py`
+- `tests/test_evidence_models.py`
+
+Updated:
+
+- `pdde/models.py`
+- `tests/test_model_modules.py`
+- `TASK_QUEUE.md`
+- `DECISIONS.md`
+- `PROGRESS.md`
+- `REPO_MAP.md`
+
+Implemented:
+
+- `EvidenceSource` typed source metadata model.
+- `EvidenceSupportLink` typed source-to-project-entity support model.
+- `EvidenceRegistry` typed registry model.
+- `BibliographicIdentifier` typed identifier model.
+- strict validation for duplicate source IDs, duplicate support links, support links to unknown source IDs, reviewed source metadata, and reviewed support-link audit metadata.
+- backwards-compatible `pdde.models` facade exports for evidence registry contracts.
+
+Guardrails preserved:
+
+- no runtime pipeline behavior, CLI behavior, report wording, provenance schema, clinical logic, final recommendations, LLM/AI judgment, automated evidence truth validation, citation scoring, source-quality scoring, calibration metrics, outcome linkage, PHI handling, thresholds, utilities, priors, formulas, or local clinical rule activation were added.
+- evidence registry models reject extra raw text fields such as copied source passages or claim excerpts.
+
+Verification:
+
+- focused tests passed: `python -m pytest tests/test_evidence_models.py tests/test_model_modules.py`, 8 tests.
+- `python -m pytest` passed, 136 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
+- all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/pdde_p2_001_reports/...`.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the verification append it contained 1181 JSONL records.
+
+## P2-002A Completed
+
+Completed `P2-002A: Evidence Registry Architecture Decisions` as documentation-only work.
+
+Created:
+
+- `docs/architecture/evidence_registry_decision.md`
+- `docs/architecture/evidence_identity_model.md`
+- `docs/architecture/evidence_lineage_rules.md`
+- `docs/architecture/evidence_storage_matrix.md`
+
+Documented:
+
+- core decision that evidence objects are immutable receipts.
+- working model: `EvidenceObject`, `EvidenceLink`, `EvidenceAssessment`, and `EvidenceLineage`.
+- identity and immutability rules for evidence objects.
+- mutable/versioned treatment for relationships, trust assessments, utility labels, safety judgments, confidence labels, and review decisions.
+- lineage classes: observed, inferred, synthesized, and speculative.
+- storage options and open questions for P2-002B.
+
+Guardrails preserved:
+
+- no runtime behavior, CLI behavior, report output, persistence, domain-pack linking, source truth validation, citation scoring, LLM judgment, calibration metrics, outcome linkage, final recommendations, PHI handling, thresholds, utilities, priors, formulas, or local rule activation were added.
+- P2-002B was not started.
+
+Verification:
+
+- `python -m pytest` passed, 136 tests.
 
 Created the initial implementation scaffold:
 

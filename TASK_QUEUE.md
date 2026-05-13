@@ -11,7 +11,7 @@ Initialized: 2026-05-11
 
 ## Current Phase
 
-Phase 1: direct CDE simulator hardening. Phase 0 is the stable baseline tagged as `phase0-baseline`.
+Phase 2: governance-contract hardening. Phase 0 is the stable baseline tagged as `phase0-baseline`; Phase 1 is the stable baseline tagged as `phase1-baseline`.
 
 ## Tasks
 
@@ -851,7 +851,154 @@ Verification:
 
 ## Queue State
 
-Phase 1 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, `P1-009`, and `P1-010` are complete. No unblocked Phase 1 implementation task follows `P1-010` in the current queue.
+Phase 2 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, `P1-009`, and `P1-010` are complete. Phase 1 completion review is complete, and `phase1-baseline` exists locally. `P2-001: Evidence Source Registry Models` and `P2-002A: Evidence Registry Architecture Decisions` are complete. No unblocked Phase 2 task follows `P2-002A` until P2-002B is explicitly started or storage/linking decisions and user/governance inputs are available.
+
+## Phase 2 Tasks
+
+### P2-001: Evidence Source Registry Models
+
+Status: done
+
+Scope:
+
+- Add typed evidence-source, evidence-support-link, and evidence-registry models.
+- Preserve strict validation and serialization.
+- Preserve status-only/privacy discipline.
+- Do not integrate with reports, provenance logs, loaders, or domain-pack validation yet.
+
+Acceptance:
+
+- Evidence sources have stable IDs, source type, title/label, and review status.
+- Support links connect explicit evidence source IDs to explicit project entity IDs and entity types.
+- Registry validation rejects duplicate source IDs, duplicate source/entity links, and support links to unknown evidence source IDs.
+- Reviewed source/support statuses require review or audit metadata.
+- Extra raw text fields such as source passages are rejected by strict models.
+- `pdde.models` continues to re-export public model contracts for backwards compatibility.
+- Tests cover creation, validation failure, source traceability, serialization, and no raw-source-text fields.
+- No runtime pipeline, CLI, report, provenance, clinical logic, recommendation, LLM, evidence truth validation, calibration, outcome linkage, PHI, threshold, utility, prior, or formula behavior is added.
+
+Verification:
+
+- `pdde/evidence_models.py` defines `EvidenceSource`, `EvidenceSupportLink`, `EvidenceRegistry`, and `BibliographicIdentifier`.
+- `pdde.models` re-exports the evidence registry contracts through the backwards-compatible facade.
+- model tests cover successful creation/serialization, reviewed metadata requirements, final support audit metadata requirements, duplicate source IDs, duplicate support links, unknown source references, and raw-source-text field rejection.
+- no runtime pipeline, CLI, report, provenance, clinical logic, recommendation, LLM, evidence truth validation, calibration, outcome linkage, PHI, threshold, utility, prior, or formula behavior was added.
+- `python -m pytest tests/test_evidence_models.py tests/test_model_modules.py` passed, 8 tests.
+- `python -m pytest` passed, 136 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL and contained 1181 records after the final verification append.
+
+### P2-002A: Evidence Registry Architecture Decisions
+
+Status: done
+
+Scope:
+
+- Create architecture decision documents needed before implementing evidence registry persistence or linking.
+- Define identity, immutability, lineage, storage options, and open questions.
+- Preserve the core decision that evidence objects are immutable receipts while relationships, assessments, utility labels, trust judgments, safety judgments, and confidence scores may be mutable/versioned.
+- Do not implement persistence, domain-pack linking, runtime behavior, CLI behavior, or report output changes.
+
+Acceptance:
+
+- `docs/architecture/evidence_registry_decision.md` exists.
+- `docs/architecture/evidence_identity_model.md` exists.
+- `docs/architecture/evidence_lineage_rules.md` exists.
+- `docs/architecture/evidence_storage_matrix.md` exists.
+- Architecture docs define `EvidenceObject`, `EvidenceLink`, `EvidenceAssessment`, and `EvidenceLineage`.
+- Architecture docs define observed, inferred, synthesized, and speculative lineage.
+- Architecture docs preserve open questions for P2-002B.
+- Existing tests still pass.
+- No runtime behavior, CLI behavior, or report output changed.
+
+Verification:
+
+- Architecture docs were created under `docs/architecture/`.
+- Persistence and domain-pack evidence linking remain unimplemented.
+- P2-002B was not started.
+- `python -m pytest` passed, 136 tests.
+
+### P2-002B: Domain-Pack Evidence Link Scaffold
+
+Status: blocked
+
+Scope:
+
+- Add optional source-ID references to domain-pack evidence-bearing records only after P2-001 models exist.
+- Keep current canonical fixtures backwards compatible.
+- Validate only explicit IDs when an evidence registry is supplied.
+
+Reason Blocked:
+
+- Requires an explicit start instruction and a decision about whether evidence references live inside domain packs, in a separate registry file, or both.
+
+### P2-003: Evidence Status Report And Provenance Visibility
+
+Status: blocked
+
+Scope:
+
+- Surface evidence registry/support statuses in reports and status-only provenance records.
+- Preserve report-contract advisory language.
+
+Reason Blocked:
+
+- Requires `P2-001` evidence registry models and `P2-002` source-to-entity links.
+
+### P2-004: Governed Local Overlay Metadata Completion Path
+
+Status: blocked
+
+Scope:
+
+- Define or load explicit local overlay owner/source/review metadata if governance input exists.
+- Keep local clinical rules non-activating unless safe activation criteria are separately approved.
+
+Reason Blocked:
+
+- Requires local operational owner/source/review-cadence governance input.
+
+### P2-005: Broader AI Answer Mapping Specification
+
+Status: blocked
+
+Scope:
+
+- Extend the API-only deterministic mapping contract toward omissions and overstatements only with governed examples.
+
+Reason Blocked:
+
+- Requires example AI-answer artifacts, mapping boundaries, and explicit approval for any scope beyond the current deterministic claim-pattern interface.
+
+### P2-006: Calibration Label And Outcome Protocol
+
+Status: blocked
+
+Scope:
+
+- Define governed label and outcome schemas only after required approvals and data rules are available.
+
+Reason Blocked:
+
+- Requires clinical, privacy, statistical, data-owner, and label/outcome governance input.
+
+### P2-007: Additional Synthetic Domain Or Scenario Fixtures
+
+Status: blocked
+
+Scope:
+
+- Add synthetic non-PHI fixtures only from governed source material.
+
+Reason Blocked:
+
+- Requires a selected domain or scenario source and confirmation that no new clinical thresholds, weights, utilities, priors, or formulas are being invented.
 
 ## Deferred
 

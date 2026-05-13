@@ -2,7 +2,15 @@ from __future__ import annotations
 
 import json
 
-from pdde import component_models, input_models, legacy_models, model_base, models, pipeline_models
+from pdde import (
+    component_models,
+    evidence_models,
+    input_models,
+    legacy_models,
+    model_base,
+    models,
+    pipeline_models,
+)
 from pdde.evaluation_pipeline import run_evaluation_pipeline
 
 
@@ -10,6 +18,7 @@ def test_models_facade_reexports_focused_model_classes() -> None:
     assert models.StrictModel is model_base.StrictModel
     assert models.ClinicalDecisionEpisode is input_models.ClinicalDecisionEpisode
     assert models.DomainPack is input_models.DomainPack
+    assert models.EvidenceRegistry is evidence_models.EvidenceRegistry
     assert models.Prior is input_models.Prior
     assert models.AIAnswerMappingResult is component_models.AIAnswerMappingResult
     assert models.SafetyGateEvaluation is component_models.SafetyGateEvaluation

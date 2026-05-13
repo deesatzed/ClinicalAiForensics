@@ -5,6 +5,7 @@ Model definitions now live in focused modules:
 - ``model_base`` for shared base types.
 - ``input_models`` for CDE and domain-pack inputs.
 - ``component_models`` for deterministic component outputs and status ledgers.
+- ``evidence_models`` for evidence-source registry contracts.
 - ``pipeline_models`` for top-level evaluation results.
 - ``legacy_models`` for legacy/planned report and log contracts.
 
@@ -46,6 +47,16 @@ from .component_models import (
     ValueOfInformationEvaluationSet,
     ValueOfInformationStatus,
 )
+from .evidence_models import (
+    BibliographicIdentifier,
+    EvidenceRegistry,
+    EvidenceReviewStatus,
+    EvidenceSource,
+    EvidenceSourceType,
+    EvidenceSupportLink,
+    EvidenceSupportStatus,
+    SupportedEntityType,
+)
 from .input_models import (
     ClinicalDecisionEpisode,
     DecisionOption,
@@ -77,6 +88,7 @@ __all__ = [
     "AIAnswerClaimStatus",
     "AIAnswerMappedClaim",
     "AIAnswerMappingResult",
+    "BibliographicIdentifier",
     "ClinicalDecisionEpisode",
     "DecisionCategory",
     "DecisionOption",
@@ -88,6 +100,12 @@ __all__ = [
     "DecisionProfileInputType",
     "DomainPack",
     "DomainPackMappings",
+    "EvidenceRegistry",
+    "EvidenceReviewStatus",
+    "EvidenceSource",
+    "EvidenceSourceType",
+    "EvidenceSupportLink",
+    "EvidenceSupportStatus",
     "EvaluationPipelineResult",
     "JsonObject",
     "LocalOverlayRequiredField",
@@ -119,6 +137,7 @@ __all__ = [
     "StatusLedgerComponent",
     "StatusLedgerRow",
     "StrictModel",
+    "SupportedEntityType",
     "UncertaintyBudget",
     "UncertaintyBudgetEvaluationItem",
     "UncertaintyBudgetEvaluationSet",

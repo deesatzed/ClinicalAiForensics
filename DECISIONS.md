@@ -337,3 +337,27 @@ Decision: `PHASE1_COMPLETION_REVIEW.md` records Phase 1 completion across `P1-00
 Reason: Phase 1 hardened the Phase 0 scaffold, added explicit mapping/status/report/provenance boundaries, and documented evidence and calibration prerequisites. A completion review gives the next reviewer a concise stop/go record before any Phase 2 scope begins.
 
 Impact: No Phase 2 work, runtime behavior, CLI behavior, clinical logic, final recommendations, LLM/AI judgment, outcome linkage, calibration metrics, thresholds, utilities, priors, or formulas are added by the review. Phase 2 remains deferred until a specific candidate direction is selected and governed.
+
+## D-043: Phase 2 Starts With Governance Contracts, Not Clinical Expansion
+
+Decision: Phase 2 is active by explicit user instruction. `PHASE2_PLAN.md` defines Phase 2 as governance-contract hardening that starts from `phase1-baseline` and begins with `P2-001: Evidence Source Registry Models`.
+
+Reason: Phase 1 completed the direct-CDE hardening baseline and documented evidence-audit and calibration prerequisites. The safest next step is to turn handoff prerequisites into typed, reviewable contracts before any source checking, calibration, local-rule activation, or broader AI-answer analysis.
+
+Impact: Phase 2 does not authorize final recommendations, LLM clinical judgment, automated evidence truth validation, calibration metrics, outcome linkage, PHI handling, local clinical rule activation, hidden scoring, new thresholds, utilities, weights, priors, or formulas. Later Phase 2 tasks remain blocked when they require user/governance input.
+
+## D-044: Evidence Registry Models Are Metadata Contracts Only
+
+Decision: `P2-001` adds `pdde/evidence_models.py` with typed evidence-source, evidence-support-link, and evidence-registry contracts. The models validate source IDs, review/support statuses, support-link references, duplicate IDs, duplicate links, and required review/audit metadata for reviewed statuses.
+
+Reason: P1-009 identified the need for source IDs, review status, support status, support scope, limitations, and audit metadata. Defining those contracts now makes future evidence work explicit without claiming source truth or changing runtime clinical behavior.
+
+Impact: Evidence registry models are not wired into the CLI, report renderer, provenance logger, domain-pack loader, or evaluation pipeline in P2-001. They do not fetch sources, validate DOI/PMID existence, score citations, check retractions, align abstracts to claims, add clinical recommendations, add calibration/outcome logic, or store raw source passages.
+
+## D-045: Evidence Receipts Are Immutable And Judgments Are Versioned
+
+Decision: `P2-002A` defines evidence architecture before persistence or linking. `EvidenceObject` is an immutable receipt. `EvidenceLink` records the relationship between evidence and a task, component, or context. `EvidenceAssessment` records contextual trust, utility, safety, support, or confidence judgments. `EvidenceLineage` records whether a record is observed, inferred, synthesized, or speculative.
+
+Reason: Evidence identity and evidence judgment have different lifecycles. A receipt should preserve what was observed, while relationships and assessments must be allowed to change as governance, review status, source freshness, or support context changes.
+
+Impact: Persistence and domain-pack linking remain unimplemented. P2-002B must choose a storage/linking approach before code changes. This decision does not add runtime behavior, CLI behavior, report output changes, source truth validation, citation scoring, LLM judgment, calibration metrics, outcome linkage, final recommendations, PHI handling, thresholds, utilities, priors, formulas, or local rule activation.
