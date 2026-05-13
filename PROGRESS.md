@@ -4,7 +4,7 @@ Initialized: 2026-05-11
 
 ## Current Status
 
-Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, the Phase 1 completion review, Phase 2 activation, and `P2-001: Evidence Source Registry Models` are complete.
+Project initialization, repository recon, TQ-001 scaffold setup, TQ-002 data models, TQ-003 CDE/domain-pack loaders, TQ-004 deterministic safety gate engine, TQ-005 prior resolver, TQ-006 Monte Carlo prior sampler, TQ-007 uncertainty/VOI item evaluation, TQ-008 deterministic Decision Profile assembly, TQ-009 evaluation pipeline wiring, TQ-010 Markdown report rendering, TQ-011 CLI report wiring, TQ-012 provenance logging, TQ-013 Phase 0 acceptance tests, TQ-014 build log/manual structural review, TQ-015 Phase 0 handoff package, technical reviewer documentation, Phase 1 planning, initial root repository publication, Phase 1 activation, `P1-001: Phase 0 Baseline And Artifact Policy`, `P1-002: Explicit Domain-Pack Mappings`, `P1-003: Canonical Synthetic Variant Fixtures`, `P1-004: Normalized Status Ledger`, `P1-005: Model Module Split`, `P1-006: Report Section Registry Or Schema Contract`, `P1-007: Local Overlay Verification Contract`, `P1-008: AI Answer Mapping Interface`, `P1-009: Citation/Evidence Audit Handoff`, `P1-010: Calibration And Outcome Anchoring Prerequisites`, the Phase 1 completion review, Phase 2 activation, `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, and `P2-002B: Domain-Pack Evidence Link Scaffold` are complete.
 
 Created the root project-control files:
 
@@ -514,6 +514,38 @@ Guardrails preserved:
 Verification:
 
 - `python -m pytest` passed, 136 tests.
+
+## P2-002B Completed
+
+Completed `P2-002B: Domain-Pack Evidence Link Scaffold`.
+
+Implemented:
+
+- optional `DomainPack.evidence_references` records that point explicit domain-pack entities to evidence source IDs.
+- strict domain-pack validation that rejects unknown evidence-reference targets and duplicate entity/source references.
+- `DomainPackEvidenceLinkValidation` and `DomainPackEvidenceLinkValidationSet` typed result models.
+- `pdde/evidence_linking.py` as an API-only validator for domain-pack evidence references against an optional `EvidenceRegistry`.
+- backwards-compatible `pdde.models` facade exports for the new evidence-link result and domain-pack reference models.
+- focused tests covering canonical fixture compatibility, explicit reference serialization, unknown/fuzzy target rejection, duplicate rejection, registry-linked references, pending references, and unknown source IDs.
+
+Guardrails preserved:
+
+- no CLI behavior, report output, provenance output, persistence, domain-pack fixture changes, source truth validation, citation scoring, LLM judgment, calibration metrics, outcome linkage, final recommendations, PHI handling, thresholds, utilities, priors, formulas, hidden scoring, or local rule activation were added.
+- existing canonical fixtures remain valid without evidence references.
+- missing evidence references are visible as deferred, and explicit references remain pending unless an explicit registry validation path is used.
+
+Verification:
+
+- focused tests passed: `python -m pytest tests/test_evidence_linking.py tests/test_evidence_models.py tests/test_model_modules.py tests/test_models.py tests/test_loaders.py`, 33 tests.
+- `python -m pytest` passed, 143 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- `python -m pdde validate --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --iterations 5 --seed 17` passed.
+- `python -m pdde report --cde pdde_v0_3_first_principles_final/examples/hf_cde_stable.json --domain pdde_v0_3_first_principles_final/domain_packs/hf_ed_discharge/domain_pack.yaml --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl --iterations 5 --seed 17` passed.
+- all seven root `examples/*.json` CDE fixtures passed `python -m pdde validate` with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through `python -m pdde report --output /private/tmp/pdde_p2_002b_reports/...`.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL; after the verification append it contained 1261 JSONL records.
 
 Created the initial implementation scaffold:
 

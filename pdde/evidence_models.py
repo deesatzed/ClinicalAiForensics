@@ -61,6 +61,13 @@ EvidenceSupportStatus = Literal[
     "unknown",
 ]
 
+DomainPackEvidenceLinkStatus = Literal[
+    "linked",
+    "pending_review",
+    "unknown_source",
+    "deferred",
+]
+
 FINAL_SOURCE_REVIEW_STATUSES = {"reviewed", "superseded", "retracted", "conflicting"}
 FINAL_SUPPORT_STATUSES = {"supported", "partial_support", "conflicting", "unsupported", "out_of_scope"}
 
@@ -156,3 +163,19 @@ class EvidenceRegistry(StrictModel):
         if len(set(link_keys)) != len(link_keys):
             raise ValueError("evidence support links must be unique per source and entity")
         return self
+
+
+class DomainPackEvidenceLinkValidation(StrictModel):
+    supported_entity_type: SupportedEntityType
+    supported_entity_id: NonEmptyString
+    evidence_source_id: NonEmptyString | None = None
+    status: DomainPackEvidenceLinkStatus
+    support_status: EvidenceSupportStatus | None = None
+    reason: NonEmptyString
+    source: NonEmptyString
+    provenance_references: list[NonEmptyString] = Field(default_factory=list)
+
+
+class DomainPackEvidenceLinkValidationSet(StrictModel):
+    domain_pack_id: NonEmptyString
+    items: list[DomainPackEvidenceLinkValidation] = Field(default_factory=list)

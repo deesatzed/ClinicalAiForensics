@@ -6,6 +6,7 @@ from typing import Literal, Self
 
 from pydantic import Field, PositiveFloat, model_validator
 
+from .evidence_models import SupportedEntityType
 from .model_base import JsonObject, NonEmptyString, StrictModel
 
 
@@ -63,6 +64,30 @@ class PriorToOptionMapping(StrictModel):
     def require_unique_option_ids(self) -> Self:
         if len(set(self.option_ids)) != len(self.option_ids):
             raise ValueError("prior-to-option mappings cannot repeat option ids")
+        return self
+
+
+DomainPackEvidenceEntityType = Literal[
+    "domain_pack",
+    "decision_option",
+    "prior",
+    "safety_gate",
+    "mapping",
+    "voi_variable",
+    "uncertainty_category",
+    "mapped_claim_type",
+]
+
+
+class DomainPackEvidenceReference(StrictModel):
+    supported_entity_type: DomainPackEvidenceEntityType
+    supported_entity_id: NonEmptyString
+    evidence_source_ids: list[NonEmptyString] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def require_unique_source_ids(self) -> Self:
+        if len(set(self.evidence_source_ids)) != len(self.evidence_source_ids):
+            raise ValueError("domain-pack evidence references cannot repeat source ids")
         return self
 
 
@@ -124,6 +149,7 @@ class DomainPack(StrictModel):
     decision_options: list[DecisionOption] = Field(min_length=1)
     hard_gates: dict[str, list[SafetyGate]] = Field(default_factory=dict)
     mappings: DomainPackMappings = Field(default_factory=DomainPackMappings)
+    evidence_references: list[DomainPackEvidenceReference] = Field(default_factory=list)
     soft_nodes: list[NonEmptyString] = Field(default_factory=list)
     prior_policy: dict[str, Prior] = Field(default_factory=dict)
     value_of_information_variables: list[NonEmptyString] = Field(default_factory=list)
@@ -167,3 +193,59 @@ class DomainPack(StrictModel):
                     f"unknown option_id(s): {', '.join(unknown_option_ids)}"
                 )
         return self
+
+    @model_validator(mode="after")
+    def validate_evidence_references(self) -> Self:
+        known_ids = self._known_evidence_entity_ids()
+        reference_keys: list[tuple[str, str, str]] = []
+
+        for reference in self.evidence_references:
+            allowed_ids = known_ids[reference.supported_entity_type]
+            if reference.supported_entity_id not in allowed_ids:
+                raise ValueError(
+                    "evidence reference for "
+                    f"{reference.supported_entity_type!r} references unknown "
+                    f"supported_entity_id {reference.supported_entity_id!r}"
+                )
+            for evidence_source_id in reference.evidence_source_ids:
+                reference_keys.append(
+                    (
+                        reference.supported_entity_type,
+                        reference.supported_entity_id,
+                        evidence_source_id,
+                    )
+                )
+
+        if len(set(reference_keys)) != len(reference_keys):
+            raise ValueError(
+                "domain-pack evidence references must be unique per entity and source id"
+            )
+        return self
+
+    def _known_evidence_entity_ids(self) -> dict[SupportedEntityType, set[str]]:
+        claim_types = {
+            gate.claim_type
+            for gate_group in self.hard_gates.values()
+            for gate in gate_group
+            if gate.claim_type is not None
+        }
+        mapping_ids = {
+            f"safety_gate_targets.{mapping.gate_group}"
+            for mapping in self.mappings.safety_gate_targets
+        } | {
+            f"prior_to_options.{mapping.prior_id}"
+            for mapping in self.mappings.prior_to_options
+        }
+        return {
+            "domain_pack": {self.domain_pack_id},
+            "decision_option": {option.id for option in self.decision_options},
+            "prior": set(self.prior_policy),
+            "safety_gate": set(self.hard_gates),
+            "mapping": mapping_ids,
+            "voi_variable": set(self.value_of_information_variables),
+            "uncertainty_category": set(self.soft_nodes),
+            "mapped_claim_type": {claim_type for claim_type in claim_types if claim_type},
+            "local_overlay": set(),
+            "report_statement": set(),
+            "other": set(),
+        }

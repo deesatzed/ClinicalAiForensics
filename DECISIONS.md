@@ -361,3 +361,11 @@ Decision: `P2-002A` defines evidence architecture before persistence or linking.
 Reason: Evidence identity and evidence judgment have different lifecycles. A receipt should preserve what was observed, while relationships and assessments must be allowed to change as governance, review status, source freshness, or support context changes.
 
 Impact: Persistence and domain-pack linking remain unimplemented. P2-002B must choose a storage/linking approach before code changes. This decision does not add runtime behavior, CLI behavior, report output changes, source truth validation, citation scoring, LLM judgment, calibration metrics, outcome linkage, final recommendations, PHI handling, thresholds, utilities, priors, formulas, or local rule activation.
+
+## D-046: Domain-Pack Evidence Links Are Optional Explicit Source-ID References
+
+Decision: `P2-002B` uses optional `DomainPack.evidence_references` records as domain-pack-side pointers from explicit domain-pack entities to evidence source IDs. A separate API-only validator in `pdde/evidence_linking.py` validates those source IDs against a supplied `EvidenceRegistry` and reports whether a matching registry support link exists.
+
+Reason: P2-002A separates immutable evidence receipts from mutable/versioned links and assessments. Keeping source receipt IDs in a separate registry while allowing domain packs to point at those IDs preserves backwards compatibility and avoids embedding review judgments or raw source content in domain-pack clinical configuration.
+
+Impact: Existing canonical fixtures remain valid without evidence references. Missing references are reported as `deferred`, explicit references without a registry or without a matching support link remain `pending_review`, and unknown source IDs fail clearly only through the explicit validation API. No CLI behavior, report output, provenance output, persistence, source truth validation, citation scoring, LLM judgment, calibration metrics, outcome linkage, final recommendations, PHI handling, thresholds, utilities, priors, formulas, or local rule activation were added.

@@ -851,7 +851,7 @@ Verification:
 
 ## Queue State
 
-Phase 2 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, `P1-009`, and `P1-010` are complete. Phase 1 completion review is complete, and `phase1-baseline` exists locally. `P2-001: Evidence Source Registry Models` and `P2-002A: Evidence Registry Architecture Decisions` are complete. No unblocked Phase 2 task follows `P2-002A` until P2-002B is explicitly started or storage/linking decisions and user/governance inputs are available.
+Phase 2 is active. `P1-001`, `P1-002`, `P1-003`, `P1-004`, `P1-005`, `P1-006`, `P1-007`, `P1-008`, `P1-009`, and `P1-010` are complete. Phase 1 completion review is complete, and `phase1-baseline` exists locally. `P2-001: Evidence Source Registry Models`, `P2-002A: Evidence Registry Architecture Decisions`, and `P2-002B: Domain-Pack Evidence Link Scaffold` are complete. The next unstarted Phase 2 task is `P2-003: Evidence Status Report And Provenance Visibility`.
 
 ## Phase 2 Tasks
 
@@ -926,7 +926,7 @@ Verification:
 
 ### P2-002B: Domain-Pack Evidence Link Scaffold
 
-Status: blocked
+Status: done
 
 Scope:
 
@@ -934,22 +934,43 @@ Scope:
 - Keep current canonical fixtures backwards compatible.
 - Validate only explicit IDs when an evidence registry is supplied.
 
-Reason Blocked:
+Acceptance:
 
-- Requires an explicit start instruction and a decision about whether evidence references live inside domain packs, in a separate registry file, or both.
+- Existing canonical CDE/domain-pack validation still passes.
+- Optional evidence references can be loaded and preserved.
+- Unknown evidence references fail clearly only when a registry validation path is explicitly used.
+- Missing evidence references stay visible as pending/deferred rather than implying support.
+- No automated evidence truth validation or source scoring is added.
+
+Verification:
+
+- `DomainPack.evidence_references` is optional and absent from canonical fixtures.
+- domain-pack validation rejects unknown/fuzzy evidence-reference targets and duplicate entity/source references.
+- `pdde/evidence_linking.py` validates explicit source IDs against a supplied `EvidenceRegistry` and distinguishes `linked`, `pending_review`, `unknown_source`, and `deferred` statuses.
+- no CLI behavior, report output, provenance output, persistence, source truth validation, citation scoring, LLM judgment, calibration metrics, outcome linkage, final recommendations, PHI handling, thresholds, utilities, priors, formulas, hidden scoring, or local rule activation was added.
+- focused tests passed: `python -m pytest tests/test_evidence_linking.py tests/test_evidence_models.py tests/test_model_modules.py tests/test_models.py tests/test_loaders.py`, 33 tests.
+- `python -m pytest` passed, 143 tests.
+- `python -m py_compile pdde/*.py` passed.
+- `python -m pdde --help` passed.
+- canonical `validate` passed.
+- canonical `report` to stdout passed.
+- canonical `report --output reports/hf_cde_stable_report.md --log logs/hf_cde_stable.jsonl` passed.
+- all seven root `examples/*.json` CDE fixtures passed CLI validation with the canonical HF domain pack.
+- all seven root `examples/*.json` CDE fixtures generated Markdown reports through the CLI.
+- `logs/hf_cde_stable.jsonl` parsed successfully as JSONL and contained 1261 records after the final verification append.
 
 ### P2-003: Evidence Status Report And Provenance Visibility
 
-Status: blocked
+Status: pending
 
 Scope:
 
 - Surface evidence registry/support statuses in reports and status-only provenance records.
 - Preserve report-contract advisory language.
 
-Reason Blocked:
+Reason Pending:
 
-- Requires `P2-001` evidence registry models and `P2-002` source-to-entity links.
+- `P2-001` evidence registry models and `P2-002B` source-to-entity link scaffold are complete. This task was not started.
 
 ### P2-004: Governed Local Overlay Metadata Completion Path
 
